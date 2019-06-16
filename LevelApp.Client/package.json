@@ -1,29 +1,35 @@
 {
-    "name": "vue-template",
-    "version": "1.0.0",
-    "description": "A template which shows how a Vue website can be built without the need for Babel or WebPack",
-    "author": "Benjamin Pannell <admin@sierrasoftworks.com>",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SierraSoftworks/vue-template.git"
-    },
-    "license": "MIT",
-    "scripts": {
-        "start": "node dev.js",
-        "build": "tsc"
-    },
-    "devDependencies": {
-        "@types/highlight.js": "^9.12.3",
-        "@types/markdown-it": "0.0.7",
-        "@types/moment": "^2.13.0",
-        "@types/requirejs": "^2.1.31",
-        "browser-sync": "^2.26.5",
-        "connect-history-api-fallback": "^1.6.0",
-        "typescript": "^3.5.1",
-        "vue": "^2.6.10",
-        "vue-class-component": "^7.1.0",
-        "vue-router": "^3.0.6",
-        "vuex": "^3.1.1"
-    },
-    "dependencies": {}
+  "name": "levelapp.client",
+  "version": "0.0.1",
+  "description": "A Quasar Framework app",
+  "productName": "LevelApp",
+  "cordovaId": "org.cordova.quasar.app",
+  "author": "Yoshua <marcinp32@gmail.com>",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue src",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "axios": "^0.19.0",
+    "quasar": "^1.0.0-beta.0",
+    "vue-i18n": "^7.3.3"
+  },
+  "devDependencies": {
+    "@quasar/app": "^1.0.0-beta.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.10.0",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-vue": "^5.0.0"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "last 1 version, not dead, ie >= 11"
+  ]
 }
