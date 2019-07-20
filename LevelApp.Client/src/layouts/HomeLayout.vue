@@ -19,7 +19,7 @@
     </q-page-scroller>
 
     <!-- Go back button -->
-    <q-page-scroller position="bottom-right" :scroll-offset="700" :offset="[18, 18]">
+    <q-page-scroller position="bottom-right" :scroll-offset="0" :offset="[18, 18]">
       <q-btn fab icon="keyboard_arrow_up" color="accent" />
     </q-page-scroller>
   </q-layout>

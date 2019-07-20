@@ -1,4 +1,5 @@
 ﻿using LevelApp.DAL.DataAccess;
+using LevelApp.DAL.Repositories.User;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,9 @@ namespace LevelApp.DAL
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MySqlContext>(x => x.UseMySql(Configuration["ConnectionString:LevelAppDB"]));
+
+            // DI Container
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

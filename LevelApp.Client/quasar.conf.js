@@ -43,12 +43,15 @@ module.exports = function (ctx) {
         'QPageScroller',
         'QPageSticky',
         'QSeparator',
-        'QBtn'
+        'QBtn',
+        'QScrollObserver'
       ],
 
       directives: [
         'Ripple'
       ],
+
+      animations: 'all',
 
       // Quasar plugins
       plugins: [

@@ -1,84 +1,105 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="logo-container bg-primary full-width">
-      <!-- Logo -->
-      <div class="row justify-center">
-        <div>
-          <img class="mt-5 mb-1" alt="LevelApp logo" width="300px" src="~assets/levelapp-logo-full.svg">
+    <full-page ref="fullpage" :options="options" id="fullpage" class="full-width">
+      <!-- Background -->
+      <div id="background" class="background bg-transition fixed full-width full-height" :class="backgroundClass"></div>
+
+      <div class="full-width section">
+        <!-- Logo -->
+        <div class="row justify-center" key="logo">
+          <div>
+            <img class="mb-1" alt="LevelApp logo" width="300px" src="~assets/levelapp-logo-full.svg">
+          </div>
         </div>
-      </div>
-      <!-- Text -->
-      <div class="row justify-center">
-        <div>
-          <q-separator color="white" spaced inset />
-          <div class="text-h5 text-white text-weight-thin mt-1">
-            Learn whatever you want, however you want, whenever you want!
+        <!-- Text -->
+        <div class="row justify-center text-align-center">
+          <div>
+            <q-separator color="white" spaced inset />
+            <div class="text-h5 text-white text-weight-thin mt-1">
+              Learn whatever you want, however you want, whenever you want!
+            </div>
+          </div>
+        </div>
+        <!-- Buttons -->
+        <div class="row justify-center">
+          <div class="mt-2">
+            <q-btn color="white" class="mr-2 btn-fixed-width" size="lg" outline rounded label="Sign up" />
+            <q-btn color="white" class="ml-2 btn-fixed-width" size="lg" outline rounded label="Log in" />
           </div>
         </div>
       </div>
-      <!-- Buttons -->
-      <div class="row justify-center">
-        <div class="mt-2">
-          <q-btn color="white" class="mr-2 btn-fixed-width" size="lg" outline rounded label="Sign up" />
-          <q-btn color="white" class="ml-2 btn-fixed-width" size="lg" outline rounded label="Log in" />
+      <div class="full-width section text-white text-align-center">
+        <div class="row justify-center">
+          <div class="text-h3 mb-1">Learning and teaching new things <strong>your way</strong></div>
+          <div class="text-h5 text-weight-thin mr-1 ml-1 mb-1">LevelApp is all about you - whether you want to share your knowledge or let others teach you.
+            With use of RPG skill trees and achievements, you will soon find out that exchange of knowledge was never so easy and efficient.</div>
+          <div class="text-h5 text-weight-thin mr-1 ml-1 mb-2">Learn, progress, create and share - everything is in reach of your hand, absolutely free.
+          </div>
         </div>
       </div>
-    </div>
-
-    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt ut tellus sed aliquam. Praesent ut elementum tortor. Quisque sed nulla sit amet diam faucibus ultrices. Donec congue porttitor efficitur. Quisque tortor sapien, efficitur eget libero ut, euismod tincidunt nisi. Nullam consequat erat id ipsum lacinia facilisis. Nunc gravida scelerisque purus, vitae aliquet erat aliquam eu. Vivamus vulputate fringilla lectus, eget feugiat arcu lobortis sed. Maecenas vehicula, velit nec maximus aliquam, erat massa suscipit tellus, hendrerit pulvinar magna augue in ligula. Pellentesque non tortor maximus, elementum ipsum vitae, suscipit turpis. Nullam convallis pharetra diam a dignissim. Curabitur dolor odio, molestie sed aliquet eget, facilisis sed lacus. Sed a magna sit amet tortor eleifend egestas. Phasellus vitae nisi id ex accumsan faucibus vel vel ipsum. Donec rhoncus rutrum lectus.
-
-      Mauris feugiat luctus ligula quis pretium. Fusce laoreet mauris sed mauris vulputate tincidunt. Nam rhoncus orci vitae metus convallis, id sodales felis maximus. Duis scelerisque mi sapien, tincidunt interdum lorem tristique eget. Ut commodo sagittis felis, vitae varius risus hendrerit non. Morbi semper urna ut elit luctus tincidunt. Sed tempus commodo sapien. Donec sagittis diam nec elit varius consequat. Proin non lacus urna.
-
-      Aenean vel enim nibh. Ut quis nulla eu sem condimentum bibendum placerat molestie est. Mauris ultrices massa eget lectus sollicitudin, varius mattis magna blandit. Morbi convallis nulla non risus fringilla, a rhoncus lacus ultricies. Vestibulum ut justo tempus urna ornare condimentum vel in ante. Donec eget nibh porta, convallis sem malesuada, dignissim massa. Morbi mollis ex erat, vel molestie urna tristique lobortis. Aenean et tellus tempus, aliquet justo non, cursus lorem. Nam gravida augue at facilisis consequat. Aliquam sagittis, velit blandit dictum pharetra, orci mauris finibus velit, at malesuada tortor orci et mauris. Donec gravida urna ut elit tempus, quis fringilla lorem egestas.
-
-      Etiam nulla lacus, semper sit amet sem ultrices, fermentum gravida quam. Suspendisse potenti. Aenean nec nunc ut enim finibus eleifend vitae non justo. Cras lobortis facilisis nisl, quis viverra sem malesuada vel. Praesent vulputate lacus ac quam pretium, a viverra urna gravida. Suspendisse vulputate turpis nec tristique suscipit. Proin rhoncus mi a tellus dictum, in tristique magna varius. Mauris at malesuada mi. Nulla facilisi. Vestibulum ullamcorper velit eros, porttitor suscipit odio fermentum sit amet.
-
-      Aenean facilisis ex at tincidunt pretium. Praesent tempus convallis fermentum. Vestibulum erat odio, vestibulum eget libero ac, placerat vulputate est. Phasellus blandit bibendum consectetur. Aliquam condimentum, augue id mollis placerat, ante enim eleifend ex, eget sodales est purus ac augue. Ut eu porttitor purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque non hendrerit augue. Nullam ipsum turpis, pellentesque vel consectetur vitae, placerat vel augue. Donec id lectus dignissim libero lobortis facilisis ac vitae magna.
-
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt ut tellus sed aliquam. Praesent ut elementum tortor. Quisque sed nulla sit amet diam faucibus ultrices. Donec congue porttitor efficitur. Quisque tortor sapien, efficitur eget libero ut, euismod tincidunt nisi. Nullam consequat erat id ipsum lacinia facilisis. Nunc gravida scelerisque purus, vitae aliquet erat aliquam eu. Vivamus vulputate fringilla lectus, eget feugiat arcu lobortis sed. Maecenas vehicula, velit nec maximus aliquam, erat massa suscipit tellus, hendrerit pulvinar magna augue in ligula. Pellentesque non tortor maximus, elementum ipsum vitae, suscipit turpis. Nullam convallis pharetra diam a dignissim. Curabitur dolor odio, molestie sed aliquet eget, facilisis sed lacus. Sed a magna sit amet tortor eleifend egestas. Phasellus vitae nisi id ex accumsan faucibus vel vel ipsum. Donec rhoncus rutrum lectus.
-
-      Mauris feugiat luctus ligula quis pretium. Fusce laoreet mauris sed mauris vulputate tincidunt. Nam rhoncus orci vitae metus convallis, id sodales felis maximus. Duis scelerisque mi sapien, tincidunt interdum lorem tristique eget. Ut commodo sagittis felis, vitae varius risus hendrerit non. Morbi semper urna ut elit luctus tincidunt. Sed tempus commodo sapien. Donec sagittis diam nec elit varius consequat. Proin non lacus urna.
-
-      Aenean vel enim nibh. Ut quis nulla eu sem condimentum bibendum placerat molestie est. Mauris ultrices massa eget lectus sollicitudin, varius mattis magna blandit. Morbi convallis nulla non risus fringilla, a rhoncus lacus ultricies. Vestibulum ut justo tempus urna ornare condimentum vel in ante. Donec eget nibh porta, convallis sem malesuada, dignissim massa. Morbi mollis ex erat, vel molestie urna tristique lobortis. Aenean et tellus tempus, aliquet justo non, cursus lorem. Nam gravida augue at facilisis consequat. Aliquam sagittis, velit blandit dictum pharetra, orci mauris finibus velit, at malesuada tortor orci et mauris. Donec gravida urna ut elit tempus, quis fringilla lorem egestas.
-
-      Etiam nulla lacus, semper sit amet sem ultrices, fermentum gravida quam. Suspendisse potenti. Aenean nec nunc ut enim finibus eleifend vitae non justo. Cras lobortis facilisis nisl, quis viverra sem malesuada vel. Praesent vulputate lacus ac quam pretium, a viverra urna gravida. Suspendisse vulputate turpis nec tristique suscipit. Proin rhoncus mi a tellus dictum, in tristique magna varius. Mauris at malesuada mi. Nulla facilisi. Vestibulum ullamcorper velit eros, porttitor suscipit odio fermentum sit amet.
-
-      Aenean facilisis ex at tincidunt pretium. Praesent tempus convallis fermentum. Vestibulum erat odio, vestibulum eget libero ac, placerat vulputate est. Phasellus blandit bibendum consectetur. Aliquam condimentum, augue id mollis placerat, ante enim eleifend ex, eget sodales est purus ac augue. Ut eu porttitor purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque non hendrerit augue. Nullam ipsum turpis, pellentesque vel consectetur vitae, placerat vel augue. Donec id lectus dignissim libero lobortis facilisis ac vitae magna.
-
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt ut tellus sed aliquam. Praesent ut elementum tortor. Quisque sed nulla sit amet diam faucibus ultrices. Donec congue porttitor efficitur. Quisque tortor sapien, efficitur eget libero ut, euismod tincidunt nisi. Nullam consequat erat id ipsum lacinia facilisis. Nunc gravida scelerisque purus, vitae aliquet erat aliquam eu. Vivamus vulputate fringilla lectus, eget feugiat arcu lobortis sed. Maecenas vehicula, velit nec maximus aliquam, erat massa suscipit tellus, hendrerit pulvinar magna augue in ligula. Pellentesque non tortor maximus, elementum ipsum vitae, suscipit turpis. Nullam convallis pharetra diam a dignissim. Curabitur dolor odio, molestie sed aliquet eget, facilisis sed lacus. Sed a magna sit amet tortor eleifend egestas. Phasellus vitae nisi id ex accumsan faucibus vel vel ipsum. Donec rhoncus rutrum lectus.
-
-      Mauris feugiat luctus ligula quis pretium. Fusce laoreet mauris sed mauris vulputate tincidunt. Nam rhoncus orci vitae metus convallis, id sodales felis maximus. Duis scelerisque mi sapien, tincidunt interdum lorem tristique eget. Ut commodo sagittis felis, vitae varius risus hendrerit non. Morbi semper urna ut elit luctus tincidunt. Sed tempus commodo sapien. Donec sagittis diam nec elit varius consequat. Proin non lacus urna.
-
-      Aenean vel enim nibh. Ut quis nulla eu sem condimentum bibendum placerat molestie est. Mauris ultrices massa eget lectus sollicitudin, varius mattis magna blandit. Morbi convallis nulla non risus fringilla, a rhoncus lacus ultricies. Vestibulum ut justo tempus urna ornare condimentum vel in ante. Donec eget nibh porta, convallis sem malesuada, dignissim massa. Morbi mollis ex erat, vel molestie urna tristique lobortis. Aenean et tellus tempus, aliquet justo non, cursus lorem. Nam gravida augue at facilisis consequat. Aliquam sagittis, velit blandit dictum pharetra, orci mauris finibus velit, at malesuada tortor orci et mauris. Donec gravida urna ut elit tempus, quis fringilla lorem egestas.
-
-      Etiam nulla lacus, semper sit amet sem ultrices, fermentum gravida quam. Suspendisse potenti. Aenean nec nunc ut enim finibus eleifend vitae non justo. Cras lobortis facilisis nisl, quis viverra sem malesuada vel. Praesent vulputate lacus ac quam pretium, a viverra urna gravida. Suspendisse vulputate turpis nec tristique suscipit. Proin rhoncus mi a tellus dictum, in tristique magna varius. Mauris at malesuada mi. Nulla facilisi. Vestibulum ullamcorper velit eros, porttitor suscipit odio fermentum sit amet.
-
-      Aenean facilisis ex at tincidunt pretium. Praesent tempus convallis fermentum. Vestibulum erat odio, vestibulum eget libero ac, placerat vulputate est. Phasellus blandit bibendum consectetur. Aliquam condimentum, augue id mollis placerat, ante enim eleifend ex, eget sodales est purus ac augue. Ut eu porttitor purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque non hendrerit augue. Nullam ipsum turpis, pellentesque vel consectetur vitae, placerat vel augue. Donec id lectus dignissim libero lobortis facilisis ac vitae magna.
-
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt ut tellus sed aliquam. Praesent ut elementum tortor. Quisque sed nulla sit amet diam faucibus ultrices. Donec congue porttitor efficitur. Quisque tortor sapien, efficitur eget libero ut, euismod tincidunt nisi. Nullam consequat erat id ipsum lacinia facilisis. Nunc gravida scelerisque purus, vitae aliquet erat aliquam eu. Vivamus vulputate fringilla lectus, eget feugiat arcu lobortis sed. Maecenas vehicula, velit nec maximus aliquam, erat massa suscipit tellus, hendrerit pulvinar magna augue in ligula. Pellentesque non tortor maximus, elementum ipsum vitae, suscipit turpis. Nullam convallis pharetra diam a dignissim. Curabitur dolor odio, molestie sed aliquet eget, facilisis sed lacus. Sed a magna sit amet tortor eleifend egestas. Phasellus vitae nisi id ex accumsan faucibus vel vel ipsum. Donec rhoncus rutrum lectus.
-
-      Mauris feugiat luctus ligula quis pretium. Fusce laoreet mauris sed mauris vulputate tincidunt. Nam rhoncus orci vitae metus convallis, id sodales felis maximus. Duis scelerisque mi sapien, tincidunt interdum lorem tristique eget. Ut commodo sagittis felis, vitae varius risus hendrerit non. Morbi semper urna ut elit luctus tincidunt. Sed tempus commodo sapien. Donec sagittis diam nec elit varius consequat. Proin non lacus urna.
-
-      Aenean vel enim nibh. Ut quis nulla eu sem condimentum bibendum placerat molestie est. Mauris ultrices massa eget lectus sollicitudin, varius mattis magna blandit. Morbi convallis nulla non risus fringilla, a rhoncus lacus ultricies. Vestibulum ut justo tempus urna ornare condimentum vel in ante. Donec eget nibh porta, convallis sem malesuada, dignissim massa. Morbi mollis ex erat, vel molestie urna tristique lobortis. Aenean et tellus tempus, aliquet justo non, cursus lorem. Nam gravida augue at facilisis consequat. Aliquam sagittis, velit blandit dictum pharetra, orci mauris finibus velit, at malesuada tortor orci et mauris. Donec gravida urna ut elit tempus, quis fringilla lorem egestas.
-
-      Etiam nulla lacus, semper sit amet sem ultrices, fermentum gravida quam. Suspendisse potenti. Aenean nec nunc ut enim finibus eleifend vitae non justo. Cras lobortis facilisis nisl, quis viverra sem malesuada vel. Praesent vulputate lacus ac quam pretium, a viverra urna gravida. Suspendisse vulputate turpis nec tristique suscipit. Proin rhoncus mi a tellus dictum, in tristique magna varius. Mauris at malesuada mi. Nulla facilisi. Vestibulum ullamcorper velit eros, porttitor suscipit odio fermentum sit amet.
-
-      Aenean facilisis ex at tincidunt pretium. Praesent tempus convallis fermentum. Vestibulum erat odio, vestibulum eget libero ac, placerat vulputate est. Phasellus blandit bibendum consectetur. Aliquam condimentum, augue id mollis placerat, ante enim eleifend ex, eget sodales est purus ac augue. Ut eu porttitor purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque non hendrerit augue. Nullam ipsum turpis, pellentesque vel consectetur vitae, placerat vel augue. Donec id lectus dignissim libero lobortis facilisis ac vitae magna.</div>
+      <div class="full-width section text-white text-align-center">
+        <div class="row justify-center mt-2">
+          <div class="col-6">
+            <div class="text-h5">Learn</div>
+          </div>
+          <div class="col-6">
+            <div class="text-h5">Create</div>
+          </div>
+        </div>
+      </div>
+    </full-page>
+    <q-page-sticky v-if="isScrolled" position="bottom-right" :offset="[25, 25]">
+      <q-btn fab icon="keyboard_arrow_up" color="primary" @click="$refs.fullpage.api.moveTo(1)" />
+    </q-page-sticky>
   </q-page>
 </template>
 
+<script>
+export default {
+  name: 'PageIndex',
+  sectionBackgroundClasses: {},
+
+  data () {
+    return {
+      options: {
+        navigation: true,
+        onLeave: this.onLeave
+      },
+      backgroundClass: 'bg-primary',
+      isScrolled: false
+    }
+  },
+
+  mounted () {
+    this.sectionBackgroundClasses = {
+      '0': 'bg-primary',
+      '1': 'bg-blue-4',
+      '2': 'bg-purple-5'
+    }
+  },
+
+  methods: {
+    onLeave (origin, destination, direction) {
+      this.backgroundClass = this.sectionBackgroundClasses[destination.index]
+
+      this.isScrolled = destination.index !== 0
+    }
+  }
+}
+</script>
+
 <style>
-  .logo-container {
-    height: 800px;
+  .bg-transition {
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+  }
+
+  .background {
+    z-index: -1
   }
 
   .btn-fixed-width {
     width: 200px;
   }
 </style>
-
-<script>
-export default {
-  name: 'PageIndex'
-}
-</script>
