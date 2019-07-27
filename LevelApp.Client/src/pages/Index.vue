@@ -9,10 +9,10 @@
       <!-- Background -->
       <div
         id="background"
-        class="background bg-transition fixed full-width full-height"
+        class="background bg-transition bg-hex-overlay fixed full-width full-height"
         :class="backgroundClass"
       ></div>
-
+      <div class="bg-hex-overlay fixed full-width full-height"></div>
       <div class="full-width section">
         <!-- Logo -->
         <div class="row justify-center">
@@ -202,7 +202,7 @@
         <div class="row justify-center mb-15">
           <q-btn
             color="white"
-            class="btn-fixed-width"
+            class="btn-fixed-width z-index-100"
             size="lg"
             outline
             rounded
@@ -231,7 +231,19 @@
             </div>
           </div>
         </div>
-        <div class="row bg-white footer-filling"></div>
+        <div class="bg-white footer-filling z-index-100">
+          <div class="row mt-3 mb-1 justify-center">
+            <div class="text-h3 text-weight-thin text-align-center text-black">
+              Find us on social media!
+            </div>
+          </div>
+          <div class="row q-gutter-lg justify-center">
+            <q-btn unelevated round color="indigo" icon="fab fa-facebook-f" />
+            <q-btn unelevated round color="red" icon="fab fa-youtube" />
+            <q-btn unelevated round color="blue" icon="fab fa-linkedin-in" />
+            <q-btn unelevated round color="light-blue" icon="fab fa-twitter" />
+          </div>
+        </div>
       </div>
     </full-page>
     <q-page-sticky v-if="isScrolled" position="bottom-right" :offset="[25, 25]">
@@ -360,6 +372,17 @@ export default {
   animation: move_wave 15s linear infinite;
 }
 
+.bg-hex-overlay {
+  background: url('../assets/landing-page/background.png');
+  -webkit-animation: slide 20s linear infinite;
+  z-index: -1;
+}
+
+@-webkit-keyframes slide {
+  from { background-position: 0 0; }
+  to { background-position: -400px -400px; }
+}
+
 .bg-transition {
   -webkit-transition: background-color 500ms linear;
   -ms-transition: background-color 500ms linear;
@@ -367,7 +390,7 @@ export default {
 }
 
 .background {
-  z-index: -1;
+  z-index: -2;
 }
 
 .btn-fixed-width {
