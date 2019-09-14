@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using LevelApp.DAL.DataAccess;
-using LevelApp.DAL.Models;
+﻿using LevelApp.DAL.DataAccess;
+using LevelApp.DAL.Entities;
 using LevelApp.DAL.Repositories.User;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using Xunit;
 
 namespace LevelApp.DAL.Tests.Repositories
@@ -29,19 +25,19 @@ namespace LevelApp.DAL.Tests.Repositories
         public void AddingUserToTheRepository_Test()
         {
             // Arrange
-            var options = new DbContextOptionsBuilder<MySqlContext>()
+            var options = new DbContextOptionsBuilder<MainContext>()
                 .UseInMemoryDatabase(databaseName: "AddingUserToTheRepository_Test")
                 .Options;
 
             // Act
-            using (var context = new MySqlContext(options))
+            using (var context = new MainContext(options))
             {
                 context.CoreUsers.Add(_testUserEntity);
                 context.SaveChanges();
             }
 
             //Assert
-            using (var context = new MySqlContext(options))
+            using (var context = new MainContext(options))
             {
                 _userRepository = new UserRepository(context);
 

@@ -1,7 +1,13 @@
-﻿using LevelApp.BLL.Services.CoreUser;
+﻿using LevelApp.API.Middleware;
+using LevelApp.BLL.Base;
+using LevelApp.BLL.Base.Executor;
+using LevelApp.DAL.DataAccess;
+using LevelApp.DAL.Repositories.User;
+using LevelApp.DAL.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
@@ -25,8 +31,17 @@ namespace LevelApp.API
             // Swagger service
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info {Title = "LevelApp API", Version = "v1"}); });
 
-            // DI container
-            services.AddTransient<IUserService, UserService>();
+            // Database context service
+            services.AddDbContext<MainContext>(options =>
+                options.UseMySql(Configuration["ConnectionStrings:DevConnection"]));
+
+            // DI container (DAL)
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
+            // DI container (BLL)
+            services.AddTransient<IOperationExecutor, OperationExecutor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +56,9 @@ namespace LevelApp.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
+            // Exception handler
+            app.ConfigureCustomExceptionMiddleware();
 
             app.UseHttpsRedirection();
             app.UseMvc();

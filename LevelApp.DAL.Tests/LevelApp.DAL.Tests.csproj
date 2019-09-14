@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LevelApp.DAL\LevelApp.DAL.csproj" />
+    <Folder Include="Mocks\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Mocks\" />
+    <ProjectReference Include="..\LevelApp.DAL\LevelApp.DAL.csproj" />
   </ItemGroup>
 
 </Project>

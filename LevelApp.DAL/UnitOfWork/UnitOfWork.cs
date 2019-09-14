@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LevelApp.DAL.Repositories.User;
+﻿using LevelApp.DAL.Repositories.User;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace LevelApp.DAL.UnitOfWork
 {
-    public class UnitOfWork: IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private DbContext Context { get; set; }
         public IUserRepository UserRepository { get; }

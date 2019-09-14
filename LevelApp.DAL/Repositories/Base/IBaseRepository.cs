@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
-using LevelApp.DAL.Models.Base;
+using LevelApp.DAL.Entities.Base;
 
 namespace LevelApp.DAL.Repositories.Base
 {
-    public interface IBaseRepository<TEntity, in TKey> where TEntity: Entity<TKey>
+    public interface IBaseRepository<TEntity, in TKey> where TEntity : Entity<TKey>
     {
         IList<TEntity> GetAll();
         Task<IList<TEntity>> GetAllAsync();

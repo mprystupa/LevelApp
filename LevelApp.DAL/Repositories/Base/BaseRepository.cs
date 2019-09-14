@@ -1,11 +1,10 @@
-﻿using System;
+﻿using LevelApp.DAL.Entities.Base;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using LevelApp.DAL.Models.Base;
-using Microsoft.EntityFrameworkCore;
-using Z.EntityFramework.Plus;
 
 namespace LevelApp.DAL.Repositories.Base
 {

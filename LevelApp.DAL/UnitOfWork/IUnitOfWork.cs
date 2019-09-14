@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using LevelApp.DAL.Repositories.User;
 using System.Threading.Tasks;
-using LevelApp.DAL.Repositories.User;
 
 namespace LevelApp.DAL.UnitOfWork
 {

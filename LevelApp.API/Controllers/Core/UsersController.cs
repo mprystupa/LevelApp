@@ -1,36 +1,25 @@
 ﻿using System.Threading.Tasks;
-using LevelApp.BLL.Services.CoreUser;
-using LevelApp.DAL.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using LevelApp.API.Controllers.Base;
+using LevelApp.BLL.Base;
+using LevelApp.BLL.Dto;
+using LevelApp.BLL.Operations.Core.User;
+using LevelApp.DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LevelApp.API.Controllers.Core
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
-        protected IUserService _userService;
-
-        public UsersController(IUserService userService)
+        public UsersController(IOperationExecutor executor) : base(executor)
         {
-            _userService = userService;
         }
 
         [HttpGet]
         [Route("create")]
-        public ActionResult<string> CreateUser()
+        public async Task<ActionResult<int>> CreateUser(UserDto user)
         {
-            var newUser = new CoreUser()
-            {
-                Username = "Test",
-                CreatedBy = 0
-            };
-
-            _userService.Create(newUser);
-
-            return "Test";
+            return await Executor.Execute<AddUserOperation, UserDto, int>(user);
         }
     }
 }
