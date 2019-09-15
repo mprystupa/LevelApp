@@ -69,9 +69,9 @@ namespace LevelApp.DAL.Repositories.Base
             return Entities.FirstOrDefault(predicate);
         }
 
-        public void Insert(TEntity entity)
+        public TKey Insert(TEntity entity)
         {
-            Entities.Add(entity);
+            return Entities.Add(entity).Entity.Id;
         }
 
         public void InsertBatch(IEnumerable<TEntity> entities)
@@ -79,10 +79,10 @@ namespace LevelApp.DAL.Repositories.Base
             Entities.AddRange(entities);
         }
 
-        public void Update(TEntity entity)
+        public TKey Update(TEntity entity)
         {
             Entities.Attach(entity);
-            Entities.Update(entity);
+            return Entities.Update(entity).Entity.Id;
         }
 
         public void UpdateBatch(IEnumerable<TEntity> entities)
@@ -93,13 +93,15 @@ namespace LevelApp.DAL.Repositories.Base
             Entities.UpdateRange(enumerable);
         }
 
-        public void Delete(TEntity entity)
+        public TKey Delete(TEntity entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
             {
                 Entities.Attach(entity);
             }
             Entities.Remove(entity);
+
+            return entity.Id;
         }
 
         public void DeleteBatch(IEnumerable<TEntity> entities)

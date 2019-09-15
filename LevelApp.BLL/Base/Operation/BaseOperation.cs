@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LevelApp.Crosscutting.Exceptions;
 using LevelApp.DAL.UnitOfWork;
 
 namespace LevelApp.BLL.Base.Operation
@@ -25,9 +26,14 @@ namespace LevelApp.BLL.Base.Operation
             Parameter = parameter;
         }
 
-        public virtual Task<bool> Validate()
+        public virtual Task Validate()
         {
-            return Task.FromResult(!Errors.Any());
+            if (!Errors.Any())
+            {
+                return Task.CompletedTask;
+            }
+
+            throw new BusinessValidationException(Errors.Last());
         }
 
         public virtual Task ExecuteValidated()

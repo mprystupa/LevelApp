@@ -8,7 +8,7 @@ using LevelApp.DAL.Entities.Base;
 
 namespace LevelApp.DAL.Repositories.Base
 {
-    public interface IBaseRepository<TEntity, in TKey> where TEntity : Entity<TKey>
+    public interface IBaseRepository<TEntity, TKey> where TEntity : Entity<TKey>
     {
         IList<TEntity> GetAll();
         Task<IList<TEntity>> GetAllAsync();
@@ -18,11 +18,11 @@ namespace LevelApp.DAL.Repositories.Base
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
         Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
-        void Insert(TEntity entity);
+        TKey Insert(TEntity entity);
         void InsertBatch(IEnumerable<TEntity> entities);
-        void Update(TEntity entity);
+        TKey Update(TEntity entity);
         void UpdateBatch(IEnumerable<TEntity> entities);
-        void Delete(TEntity entity);
+        TKey Delete(TEntity entity);
         void DeleteBatch(IEnumerable<TEntity> entities);
         void Save();
         void SaveAsync();

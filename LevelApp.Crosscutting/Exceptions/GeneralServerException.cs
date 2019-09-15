@@ -1,6 +1,6 @@
-﻿using System;
+﻿﻿using System;
 
-namespace LevelApp.BLL.Exceptions
+namespace LevelApp.Crosscutting.Exceptions
 {
     public class GeneralServerException : Exception
     {

@@ -15,9 +15,9 @@ namespace LevelApp.API.Controllers.Core
         {
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<int>> CreateUser(UserDto user)
+        public async Task<ActionResult<int>> CreateUser([FromBody]UserDto user)
         {
             return await Executor.Execute<AddUserOperation, UserDto, int>(user);
         }

@@ -10,7 +10,7 @@ namespace LevelApp.API.Controllers.Base
     [ApiController]
     public class BaseController : ControllerBase
     {
-        protected IOperationExecutor Executor { get; set; }
+        protected IOperationExecutor Executor { get; }
 
         public BaseController(IOperationExecutor executor)
         {

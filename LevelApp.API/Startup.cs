@@ -32,10 +32,11 @@ namespace LevelApp.API
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info {Title = "LevelApp API", Version = "v1"}); });
 
             // Database context service
-            services.AddDbContext<MainContext>(options =>
+            services.AddDbContext<LevelAppContext>(options =>
                 options.UseMySql(Configuration["ConnectionStrings:DevConnection"]));
 
             // DI container (DAL)
+            services.AddTransient<DbContext, LevelAppContext>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepository, UserRepository>();
 

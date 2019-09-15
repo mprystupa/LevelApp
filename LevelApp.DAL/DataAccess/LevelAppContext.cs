@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LevelApp.DAL.DataAccess
 {
-    public class MainContext : DbContext
+    public class LevelAppContext : DbContext
     {
-        public MainContext(DbContextOptions<MainContext> options)
+        public LevelAppContext(DbContextOptions<LevelAppContext> options)
             : base(options)
         {
         }

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using LevelApp.Crosscutting.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -35,7 +35,7 @@ namespace LevelApp.API.Middleware
             var message = "Something went wrong.";
             var details = exception.Message;
 
-            if (exception is ValidationException)
+            if (exception is BusinessValidationException)
             {
                 message = exception.Message;
             }

@@ -14,7 +14,7 @@ namespace LevelApp.BLL.Base
         List<string> Errors { get; set; }
 
         void SetupOperation(IUnitOfWork unitOfWork, TParameter parameter);
-        Task<bool> Validate();
+        Task Validate();
         Task ExecuteValidated();
     }
 }

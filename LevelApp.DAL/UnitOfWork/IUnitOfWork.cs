@@ -5,8 +5,7 @@ namespace LevelApp.DAL.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        IUserRepository UserRepository { get; }
-
+        TRepository GetRepository<TRepository>();
         void Save();
         Task SaveAsync();
         void Dispose();

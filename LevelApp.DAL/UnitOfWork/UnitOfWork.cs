@@ -1,20 +1,28 @@
 ﻿using LevelApp.DAL.Repositories.User;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Data.Entity.Core;
 using System.Threading.Tasks;
+using LevelApp.DAL.Repositories.Base;
 
 namespace LevelApp.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private DbContext Context { get; set; }
-        public IUserRepository UserRepository { get; }
+        private Dictionary<Type, object> Repositories { get; set; }
 
         public UnitOfWork(DbContext context)
         {
             Context = context;
+            Repositories = new Dictionary<Type, object>();
+            InitializeRepositories();
+        }
 
-            UserRepository = new UserRepository(Context);
+        public TRepository GetRepository<TRepository>()
+        {
+            return (TRepository) Repositories[typeof(TRepository)];
         }
 
         public void Save()
@@ -43,6 +51,11 @@ namespace LevelApp.DAL.UnitOfWork
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private void InitializeRepositories()
+        {
+            Repositories.Add(typeof(IUserRepository), new UserRepository(Context));
         }
     }
 }

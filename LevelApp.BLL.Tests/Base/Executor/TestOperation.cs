@@ -1,26 +1,32 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.DAL.UnitOfWork;
 
 namespace LevelApp.BLL.Tests.Base.Executor
 {
+    [ExcludeFromCodeCoverage]
     public class TestOperation : BaseOperation<int, int>
     {
-        public override async Task<bool> Validate()
+        public override async Task Validate()
         {
-            if (Parameter == 1)
+            if (Parameter == 2)
             {
                 Errors.Add("Validation failed.");
             }
             
-            return await base.Validate();
+            await base.Validate();
         }
 
         public override async Task ExecuteValidated()
         {
-            if (Parameter == 5)
+            if (Parameter == 1)
             {
                 OperationResult = Parameter;
+            }
+            else if (Parameter == 3)
+            {
+                UnitOfWork.Save();
             }
             
             await base.ExecuteValidated();
