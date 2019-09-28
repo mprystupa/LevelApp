@@ -38,3 +38,6 @@ msbuild.wrn
 
 # SonarQube
 .sonarqube
+
+# Coverlet code coverage report
+coverage.opencover.xml
