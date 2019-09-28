@@ -21,7 +21,7 @@
               class="mb-1"
               alt="LevelApp logo"
               width="300px"
-              src="../assets/levelapp-logo-full.svg"
+              src="../../assets/levelapp-logo-full.svg"
             />
           </div>
         </div>
@@ -52,6 +52,7 @@
               outline
               rounded
               label="Log in"
+              @click="routeTo('login')"
             />
           </div>
         </div>
@@ -77,7 +78,7 @@
               class="block m-auto"
               alt="Select icon"
               width="150px"
-              src="../assets/landing-page/panel-1-pic-0.svg"
+              src="../../assets/landing-page/panel-1-pic-0.svg"
             />
           </div>
           <div class="col-7 self-center">
@@ -97,7 +98,7 @@
               class="block m-auto"
               alt="Learn icon"
               width="150px"
-              src="../assets/landing-page/panel-1-pic-1.svg"
+              src="../../assets/landing-page/panel-1-pic-1.svg"
             />
           </div>
           <div class="col-7 self-center">
@@ -134,7 +135,7 @@
               class="block m-auto"
               alt="Create icon"
               width="150px"
-              src="../assets/landing-page/panel-1-pic-2.svg"
+              src="../../assets/landing-page/panel-1-pic-2.svg"
             />
           </div>
         </div>
@@ -155,7 +156,7 @@
               class="block m-auto"
               alt="Share icon"
               width="150px"
-              src="../assets/landing-page/panel-1-pic-3.svg"
+              src="../../assets/landing-page/panel-1-pic-3.svg"
             />
           </div>
         </div>
@@ -167,7 +168,7 @@
               class="mb-3"
               alt="Multiplatform logo"
               width="800px"
-              src="../assets/landing-page/panel-5-pic-0.svg"
+              src="../../assets/landing-page/panel-5-pic-0.svg"
             />
           </div>
         </div>
@@ -195,7 +196,9 @@
           </div>
         </div>
         <div class="row justify-center">
-          <div class="text-h6 mr-3 ml-3 mb-2 text-weight-thin text-align-center">
+          <div
+            class="text-h6 mr-3 ml-3 mb-2 text-weight-thin text-align-center"
+          >
             You can make your account right now and completely for free.
           </div>
         </div>
@@ -289,6 +292,9 @@ export default {
       this.backgroundClass = this.sectionBackgroundClasses[destination.index];
 
       this.isScrolled = destination.index !== 0;
+    },
+    routeTo(route) {
+      this.$router.push(route);
     }
   }
 };
@@ -373,14 +379,18 @@ export default {
 }
 
 .bg-hex-overlay {
-  background: url('../assets/landing-page/background.png');
+  background: url("../../assets/landing-page/background.png");
   -webkit-animation: slide 20s linear infinite;
   z-index: -1;
 }
 
 @-webkit-keyframes slide {
-  from { background-position: 0 0; }
-  to { background-position: -400px -400px; }
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -400px -400px;
+  }
 }
 
 .bg-transition {

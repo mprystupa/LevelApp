@@ -20,7 +20,7 @@ namespace LevelApp.BLL.Base.Executor
         public async Task<TResult> Execute<TOperation, TParameter, TResult>(TParameter parameter) where TOperation : IBaseOperation<TParameter, TResult>
         {
             // Setup operation instance
-            var operation = GetOperationInstance<TOperation, TParameter>(parameter);
+            var operation = GetOperationInstance<TOperation>();
             operation.SetupOperation(_unitOfWork, parameter);
 
             // Operation pipeline
@@ -31,7 +31,7 @@ namespace LevelApp.BLL.Base.Executor
                 await operation.ExecuteValidated();
                 return operation.OperationResult;
             }
-            catch (BusinessValidationException ex)
+            catch (BusinessValidationException)
             {
                 throw;
             }
@@ -41,7 +41,7 @@ namespace LevelApp.BLL.Base.Executor
             }
         }
 
-        private TOperation GetOperationInstance<TOperation, TParameter>(TParameter operationParameter)
+        private static TOperation GetOperationInstance<TOperation>()
         {
             return Activator.CreateInstance<TOperation>();
         }

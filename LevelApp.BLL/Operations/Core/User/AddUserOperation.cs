@@ -20,7 +20,7 @@ namespace LevelApp.BLL.Operations.Core.User
 
         public override async Task ExecuteValidated()
         {
-            var newUser = new CoreUser()
+            var newUser = new DAL.Entities.User()
             {
 
             };

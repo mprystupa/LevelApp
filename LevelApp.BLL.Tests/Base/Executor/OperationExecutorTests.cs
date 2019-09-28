@@ -41,7 +41,7 @@ namespace LevelApp.BLL.Tests.Base.Executor
         }
 
         [Fact]
-        public async Task Operation_Execute_Should_Throw_Business_Validation_Exception_On_Validation_Error()
+        public void Operation_Execute_Should_Throw_Business_Validation_Exception_On_Validation_Error()
         {
             // Arrange
             const int operationParameter = 2;
@@ -54,7 +54,7 @@ namespace LevelApp.BLL.Tests.Base.Executor
         }
 
         [Fact]
-        public async Task Operation_Execute_Should_Throw_General_Server_Exception_On_Server_Error()
+        public void Operation_Execute_Should_Throw_General_Server_Exception_On_Server_Error()
         {
             // Arrange
             const int operationParameter = 3;

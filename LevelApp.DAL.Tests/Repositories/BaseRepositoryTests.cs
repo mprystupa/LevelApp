@@ -15,7 +15,7 @@ namespace LevelApp.DAL.Tests.Repositories
     [ExcludeFromCodeCoverage]
     public class BaseRepositoryTests : IClassFixture<ContextFixture>
     {
-        private ContextFixture _fixture;
+        private readonly ContextFixture _fixture;
 
         public BaseRepositoryTests(ContextFixture fixture)
         {
@@ -23,7 +23,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task GetAll_Method_Should_Return_All_Entities_In_Set()
+        public void GetAll_Method_Should_Return_All_Entities_In_Set()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
@@ -51,7 +51,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task Get_Method_Should_Return_Entities_By_Id()
+        public void Get_Method_Should_Return_Entities_By_Id()
         {
             // Arrange
             var entityId = 1;
@@ -65,7 +65,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task Get_Method_Should_Return_Entities_By_Expression()
+        public void Get_Method_Should_Return_Entities_By_Expression()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
@@ -105,7 +105,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task GetDetail_Method_Should_Return_Entity()
+        public void GetDetail_Method_Should_Return_Entity()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
@@ -221,7 +221,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
 
         [Fact]
-        public async Task Delete_Should_Delete_Entity_And_Return_Id()
+        public void Delete_Should_Delete_Entity_And_Return_Id()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
@@ -242,7 +242,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task Delete_Should_Delete_Not_Attached_Entity()
+        public void Delete_Should_Delete_Not_Attached_Entity()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
@@ -264,7 +264,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task DeleteBatch_Should_Delete_Entities()
+        public void DeleteBatch_Should_Delete_Entities()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
@@ -296,7 +296,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
 
         [Fact]
-        public async Task Save_Should_Save_Changes_In_Context()
+        public void Save_Should_Save_Changes_In_Context()
         {
             // Arrange
             var mockContext = new Mock<DbContext>();
@@ -310,7 +310,7 @@ namespace LevelApp.DAL.Tests.Repositories
         }
         
         [Fact]
-        public async Task SaveAsync_Should_Save_Changes_In_Context()
+        public void SaveAsync_Should_Save_Changes_In_Context()
         {
             // Arrange
             var mockContext = new Mock<DbContext>();

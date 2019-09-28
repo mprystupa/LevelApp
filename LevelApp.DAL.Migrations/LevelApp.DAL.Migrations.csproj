@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <RootNamespace>LevelApp.BLL.Migrations</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="dbup" Version="4.2.0" />
+      <PackageReference Include="dbup-mysql" Version="4.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Scripts\18.09.2019 16_27 AddCoreUserTable.sql" />
+      <EmbeddedResource Include="Scripts\18.09.2019 16_27 AddCoreUserTable.sql" />
+    </ItemGroup>
+
+</Project>

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using LevelApp.DAL.DataAccess;
 using LevelApp.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,15 +31,15 @@ namespace LevelApp.DAL.Tests
 
         private void SeedCoreUsers(LevelAppContext context)
         {
-            var testUser1 = new CoreUser()
+            var testUser1 = new User()
             {
                 Id = 1,
                 Username = "Test_User_1",
-                Password = "Test_Password_1",
+                PasswordHash = "Test_Password_1",
                 Token = "Test_Token_1"
             };
 
-            context.CoreUsers.Add(testUser1);
+            context.User.Add(testUser1);
         }
 
     }

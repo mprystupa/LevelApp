@@ -5,6 +5,6 @@ namespace LevelApp.BLL.Dto
     [ExcludeFromCodeCoverage]
     public class BaseDto
     {
-        public int Id;
+        public int Id { get; set; }
     }
 }

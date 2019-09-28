@@ -3,7 +3,7 @@ using LevelApp.DAL.Repositories.Base;
 
 namespace LevelApp.DAL.Repositories.User
 {
-    public interface IUserRepository : IBaseRepository<CoreUser, int>
+    public interface IUserRepository : IBaseRepository<Entities.User, int>
     {
     }
 }

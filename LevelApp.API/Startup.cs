@@ -1,7 +1,7 @@
 ﻿using LevelApp.API.Middleware;
 using LevelApp.BLL.Base;
 using LevelApp.BLL.Base.Executor;
-using LevelApp.DAL.DataAccess;
+using LevelApp.DAL.Entities;
 using LevelApp.DAL.Repositories.User;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.AspNetCore.Builder;

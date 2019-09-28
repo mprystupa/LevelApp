@@ -13,8 +13,8 @@ namespace LevelApp.DAL.Entities.Base
         public DateTime? DateCreatedUtc { get; set; }
         public DateTime? DateModifiedUtc { get; set; }
         public DateTime? DateDeletedUtc { get; set; }
-        public long CreatedBy { get; set; }
-        public long? ModifiedBy { get; set; }
-        public long? DeletedBy { get; set; }
+        public int CreatedBy { get; set; }
+        public int? ModifiedBy { get; set; }
+        public int? DeletedBy { get; set; }
     }
 }

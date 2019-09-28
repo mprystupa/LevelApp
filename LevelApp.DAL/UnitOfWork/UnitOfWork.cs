@@ -8,7 +8,7 @@ using LevelApp.DAL.Repositories.Base;
 
 namespace LevelApp.DAL.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public sealed class UnitOfWork : IUnitOfWork
     {
         private DbContext Context { get; set; }
         private Dictionary<Type, object> Repositories { get; set; }
@@ -37,7 +37,7 @@ namespace LevelApp.DAL.UnitOfWork
 
         private bool _disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed && disposing)
             {
