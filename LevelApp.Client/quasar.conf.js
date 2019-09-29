@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'vue-fullpage'
     ],
 
     css: [
@@ -44,11 +45,17 @@ module.exports = function (ctx) {
         'QPageSticky',
         'QSeparator',
         'QBtn',
-        'QScrollObserver'
+        'QScrollObserver',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QInput',
+        'QDialog'
       ],
 
       directives: [
-        'Ripple'
+        'Ripple',
+        'ClosePopup'
       ],
 
       animations: 'all',

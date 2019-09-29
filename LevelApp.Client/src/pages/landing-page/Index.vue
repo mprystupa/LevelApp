@@ -6,23 +6,18 @@
       id="fullpage"
       class="full-width"
     >
-      <!-- Background -->
-      <div
-        id="background"
-        class="background bg-transition bg-hex-overlay fixed full-width full-height"
-        :class="backgroundClass"
-      ></div>
-      <div class="bg-hex-overlay fixed full-width full-height"></div>
       <div class="full-width section">
         <!-- Logo -->
         <div class="row justify-center">
           <div>
-            <img
-              class="mb-1"
-              alt="LevelApp logo"
-              width="300px"
-              src="../../assets/levelapp-logo-full.svg"
-            />
+            <transition appear enter-active-class="bounceIn">
+              <img
+                class="mb-1"
+                alt="LevelApp logo"
+                width="300px"
+                src="../../assets/levelapp-logo-full.svg"
+              />
+            </transition>
           </div>
         </div>
         <!-- Text -->
@@ -52,7 +47,7 @@
               outline
               rounded
               label="Log in"
-              @click="routeTo('login')"
+              @click="showLoginDialog"
             />
           </div>
         </div>
@@ -210,6 +205,7 @@
             outline
             rounded
             label="Sign up"
+            @click="showLoginDialog"
           />
         </div>
         <div class="row justify-center">
@@ -249,6 +245,10 @@
         </div>
       </div>
     </full-page>
+
+    <!-- Login component -->
+    <login :is-visible="isLoginDialogVisible" @hide="onLoginDialogHide" />
+
     <q-page-sticky v-if="isScrolled" position="bottom-right" :offset="[25, 25]">
       <q-btn
         fab
@@ -261,8 +261,10 @@
 </template>
 
 <script>
+import Login from "../login-page/Login";
 export default {
   name: "PageIndex",
+  components: { Login },
   sectionBackgroundClasses: {},
 
   data() {
@@ -272,7 +274,8 @@ export default {
         onLeave: this.onLeave
       },
       backgroundClass: "bg-primary",
-      isScrolled: false
+      isScrolled: false,
+      isLoginDialogVisible: false
     };
   },
 
@@ -290,11 +293,20 @@ export default {
   methods: {
     onLeave(origin, destination, direction) {
       this.backgroundClass = this.sectionBackgroundClasses[destination.index];
-
+      this.emitBackgroundClassChangeEvent(this.backgroundClass);
       this.isScrolled = destination.index !== 0;
+    },
+    emitBackgroundClassChangeEvent(backgroundClass) {
+      this.$emit("backgroundClassChange", backgroundClass);
     },
     routeTo(route) {
       this.$router.push(route);
+    },
+    showLoginDialog() {
+      this.isLoginDialogVisible = true;
+    },
+    onLoginDialogHide() {
+      this.isLoginDialogVisible = false;
     }
   }
 };
@@ -376,31 +388,6 @@ export default {
 }
 .waveAnimation .waveBottom {
   animation: move_wave 15s linear infinite;
-}
-
-.bg-hex-overlay {
-  background: url("../../assets/landing-page/background.png");
-  -webkit-animation: slide 20s linear infinite;
-  z-index: -1;
-}
-
-@-webkit-keyframes slide {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -400px -400px;
-  }
-}
-
-.bg-transition {
-  -webkit-transition: background-color 500ms linear;
-  -ms-transition: background-color 500ms linear;
-  transition: background-color 500ms linear;
-}
-
-.background {
-  z-index: -2;
 }
 
 .btn-fixed-width {
