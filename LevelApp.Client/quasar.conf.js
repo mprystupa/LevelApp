@@ -50,7 +50,10 @@ module.exports = function (ctx) {
         'QCardSection',
         'QCardActions',
         'QInput',
-        'QDialog'
+        'QDialog',
+        'QStepper',
+        'QStep',
+        'QStepperNavigation'
       ],
 
       directives: [

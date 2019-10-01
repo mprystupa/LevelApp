@@ -39,6 +39,7 @@
               outline
               rounded
               label="Sign up"
+              @click="showSignUpDialog"
             />
             <q-btn
               color="white"
@@ -247,7 +248,16 @@
     </full-page>
 
     <!-- Login component -->
-    <login :is-visible="isLoginDialogVisible" @hide="onLoginDialogHide" />
+    <login
+      :is-visible="isLoginDialogVisible"
+      @visibilityChange="isLoginDialogVisible = $event"
+    />
+
+    <!-- SignUp component -->
+    <sign-up
+      :is-visible="isSignUpDialogVisible"
+      @visibilityChange="isSignUpDialogVisible = $event"
+    />
 
     <q-page-sticky v-if="isScrolled" position="bottom-right" :offset="[25, 25]">
       <q-btn
@@ -261,10 +271,11 @@
 </template>
 
 <script>
-import Login from "../login-page/Login";
+import Login from "./login-modal/Login";
+import SignUp from "./signup-modal/SignUp";
 export default {
   name: "PageIndex",
-  components: { Login },
+  components: { SignUp, Login },
   sectionBackgroundClasses: {},
 
   data() {
@@ -275,7 +286,8 @@ export default {
       },
       backgroundClass: "bg-primary",
       isScrolled: false,
-      isLoginDialogVisible: false
+      isLoginDialogVisible: false,
+      isSignUpDialogVisible: false
     };
   },
 
@@ -305,8 +317,8 @@ export default {
     showLoginDialog() {
       this.isLoginDialogVisible = true;
     },
-    onLoginDialogHide() {
-      this.isLoginDialogVisible = false;
+    showSignUpDialog() {
+      this.isSignUpDialogVisible = true;
     }
   }
 };
