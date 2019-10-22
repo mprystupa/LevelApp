@@ -11,7 +11,7 @@ using Xunit;
 namespace LevelApp.DAL.Tests.UnitOfWork
 {
     [ExcludeFromCodeCoverage]
-    public class UnitOfWorkTests : BaseDALTest
+    public class UnitOfWorkTests
     {
         [Fact]
         public void UnitOfWork_Save_Should_Save_Changes_In_Context()

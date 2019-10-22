@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using LevelApp.DAL.Models.Base.Interfaces;
 
-namespace LevelApp.DAL.Entities.Base
+namespace LevelApp.DAL.Models.Base
 {
     public class Entity<TKey> : IAuditable
     {

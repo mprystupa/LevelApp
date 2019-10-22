@@ -13,7 +13,12 @@
 
     <ItemGroup>
       <None Remove="Scripts\18.09.2019 16_27 AddCoreUserTable.sql" />
-      <EmbeddedResource Include="Scripts\18.09.2019 16_27 AddCoreUserTable.sql" />
+      <None Remove="Scripts\06.10.2019 12_20 AlterCoreUserTable.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Scripts\2019.10.12 18_30 AddSaltToCoreUserTable.sql" />
+      <EmbeddedResource Include="Scripts\2019.10.12 18_30 AddSaltToCoreUserTable.sql" />
     </ItemGroup>
 
 </Project>

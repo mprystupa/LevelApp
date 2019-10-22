@@ -1,0 +1,13 @@
+﻿namespace LevelApp.API.Routes
+{
+    public class CoreRoutes : BaseRoutes
+    {
+        
+    }
+
+    public class UserRoutes : CoreRoutes
+    {
+        public const string Login = "login";
+        public const string Register = "register";
+    }
+}

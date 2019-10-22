@@ -4,8 +4,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using LevelApp.DAL.Entities.Base;
+using LevelApp.Crosscutting.Exceptions;
+using LevelApp.DAL.Models.Base;
 using LevelApp.DAL.Repositories.Base;
+using LevelApp.DAL.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
@@ -20,63 +22,116 @@ namespace LevelApp.DAL.Tests.Repositories
         public BaseRepositoryTests(ContextFixture fixture)
         {
             _fixture = fixture;
+            _fixture.ResetContext();
         }
-        
+
         [Fact]
         public void GetAll_Method_Should_Return_All_Entities_In_Set()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
-            
+
             // Act
             var result = repository.GetAll();
-            
+
             // Assert
             Assert.NotNull(result);
             Assert.NotEmpty(result);
         }
-        
+
         [Fact]
         public async Task GetAllAsync_Method_Should_Return_All_Entities_In_Set()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
-            
+
             // Act
             var result = await repository.GetAllAsync();
-            
+
             // Assert
             Assert.NotNull(result);
             Assert.NotEmpty(result);
         }
-        
+
         [Fact]
         public void Get_Method_Should_Return_Entities_By_Id()
         {
             // Arrange
             var entityId = 1;
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
-            
+
             // Act
             var result = repository.Get(entityId);
-            
+
             // Assert
             Assert.NotNull(result);
         }
-        
+
         [Fact]
         public void Get_Method_Should_Return_Entities_By_Expression()
         {
             // Arrange
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
-            
+
             // Act
             var result = repository.Get(x => x.Id == 1);
-            
+
+            // Assert
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Get_Detail_Method_Should_Return_Entity_By_Expression()
+        {
+            // Arrange
+            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
+
+            // Act
+            var result = repository.GetDetail(x => x.Id == 1);
+
             // Assert
             Assert.NotNull(result);
         }
         
+        [Fact]
+        public async Task Get_Detail_Async_Method_Should_Return_Entity_By_Expression()
+        {
+            // Arrange
+            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
+
+            // Act
+            var result = await repository.GetDetailAsync(x => x.Id == 1);
+
+            // Assert
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Get_Detail_Method_Should_Throw_Exception_On_Null()
+        {
+            // Arrange
+            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
+            
+            // Act
+            void Act() => repository.GetDetail(x => x.Id == 99);
+
+            // Assert
+            Assert.Throws<NotFoundException>((Action) Act);
+        }
+        
+        [Fact]
+        public async Task Get_Detail_Async_Method_Should_Throw_Exception_On_Null()
+        {
+            // Arrange
+            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
+            
+            // Act
+            async Task Act() => await repository.GetDetailAsync(x => x.Id == 99);
+
+            // Assert
+            await Assert.ThrowsAsync<NotFoundException>(Act);
+        }
+
         [Fact]
         public async Task GetAsync_Method_Should_Return_Entities_By_Id()
         {
@@ -103,20 +158,7 @@ namespace LevelApp.DAL.Tests.Repositories
             // Assert
             Assert.NotNull(result);
         }
-        
-        [Fact]
-        public void GetDetail_Method_Should_Return_Entity()
-        {
-            // Arrange
-            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
-            
-            // Act
-            var result = repository.GetDetail(x => x.Id == 1);
-            
-            // Assert
-            Assert.NotNull(result);
-        }
-        
+
         [Fact]
         public async Task Insert_Should_Insert_Entity_Into_Context_And_Return_Id()
         {
@@ -227,13 +269,15 @@ namespace LevelApp.DAL.Tests.Repositories
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
             var entityToDelete = new TestEntity()
             {
-                Id = 77
+                Id = 3
             };
 
             _fixture.Context.Add(entityToDelete);
+            repository.Save();
             
             // Act
             var result = repository.Delete(entityToDelete);
+            repository.Save();
             var removedEntity = _fixture.Context.TestEntities.FirstOrDefault(x => x.Id == entityToDelete.Id);
 
             // Assert
@@ -248,14 +292,16 @@ namespace LevelApp.DAL.Tests.Repositories
             var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
             var entityToDelete = new TestEntity()
             {
-                Id = 77
+                Id = 3
             };
 
             _fixture.Context.Add(entityToDelete);
+            repository.Save();
             _fixture.Context.Entry(entityToDelete).State = EntityState.Detached;
 
             // Act
             var result = repository.Delete(entityToDelete);
+            repository.Save();
             var removedEntity = _fixture.Context.TestEntities.FirstOrDefault(x => x.Id == entityToDelete.Id);
 
             // Assert
@@ -322,43 +368,33 @@ namespace LevelApp.DAL.Tests.Repositories
             // Assert
             mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         }
-    }
 
-    public class ContextFixture : IDisposable
-    {
-        public TestContext Context { get; private set; }
-        public ContextFixture()
+        [Fact]
+        public void CheckIfExists_Should_Return_True_When_Entity_Exists()
         {
-            var context = CreateMockContext();
-            context.TestEntities.Add(new TestEntity()
-            {
-                Id = 1,
-                TestField1 = 2,
-                TestField2 = "Test"
-            });
-            context.TestEntities.Add(new TestEntity()
-            {
-                Id = 2,
-                TestField1 = 2,
-                TestField2 = "Test"
-            });
-            context.SaveChanges();
+            // Arrange
+            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
+            var entityId = 1;
 
-            Context = context;
-        }
-        
-        public void Dispose()
-        {
-            Context.Dispose();
-        }
-        
-        private TestContext CreateMockContext()
-        {
-            var options = new DbContextOptionsBuilder<TestContext>()
-                .UseInMemoryDatabase(databaseName: "Testing_Database")
-                .Options;
+            // Act
+            var result = repository.CheckIfExists(x => x.Id == entityId);
             
-            return new TestContext(options);
+            // Assert
+            Assert.True(result);
+        }
+        
+        [Fact]
+        public async Task CheckIfExists_Async_Should_Return_True_When_Entity_Exists()
+        {
+            // Arrange
+            var repository = new BaseRepository<TestEntity, int>(_fixture.Context);
+            var entityId = 1;
+
+            // Act
+            var result = await repository.CheckIfExistsAsync(x => x.Id == entityId);
+            
+            // Assert
+            Assert.True(result);
         }
     }
 

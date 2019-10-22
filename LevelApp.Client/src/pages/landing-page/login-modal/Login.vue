@@ -13,7 +13,9 @@
               />
             </div>
 
-            <div class="text-subtitle1 text-white text-center flex-align-self-end p-2">
+            <div
+              class="text-subtitle1 text-white text-center flex-align-self-end p-2"
+            >
               Nice to see you again!
             </div>
           </div>
@@ -64,7 +66,7 @@
 
               <div class="text-subtitle1 text-center">
                 Don't have an account yet?
-                <a class="text-primary text-no-underline text-bold" href="/"
+                <a class="text-primary text-no-underline text-bold" href="javascript:void(0);" @click="onSignUpClick"
                   >Sign up!</a
                 >
               </div>
@@ -115,6 +117,11 @@ export default {
     },
     isVisible(val) {
       this.isVisibleModel = val;
+    }
+  },
+  methods: {
+    onSignUpClick() {
+      this.$emit("signUpClicked");
     }
   }
 };

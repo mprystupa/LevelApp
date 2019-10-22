@@ -39,7 +39,7 @@
               outline
               rounded
               label="Sign up"
-              @click="showSignUpDialog"
+              @click="onSignUpClick"
             />
             <q-btn
               color="white"
@@ -48,7 +48,7 @@
               outline
               rounded
               label="Log in"
-              @click="showLoginDialog"
+              @click="onLoginClick"
             />
           </div>
         </div>
@@ -206,7 +206,7 @@
             outline
             rounded
             label="Sign up"
-            @click="showLoginDialog"
+            @click="onLoginClick"
           />
         </div>
         <div class="row justify-center">
@@ -251,12 +251,14 @@
     <login
       :is-visible="isLoginDialogVisible"
       @visibilityChange="isLoginDialogVisible = $event"
+      @signUpClicked="onSignUpClick"
     />
 
     <!-- SignUp component -->
     <sign-up
       :is-visible="isSignUpDialogVisible"
       @visibilityChange="isSignUpDialogVisible = $event"
+      @loginClicked="onLoginClick"
     />
 
     <q-page-sticky v-if="isScrolled" position="bottom-right" :offset="[25, 25]">
@@ -273,6 +275,9 @@
 <script>
 import Login from "./login-modal/Login";
 import SignUp from "./signup-modal/SignUp";
+import { ServiceFactory } from "../../services/ServiceFactory";
+const UsersService = ServiceFactory.get('users');
+
 export default {
   name: "PageIndex",
   components: { SignUp, Login },
@@ -282,7 +287,8 @@ export default {
     return {
       options: {
         navigation: true,
-        onLeave: this.onLeave
+        onLeave: this.onLeave,
+        licenseKey: "iTq67SN$c3"
       },
       backgroundClass: "bg-primary",
       isScrolled: false,
@@ -298,7 +304,7 @@ export default {
       "2": "bg-blue-6",
       "3": "bg-indigo-6",
       "4": "bg-deep-purple-6",
-      "5": "bg-red-8"
+      "5": "bg-pink-8"
     };
   },
 
@@ -308,17 +314,19 @@ export default {
       this.emitBackgroundClassChangeEvent(this.backgroundClass);
       this.isScrolled = destination.index !== 0;
     },
+    onLoginClick() {
+      this.isSignUpDialogVisible = false;
+      this.isLoginDialogVisible = true;
+    },
+    onSignUpClick() {
+      this.isLoginDialogVisible = false;
+      this.isSignUpDialogVisible = true;
+    },
     emitBackgroundClassChangeEvent(backgroundClass) {
       this.$emit("backgroundClassChange", backgroundClass);
     },
     routeTo(route) {
       this.$router.push(route);
-    },
-    showLoginDialog() {
-      this.isLoginDialogVisible = true;
-    },
-    showSignUpDialog() {
-      this.isSignUpDialogVisible = true;
     }
   }
 };

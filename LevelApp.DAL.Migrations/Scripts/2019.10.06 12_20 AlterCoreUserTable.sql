@@ -1,0 +1,7 @@
+﻿RENAME TABLE User to CoreUser;
+
+ALTER TABLE CoreUser
+DROP Username;
+
+ALTER TABLE CoreUser
+ADD Email VARCHAR(30) NOT NULL;

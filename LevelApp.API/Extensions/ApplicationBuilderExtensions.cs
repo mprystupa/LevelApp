@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using LevelApp.API.Middleware;
+using Microsoft.AspNetCore.Builder;
 
-namespace LevelApp.API.Middleware
+namespace LevelApp.API.Extensions
 {
     public static class ApplicationBuilderExtensions
     {

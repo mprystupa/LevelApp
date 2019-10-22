@@ -1,3 +1,0 @@
-dotnet ef dbcontext scaffold "server=localhost;port=3306;user=root;password=root;database=levelapp_dev" Pomelo.EntityFrameworkCore.MySql -o ../LevelApp.DAL/Entities -f --project ../LevelApp.DAL/LevelApp.DAL.csproj --startup-project ../LevelApp.API/LevelApp.API.csproj --context LevelAppContext
-
-set /p DUMMY=Hit ENTER to continue...

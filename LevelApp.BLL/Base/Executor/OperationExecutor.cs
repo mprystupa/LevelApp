@@ -1,27 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LevelApp.Crosscutting.Exceptions;
 using System.Threading.Tasks;
+using AutoMapper;
 using LevelApp.DAL.UnitOfWork;
+using Microsoft.Extensions.Configuration;
 
 namespace LevelApp.BLL.Base.Executor
 {
     public class OperationExecutor : IOperationExecutor
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
         
-        public OperationExecutor(IUnitOfWork unitOfWork)
+        public OperationExecutor(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
+            _mapper = mapper;
         }
         
         public async Task<TResult> Execute<TOperation, TParameter, TResult>(TParameter parameter) where TOperation : IBaseOperation<TParameter, TResult>
         {
             // Setup operation instance
             var operation = GetOperationInstance<TOperation>();
-            operation.SetupOperation(_unitOfWork, parameter);
+            operation.SetupOperation(_unitOfWork, _configuration, _mapper, parameter);
 
             // Operation pipeline
             try

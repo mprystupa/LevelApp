@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using LevelApp.DAL.Entities.Base;
+using LevelApp.DAL.Models.Base;
 
 namespace LevelApp.DAL.Repositories.Base
 {
@@ -18,6 +18,11 @@ namespace LevelApp.DAL.Repositories.Base
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
         Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
+
+        TEntity GetDetail(Func<TEntity, bool> predicate);
+        Task<TEntity> GetDetailAsync(Expression<Func<TEntity, bool>> predicate);
+        bool CheckIfExists(Func<TEntity, bool> predicate);
+        Task<bool> CheckIfExistsAsync(Expression<Func<TEntity, bool>> predicate);
         TKey Insert(TEntity entity);
         void InsertBatch(IEnumerable<TEntity> entities);
         TKey Update(TEntity entity);

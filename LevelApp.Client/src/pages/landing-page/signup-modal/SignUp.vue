@@ -1,9 +1,9 @@
 <template>
   <q-dialog v-model="isVisibleModel">
-    <q-card style="max-width: 900px; min-height: 500px;">
+    <q-card style="max-width: 900px;">
       <q-card-section class="p-0">
         <div class="row full-width">
-          <!-- <div class="col-0 col-sm-4 flex flex-center bg-secondary">
+          <div class="col-0 col-sm-4 flex flex-center bg-secondary">
             <div>
               <img
                 class=""
@@ -18,127 +18,151 @@
             >
               We're glad you want to join us!
             </div>
-          </div> -->
+          </div>
 
-          <div class="col-12 p-2">
-            <div class="text-h4 pt-1 pb-1">
-              Sign up
-            </div>
-
-            <!-- <q-separator class="mt-2 mb-2" />
-
-            Login form
-            <div class="p-1 pt-0 pb-0">
-              <q-input
-                class="mb-1"
-                rounded
-                outlined
-                dense
-                v-model="email"
-                placeholder="E-mail address"
-              />
-
-              <q-input
-                class="mb-1"
-                rounded
-                outlined
-                dense
-                type="password"
-                v-model="password"
-                placeholder="Password"
-              />
-
-              <q-input
-                class="mb-2"
-                rounded
-                outlined
-                dense
-                type="password"
-                v-model="password"
-                placeholder="Repeat password"
-              />
-
-              <q-btn
-                class="full-width mb-2"
-                unelevated
-                rounded
-                color="primary"
-                label="Log in"
-              />
-
-              <div class="text-subtitle1 text-center">
-                Don't have an account yet?
-                <a class="text-primary text-no-underline text-bold" href="/"
-                  >Sign up!</a
-                >
-              </div>
-            </div>
-
-            <q-separator class="mt-2 mb-2" />
-
-            <div class="p-1 pt-0">
-              <q-btn
-                class="full-width mb-1"
-                unelevated
-                rounded
-                outline
-                color="blue-10"
+          <div class="col-12 col-sm-8">
+            <q-stepper v-model="step" vertical flat color="primary" animated>
+              <q-step
+                :name="1"
+                title="Insert your e-mail address"
+                icon="fas fa-envelope"
+                :done="step > 1"
               >
-                <q-icon class="mr-1" name="fab fa-facebook-square" />
-                <div>Sign up with Facebook</div>
-              </q-btn>
-              <q-btn class="full-width" unelevated rounded outline color="red">
-                <q-icon class="mr-1" name="fab fa-google" />
-                <div>Sign up with Google</div>
-              </q-btn>
-            </div> -->
+                <div class="mb-2">
+                  First, we will need an e-mail address that will be used for
+                  your identification and contact. Please insert in the field
+                  below your valid e-mail address.
+                </div>
+
+                <q-input
+                  class="mb-1"
+                  rounded
+                  outlined
+                  dense
+                  v-model="email"
+                  placeholder="E-mail address"
+                >
+                  <template v-slot:append>
+                    <q-icon size="16px" name="fas fa-envelope" />
+                  </template>
+                </q-input>
+
+                <q-stepper-navigation>
+                  <q-btn @click="step = 2" color="primary" label="Continue" />
+                </q-stepper-navigation>
+              </q-step>
+
+              <q-step
+                :name="2"
+                title="Set your password"
+                icon="fas fa-key"
+                :done="step > 2"
+              >
+                <div class="mb-2">
+                  You'll need a strong password that will protect your account
+                  from unauthorized access. Remember: you should never share
+                  your password with anyone!
+                </div>
+
+                <q-input
+                  rounded
+                  outlined
+                  dense
+                  class="mb-1"
+                  type="password"
+                  v-model="password"
+                  placeholder="Password"
+                >
+                  <template v-slot:append>
+                    <q-icon size="16px" name="fas fa-key" />
+                  </template>
+                </q-input>
+
+                <q-input
+                  rounded
+                  outlined
+                  dense
+                  type="password"
+                  v-model="repeatPassword"
+                  placeholder="Repeat password"
+                >
+                  <template v-slot:append>
+                    <q-icon size="16px" name="fas fa-key" />
+                  </template>
+                </q-input>
+
+                <q-stepper-navigation>
+                  <q-btn
+                    flat
+                    @click="step = 1"
+                    color="primary"
+                    label="Back"
+                    class="q-ml-sm"
+                  />
+                  <q-btn @click="step = 3" color="primary" label="Continue" />
+                </q-stepper-navigation>
+              </q-step>
+
+              <q-step
+                :name="3"
+                title="Choose your avatar"
+                caption="Optional"
+                icon="fas fa-user"
+              >
+                <div class="mb-2"></div>
+
+                <q-uploader
+                  url="http://localhost:4444/upload"
+                  label="Restricted to images"
+                  multiple
+                  accept=".jpg, image/*"
+                  style="max-width: 300px"
+                />
+
+                <q-stepper-navigation>
+                  <q-btn
+                    flat
+                    @click="step = 2"
+                    color="primary"
+                    label="Back"
+                    class="q-ml-sm"
+                  />
+                  <q-btn @click="step = 4" color="primary" label="Continue" />
+                </q-stepper-navigation>
+              </q-step>
+
+              <q-step
+                :name="4"
+                title="You are ready to go!"
+                icon="fas fa-thumbs-up"
+              >
+                Try out different ad text to see what brings in the most
+                customers, and learn how to enhance your ads using features like
+                ad extensions. If you run into any problems with your ads, find
+                out how to tell if they're running and how to resolve approval
+                issues.
+
+                <q-stepper-navigation>
+                  <q-btn color="primary" label="Finish" />
+                  <q-btn
+                    flat
+                    @click="step = 3"
+                    color="primary"
+                    label="Back"
+                    class="q-ml-sm"
+                  />
+                </q-stepper-navigation>
+              </q-step>
+            </q-stepper>
+
+            <div class="text-subtitle1 text-center p-2">
+              Already have an account?
+              <a class="text-primary text-no-underline text-bold" href="javascript:void(0);" @click="onLoginClick"
+                >Log in!</a
+              >
+            </div>
           </div>
         </div>
-
-        <q-stepper v-model="step" ref="stepper" color="primary" animated>
-          <q-step
-            :name="1"
-            title="Give us your e-mail address"
-            icon="mail"
-            :done="step > 1"
-          >
-            For each ad campaign that you create, you can control how much
-            you're willing to spend on clicks and conversions, which networks
-            and geographical locations you want your ads to show on, and more.
-          </q-step>
-
-          <q-step
-            :name="2"
-            title="Decide your password"
-            icon="create_new_folder"
-            :done="step > 2"
-          >
-            An ad group contains one or more ads which target a shared set of
-            keywords.
-          </q-step>
-
-          <q-step :name="3" title="You are ready to go" icon="assignment">
-            This step won't show up because it is disabled.
-          </q-step>
-
-          <template v-slot:navigation>
-            <q-stepper-navigation>
-              <q-btn
-                @click="$refs.stepper.next()"
-                color="primary"
-                :label="step === 4 ? 'Finish' : 'Continue'"
-              />
-              <q-btn
-                v-if="step > 1"
-                flat
-                color="primary"
-                @click="$refs.stepper.previous()"
-                label="Back"
-                class="q-ml-sm"
-              />
-            </q-stepper-navigation>
-          </template>
-        </q-stepper>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -153,6 +177,7 @@ export default {
       isVisibleModel: this.isVisible,
       email: "",
       password: "",
+      repeatPassword: "",
       step: 1
     };
   },
@@ -165,6 +190,11 @@ export default {
     },
     isVisible(val) {
       this.isVisibleModel = val;
+    }
+  },
+  methods: {
+    onLoginClick() {
+      this.$emit("loginClicked");
     }
   }
 };

@@ -1,0 +1,2 @@
+﻿ALTER TABLE CoreUser
+ADD PasswordSalt VARCHAR(50) NOT NULL;

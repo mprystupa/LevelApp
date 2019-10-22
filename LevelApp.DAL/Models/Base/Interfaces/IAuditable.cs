@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace LevelApp.DAL.Entities.Base
+namespace LevelApp.DAL.Models.Base.Interfaces
 {
     public interface IAuditable
     {

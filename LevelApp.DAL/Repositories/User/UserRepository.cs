@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LevelApp.DAL.Repositories.User
 {
-    public class UserRepository : BaseRepository<Entities.User, int>, IUserRepository
+    public class UserRepository : BaseRepository<Models.Core.AppUser, int>, IUserRepository
     {
         public UserRepository(DbContext context) : base(context)
         {

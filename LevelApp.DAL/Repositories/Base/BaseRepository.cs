@@ -1,17 +1,19 @@
-﻿using LevelApp.DAL.Entities.Base;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
+using LevelApp.Crosscutting.Exceptions;
+using LevelApp.DAL.Models.Base;
 
 namespace LevelApp.DAL.Repositories.Base
 {
     public class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey> where TEntity : Entity<TKey>
     {
-        internal DbContext _context;
-        internal DbSet<TEntity> _entities;
+        private readonly DbContext _context;
+        private DbSet<TEntity> _entities;
 
         private DbSet<TEntity> Entities => _entities ?? (_entities = _context.Set<TEntity>());
 
@@ -66,7 +68,36 @@ namespace LevelApp.DAL.Repositories.Base
 
         public TEntity GetDetail(Func<TEntity, bool> predicate)
         {
-            return Entities.FirstOrDefault(predicate);
+            var result = Entities.AsNoTracking().FirstOrDefault(predicate);
+
+            if (result == null)
+            {
+                throw new NotFoundException($"Entity of type {typeof(TEntity)} with predicate ${predicate} has not been found.");
+            }
+
+            return result;
+        }
+
+        public async Task<TEntity> GetDetailAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            var result = await Entities.AsNoTracking().FirstOrDefaultAsync(predicate, CancellationToken.None);
+            
+            if (result == null)
+            {
+                throw new NotFoundException($"Entity of type {typeof(TEntity)} with predicate ${predicate} has not been found.");
+            }
+
+            return result;
+        }
+
+        public bool CheckIfExists(Func<TEntity, bool> predicate)
+        {
+            return Entities.AsNoTracking().Any(predicate);
+        }
+
+        public async Task<bool> CheckIfExistsAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Entities.AsNoTracking().AnyAsync(predicate);
         }
 
         public TKey Insert(TEntity entity)

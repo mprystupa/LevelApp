@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="Moq" Version="4.12.0" />
@@ -16,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LevelApp.API\LevelApp.API.csproj" />
     <ProjectReference Include="..\LevelApp.DAL\LevelApp.DAL.csproj" />
   </ItemGroup>
 

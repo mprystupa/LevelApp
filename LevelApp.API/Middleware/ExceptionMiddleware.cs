@@ -34,18 +34,20 @@ namespace LevelApp.API.Middleware
         {
             var message = "Something went wrong.";
             var details = exception.Message;
+            var responseCode = HttpStatusCode.InternalServerError;
 
-            if (exception is BusinessValidationException)
+            if (exception is ApiException apiException)
             {
-                message = exception.Message;
+                message = apiException.Message;
+                responseCode = apiException.StatusCode;
             }
             
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)responseCode;
             
             return context.Response.WriteAsync(JsonConvert.SerializeObject(new
             {
-                StatusCode = context.Response.StatusCode,
+                context.Response.StatusCode,
                 // TODO: Refer to message resources
                 Message = message,
                 Details = details
