@@ -29,6 +29,7 @@ namespace LevelApp.BLL.Base.Executor
             // Operation pipeline
             try
             {
+                await operation.GetData();
                 await operation.Validate();
 
                 await operation.ExecuteValidated();

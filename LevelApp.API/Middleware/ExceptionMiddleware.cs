@@ -33,12 +33,12 @@ namespace LevelApp.API.Middleware
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             var message = "Something went wrong.";
-            var details = exception.Message;
+            var details = exception.StackTrace;
             var responseCode = HttpStatusCode.InternalServerError;
-
+            
             if (exception is ApiException apiException)
             {
-                message = apiException.Message;
+                message = string.IsNullOrEmpty(apiException.Message) ? message : apiException.Message;
                 responseCode = apiException.StatusCode;
             }
             

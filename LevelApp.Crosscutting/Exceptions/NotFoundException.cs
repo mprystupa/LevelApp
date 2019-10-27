@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Runtime.Serialization;
 
 namespace LevelApp.Crosscutting.Exceptions
 {
+    [ExcludeFromCodeCoverage]
     [Serializable]
     public class NotFoundException : ApiException
     {

@@ -16,7 +16,7 @@ namespace LevelApp.BLL.Operations.Core.User
 {
     public class AuthenticateUserOperation : BaseUserOperation<UserLoginDto, string>
     {
-        private DAL.Models.Core.AppUser Entity { get; set; }
+        private AppUser Entity { get; set; }
         
         public override async Task GetData()
         {
@@ -50,6 +50,7 @@ namespace LevelApp.BLL.Operations.Core.User
         {
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, entity.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, entity.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
@@ -59,6 +60,7 @@ namespace LevelApp.BLL.Operations.Core.User
 
         private string BuildToken(IEnumerable<Claim> claims)
         {
+            var test = Configuration.GetSection("tokenManagement");
             var tokenManagementData = Configuration.GetTokenManagementData();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenManagementData.Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

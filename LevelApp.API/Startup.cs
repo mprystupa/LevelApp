@@ -1,13 +1,16 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using AutoMapper;
 using LevelApp.API.Extensions;
 using LevelApp.BLL.Base;
 using LevelApp.BLL.Base.Executor;
+using LevelApp.BLL.Mappings;
 using LevelApp.DAL.Repositories.User;
 using LevelApp.DAL.UnitOfWork;
 using LevelApp.Crosscutting.Models;
 using LevelApp.DAL.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,10 +38,26 @@ namespace LevelApp.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Swagger service
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info {Title = "LevelApp API", Version = "v1"}); });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info {Title = "LevelApp API", Version = "v1"});
+                
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>()
+                {
+                    { "Bearer", new string[]{ } }
+                });
+            });
             
             // Auto mapper service
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(CoreProfile));
 
             // Database context service
             services.AddDbContext<LevelAppContext>(options =>
@@ -54,7 +73,7 @@ namespace LevelApp.API
             services.AddTransient<DbContext, LevelAppContext>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepository, UserRepository>();
-            
+
             // JWT Configuration
             services.Configure<TokenManagement>(Configuration.GetSection("tokenManagement"));
             var token = Configuration.GetSection("tokenManagement").Get<TokenManagement>();
@@ -78,6 +97,14 @@ namespace LevelApp.API
                     ValidAudience = token.Audience
                 };
             });
+
+            services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy =
+                    new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .Build();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,15 +122,15 @@ namespace LevelApp.API
             
             // Exception handler
             app.ConfigureCustomExceptionMiddleware();
+            
+            //Swagger setup
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "LevelApp API V1"); });
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader());
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
-
-            //Swagger setup
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "LevelApp API V1"); });
         }
     }
 }

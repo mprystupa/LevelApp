@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using LevelApp.DAL.Models.Base;
 
 namespace LevelApp.DAL.Models.Core
 {
+    [ExcludeFromCodeCoverage]
     [Table("CoreAppUser")]
     public class AppUser : Entity<int>
     {

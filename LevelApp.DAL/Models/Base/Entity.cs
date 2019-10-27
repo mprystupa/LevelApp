@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using LevelApp.DAL.Models.Base.Interfaces;
 
 namespace LevelApp.DAL.Models.Base
 {
+    [ExcludeFromCodeCoverage]
     public class Entity<TKey> : IAuditable
     {
         [Key]

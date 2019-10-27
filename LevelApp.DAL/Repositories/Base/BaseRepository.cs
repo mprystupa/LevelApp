@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using LevelApp.Crosscutting.Exceptions;
@@ -72,7 +73,7 @@ namespace LevelApp.DAL.Repositories.Base
 
             if (result == null)
             {
-                throw new NotFoundException($"Entity of type {typeof(TEntity)} with predicate ${predicate} has not been found.");
+                throw new NotFoundException($"Entity of type {typeof(TEntity)} has not been found.", HttpStatusCode.NotFound);
             }
 
             return result;
@@ -84,7 +85,7 @@ namespace LevelApp.DAL.Repositories.Base
             
             if (result == null)
             {
-                throw new NotFoundException($"Entity of type {typeof(TEntity)} with predicate ${predicate} has not been found.");
+                throw new NotFoundException($"Entity of type {typeof(TEntity)} has not been found.", HttpStatusCode.NotFound);
             }
 
             return result;
@@ -102,7 +103,8 @@ namespace LevelApp.DAL.Repositories.Base
 
         public TKey Insert(TEntity entity)
         {
-            return Entities.Add(entity).Entity.Id;
+            Entities.Add(entity);
+            return entity.Id;
         }
 
         public void InsertBatch(IEnumerable<TEntity> entities)

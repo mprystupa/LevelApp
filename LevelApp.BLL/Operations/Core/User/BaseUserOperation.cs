@@ -1,4 +1,5 @@
-﻿using LevelApp.BLL.Base.Operation;
+﻿using System.Net;
+using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Helpers;
 using LevelApp.Crosscutting.Exceptions;
 using LevelApp.DAL.Models.Core;
@@ -11,7 +12,7 @@ namespace LevelApp.BLL.Operations.Core.User
         {
             if (!CryptoHelper.ValidatePassword(password, user.PasswordHash, user.PasswordSalt))
             {
-                throw new BusinessValidationException("Password is invalid.");
+                throw new BusinessValidationException("Password is invalid.", HttpStatusCode.Unauthorized);
             }
         }
     }

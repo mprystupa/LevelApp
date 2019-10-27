@@ -1,11 +1,13 @@
 ﻿﻿using System;
 using System.Collections.Generic;
+ using System.Diagnostics.CodeAnalysis;
  using System.Net;
  using System.Runtime.Serialization;
  using System.Text;
 
 namespace LevelApp.Crosscutting.Exceptions
 {
+    [ExcludeFromCodeCoverage]
     [Serializable]
     public class BusinessValidationException : ApiException
     {

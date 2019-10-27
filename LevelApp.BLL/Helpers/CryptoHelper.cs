@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace LevelApp.BLL.Helpers
@@ -32,15 +33,7 @@ namespace LevelApp.BLL.Helpers
             var passwordHashByteArray = Convert.FromBase64String(passwordHashToCompare);
             var passwordHashToValidate = HashPassword(passwordToValidate, saltByteArray);
 
-            for (var i = 0; i <= passwordHashToValidate.Length; i++)
-            {
-                if (passwordHashByteArray[i] != passwordHashToCompare[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return !passwordHashToValidate.Where((t, i) => passwordHashByteArray[i] != t).Any();
         }
         
         /// <summary>

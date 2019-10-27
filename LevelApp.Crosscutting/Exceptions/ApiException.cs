@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Runtime.Serialization;
 
 namespace LevelApp.Crosscutting.Exceptions
 {
     [Serializable]
+    [ExcludeFromCodeCoverage]
     public class ApiException : Exception
     {
         public HttpStatusCode StatusCode;

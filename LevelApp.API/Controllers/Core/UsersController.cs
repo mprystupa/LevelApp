@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LevelApp.API.Controllers.Core
 {
-    [ExcludeFromCodeCoverage]
+    [Authorize]
     [Route(BaseRoutes.Controller)]
     public class UsersController : BaseController
     {
@@ -42,6 +42,7 @@ namespace LevelApp.API.Controllers.Core
             return await Executor.Execute<AuthenticateUserOperation, UserLoginDto, string>(login);
         }
         
+        [AllowAnonymous]
         [HttpPost]
         [Route(UserRoutes.Register)]
         public async Task<ActionResult<int>> RegisterNewUser([FromBody]UserRegisterDto user)

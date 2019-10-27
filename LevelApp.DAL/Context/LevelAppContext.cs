@@ -14,18 +14,23 @@ namespace LevelApp.DAL.Context
     {
         private const string SoftDeleteColumnName = "DateDeletedUtc";
 
+        public LevelAppContext()
+        {
+            
+        }
+
         public LevelAppContext(DbContextOptions options)
             : base(options)
         {
         }
 
-        public int SaveChanges(int userId = -1)
+        public virtual int SaveChanges(int userId = -1)
         {
             OnBeforeSaving(userId);
             return base.SaveChanges();
         }
 
-        public Task<int> SaveChangesAsync(int userId = -1)
+        public virtual Task<int> SaveChangesAsync(int userId = -1)
         {
             OnBeforeSaving(userId);
             return base.SaveChangesAsync();
@@ -49,7 +54,7 @@ namespace LevelApp.DAL.Context
                     Expression.Constant(SoftDeleteColumnName));
 
                 // Create compare expression DateDeletedUtc != null
-                var compareExpression = Expression.MakeBinary(ExpressionType.NotEqual,
+                var compareExpression = Expression.MakeBinary(ExpressionType.Equal,
                     dateDeletedProperty, Expression.Constant(null));
                 var lambda = Expression.Lambda(compareExpression, parameter);
 
@@ -60,24 +65,25 @@ namespace LevelApp.DAL.Context
 
         private void OnBeforeSaving(int userId)
         {
+            if (ChangeTracker == null) return;
             foreach (var entry in ChangeTracker.Entries())
             {
                 switch (entry.State)
                 {
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        ((IAuditable)entry.Entity).DateDeletedUtc = DateTime.UtcNow;
-                        ((IAuditable)entry.Entity).DeletedBy = userId;
+                    case EntityState.Added:
+                        ((IAuditable)entry.Entity).DateCreatedUtc = DateTime.UtcNow;
+                        ((IAuditable)entry.Entity).CreatedBy = userId;
                         break;
                     
                     case EntityState.Modified:
                         ((IAuditable)entry.Entity).DateModifiedUtc = DateTime.UtcNow;
                         ((IAuditable)entry.Entity).ModifiedBy = userId;
                         break;
-                    
-                    case EntityState.Added:
-                        ((IAuditable)entry.Entity).DateCreatedUtc = DateTime.UtcNow;
-                        ((IAuditable)entry.Entity).CreatedBy = userId;
+
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Modified;
+                        ((IAuditable)entry.Entity).DateDeletedUtc = DateTime.UtcNow;
+                        ((IAuditable)entry.Entity).DeletedBy = userId;
                         break;
                 }
             }
