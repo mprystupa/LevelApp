@@ -275,8 +275,8 @@
 <script>
 import Login from "./login-modal/Login";
 import SignUp from "./signup-modal/SignUp";
-import { ServiceFactory } from "../../services/ServiceFactory";
-const UsersService = ServiceFactory.get('users');
+// import { ServiceFactory } from "../../services/ServiceFactory";
+// const UsersService = ServiceFactory.get('users');
 
 export default {
   name: "PageIndex",

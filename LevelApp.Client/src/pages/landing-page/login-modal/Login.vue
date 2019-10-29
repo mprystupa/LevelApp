@@ -25,52 +25,80 @@
             <q-separator class="mt-2 mb-2" />
 
             <!-- Login form -->
-            <div class="p-1 pt-0 pb-0">
-              <q-input
-                class="mb-1"
-                rounded
-                outlined
-                dense
-                v-model="email"
-                placeholder="E-mail address"
-              >
-                <template v-slot:append>
-                  <q-icon size="16px" name="fas fa-envelope" />
-                </template>
-              </q-input>
-              <q-input
-                rounded
-                outlined
-                dense
-                type="password"
-                v-model="password"
-                placeholder="Password"
-              >
-                <template v-slot:append>
-                  <q-icon size="16px" name="fas fa-key" />
-                </template>
-              </q-input>
-              <div class="mb-2 float-right mr-2">
-                <a class="text-primary text-no-underline" href="/"
-                  >Forgot password?</a
+            <form @submit.prevent.stop="onLoginSubmit">
+              <div class="p-1 pt-0 pb-0">
+                <q-input
+                  class="mb-1"
+                  rounded
+                  outlined
+                  dense
+                  ref="email"
+                  v-model="email"
+                  placeholder="E-mail address"
+                  :rules="[
+                    val =>
+                      inputValidators.Required(val) ||
+                      'E-mail address is required',
+                    val =>
+                      inputValidators.CorrectEmail(val) ||
+                      'E-mail address is incorrect'
+                  ]"
+                  autocomplete="username"
                 >
-              </div>
-
-              <q-btn
-                class="full-width mb-2"
-                unelevated
-                rounded
-                color="primary"
-                label="Log in"
-              />
-
-              <div class="text-subtitle1 text-center">
-                Don't have an account yet?
-                <a class="text-primary text-no-underline text-bold" href="javascript:void(0);" @click="onSignUpClick"
-                  >Sign up!</a
+                  <template
+                    v-if="!($refs.email && $refs.email.hasError)"
+                    v-slot:append
+                  >
+                    <q-icon size="16px" name="fas fa-envelope" />
+                  </template>
+                </q-input>
+                <q-input
+                  rounded
+                  outlined
+                  dense
+                  ref="password"
+                  type="password"
+                  v-model="password"
+                  placeholder="Password"
+                  :rules="[
+                    val =>
+                      inputValidators.Required(val) || 'Password is required'
+                  ]"
+                  autocomplete="current-password"
                 >
+                  <template
+                    v-if="!($refs.password && $refs.password.hasError)"
+                    v-slot:append
+                  >
+                    <q-icon size="16px" name="fas fa-key" />
+                  </template>
+                </q-input>
+                <div class="mb-2 float-right mr-2">
+                  <a class="text-primary text-no-underline" href="/"
+                    >Forgot password?</a
+                  >
+                </div>
+
+                <q-btn
+                  class="full-width mb-2"
+                  unelevated
+                  rounded
+                  color="primary"
+                  label="Log in"
+                  type="submit"
+                />
+
+                <div class="text-subtitle1 text-center">
+                  Don't have an account yet?
+                  <a
+                    class="text-primary text-no-underline text-bold"
+                    href="javascript:void(0);"
+                    @click="onSignUpClick"
+                    >Sign up!</a
+                  >
+                </div>
               </div>
-            </div>
+            </form>
 
             <q-separator class="mt-2 mb-2" />
 
@@ -98,6 +126,11 @@
 </template>
 
 <script>
+import { InputValidators } from "../../../validators/InputValidators";
+import FormValidator from "../../../validators/FormValidator";
+import { ServiceFactory } from "../../../services/ServiceFactory";
+const UsersService = ServiceFactory.get("users");
+
 export default {
   name: "Login",
   props: ["isVisible"],
@@ -105,7 +138,9 @@ export default {
     return {
       isVisibleModel: this.isVisible,
       email: "",
-      password: ""
+      password: "",
+      inputValidators: InputValidators,
+      loginFormValidator: null
     };
   },
   created() {
@@ -117,11 +152,53 @@ export default {
     },
     isVisible(val) {
       this.isVisibleModel = val;
+
+      if (val === true) {
+        this.initializeModal();
+      }
     }
   },
   methods: {
+    initializeModal() {
+      this.$nextTick(() => {
+        this.loginFormValidator = new FormValidator(
+          this.$refs.email,
+          this.$refs.password
+        );
+      });
+    },
     onSignUpClick() {
       this.$emit("signUpClicked");
+    },
+    onLoginSubmit() {
+      this.loginFormValidator.validateForm();
+
+      if (this.loginFormValidator.isFormValid()) {
+        UsersService.login({
+          email: this.email,
+          password: this.password
+        })
+          .then(response => {
+            this.$q.notify({
+              color: "primary",
+              icon: "fas fa-check",
+              message: "Logged in!",
+              position: "top"
+            });
+          })
+          .catch(error => {
+            let errorMessage = "Something went wrong.";
+            if (error.response && error.response.data) {
+              errorMessage = error.response.data.Message;
+            }
+            this.$q.notify({
+              color: "negative",
+              icon: "fas fa-times",
+              message: errorMessage,
+              position: "top"
+            });
+          });
+      }
     }
   }
 };

@@ -20,34 +20,32 @@ namespace LevelApp.DAL.Tests.UnitOfWork
         public void UnitOfWork_Save_Should_Save_Changes_In_Context()
         {
             // Arrange
+            const int savingUserId = -1;
             var context = new Mock<LevelAppContext>();
-            var httpAccessor = new Mock<IHttpContextAccessor>();
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, httpAccessor.Object);
-            unitOfWork.SetRequestUserIdFunction(() => 1);
-            
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+
             // Act
-            unitOfWork.Save();
+            unitOfWork.Save(savingUserId);
             
             // Assert
-            context.Verify(x => x.SaveChanges(1));
+            context.Verify(x => x.SaveChanges(savingUserId));
         }
         
         [Fact]
         public void UnitOfWork_SaveAsync_Should_Save_Changes_In_Context()
         {
             // Arrange
+            const int savingUserId = -1;
             var context = new Mock<LevelAppContext>();
-            var httpAccessor = new Mock<IHttpContextAccessor>();
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, httpAccessor.Object);
-            unitOfWork.SetRequestUserIdFunction(() => 1);
-            
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+
             // Act
-            unitOfWork.SaveAsync();
+            unitOfWork.SaveAsync(savingUserId);
             
             // Assert
-            context.Verify(x => x.SaveChangesAsync(It.IsAny<int>()));
+            context.Verify(x => x.SaveChangesAsync(savingUserId));
         }
 
         [Fact]
@@ -55,11 +53,9 @@ namespace LevelApp.DAL.Tests.UnitOfWork
         {
             // Arrange
             var context = new Mock<LevelAppContext>();
-            var httpAccessor = new Mock<IHttpContextAccessor>();
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, httpAccessor.Object);
-            unitOfWork.SetRequestUserIdFunction(() => 1);
-            
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+
             // Act
             var result = unitOfWork.GetRepository<IUserRepository>();
             
@@ -72,10 +68,8 @@ namespace LevelApp.DAL.Tests.UnitOfWork
         {
             // Arrange
             var context = new Mock<LevelAppContext>();
-            var httpAccessor = new Mock<IHttpContextAccessor>();
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, httpAccessor.Object);
-            unitOfWork.SetRequestUserIdFunction(() => 1);
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
             
             // Act
             unitOfWork.Dispose();

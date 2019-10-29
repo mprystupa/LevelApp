@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using AutoMapper;
+using LevelApp.API.Tests.Configuration;
 using LevelApp.DAL.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LevelApp.API.Tests
 {
@@ -31,7 +37,7 @@ namespace LevelApp.API.Tests
                 
                 // Add auto mapper
                 services.AddAutoMapper(typeof(Startup));
-                
+
                 // Build the service provider
                 var sp = services.BuildServiceProvider();
                 

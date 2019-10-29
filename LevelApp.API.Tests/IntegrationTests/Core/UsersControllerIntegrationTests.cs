@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using LevelApp.API.Routes;
+using LevelApp.API.Tests.Configuration;
 using LevelApp.API.Tests.IntegrationTests;
 using LevelApp.BLL.Dto.Core.User;
 using LevelApp.DAL.Models.Core;
@@ -27,9 +30,11 @@ namespace LevelApp.API.Tests.Core
         }
 
         [Fact]
-        public async Task Can_Get_Users()
+        public async Task Authorized_Can_Get_Users()
         {
             // Arrange
+            var token = JwtTokenMock.GenerateJwtToken(new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, "1") });
+            IntegrationTestsHelper.SetToken(_client, token);
             var endpoint = IntegrationTestsHelper.GenerateEndpoint(new List<string>(){ BaseRoutes.Controller }, UsersModule);
             var httpResponse = await _client.GetAsync(endpoint);
             
@@ -41,9 +46,20 @@ namespace LevelApp.API.Tests.Core
             var users = JsonConvert.DeserializeObject<List<AppUser>>(stringResponse);
             Assert.Equal(10, users.Count);
         }
+        
+        [Fact]
+        public async Task Unauthorized_Cannot_Get_Users()
+        {
+            // Arrange
+            var endpoint = IntegrationTestsHelper.GenerateEndpoint(new List<string>(){ BaseRoutes.Controller }, UsersModule);
+            var httpResponse = await _client.GetAsync(endpoint);
+            
+            // Must return unauthorized
+            Assert.Equal(HttpStatusCode.Unauthorized, httpResponse.StatusCode);
+        }
 
         [Fact]
-        public async Task Can_Register_New_User()
+        public async Task Unauthorized_Can_Register_New_User()
         {
             // Arrange
             var userToRegister = IntegrationTestsHelper.GenerateHttpContent(new UserRegisterDto()

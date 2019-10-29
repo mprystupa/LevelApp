@@ -17,18 +17,13 @@ namespace LevelApp.DAL.UnitOfWork
     {
         private LevelAppContext Context { get; set; }
         private Dictionary<Type, object> Repositories { get; set; }
-        private IHttpContextAccessor HttpContextAccessor { get; set; }
-        private Func<int> _requestUserIdFunc;
         private bool _disposed = false;
 
-        public UnitOfWork(LevelAppContext context, IHttpContextAccessor httpContextAccessor)
+        public UnitOfWork(LevelAppContext context)
         {
             Context = context;
             Repositories = new Dictionary<Type, object>();
             InitializeRepositories();
-
-            HttpContextAccessor = httpContextAccessor;
-            _requestUserIdFunc = () => HttpContextAccessor.HttpContext.User.GetLoggedInUserId<int>();
         }
 
         public TRepository GetRepository<TRepository>()
@@ -36,23 +31,14 @@ namespace LevelApp.DAL.UnitOfWork
             return (TRepository) Repositories[typeof(TRepository)];
         }
 
-        public void Save()
+        public void Save(int userId = -1)
         {
-            Context.SaveChanges(_requestUserIdFunc.Invoke());
+            Context.SaveChanges(userId);
         }
 
-        public async Task SaveAsync()
+        public async Task SaveAsync(int userId = -1)
         {
-            await Context.SaveChangesAsync(_requestUserIdFunc.Invoke());
-        }
-
-        /// <summary>
-        /// Sets function that returns currently logged user ID value. Used only in unit testing.
-        /// </summary>
-        /// <param name="requestUserIdFunc"></param>
-        public void SetRequestUserIdFunction(Func<int> requestUserIdFunc)
-        {
-            _requestUserIdFunc = requestUserIdFunc;
+            await Context.SaveChangesAsync(userId);
         }
 
         private void Dispose(bool disposing)

@@ -1,6 +1,6 @@
-import BaseService from "../BaseService"
+import BaseService from "../BaseService";
 
-const resource = "/users";
+const resource = "users";
 
 export default {
   get() {
@@ -13,6 +13,9 @@ export default {
 
   createUser(payload) {
     return BaseService.post(`${resource}`, payload);
-  }
-}
+  },
 
+  login(payload) {
+    return BaseService.post(`${resource}/login`, payload);
+  }
+};

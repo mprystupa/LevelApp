@@ -24,13 +24,13 @@ namespace LevelApp.DAL.Context
         {
         }
 
-        public virtual int SaveChanges(int userId = -1)
+        public virtual int SaveChanges(int userId)
         {
             OnBeforeSaving(userId);
             return base.SaveChanges();
         }
 
-        public virtual Task<int> SaveChangesAsync(int userId = -1)
+        public virtual Task<int> SaveChangesAsync(int userId)
         {
             OnBeforeSaving(userId);
             return base.SaveChangesAsync();

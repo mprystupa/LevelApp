@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using Newtonsoft.Json;
 
 namespace LevelApp.API.Tests.IntegrationTests
@@ -32,6 +34,11 @@ namespace LevelApp.API.Tests.IntegrationTests
             result = result.Replace("[controller]", moduleName);
 
             return result;
+        }
+
+        public static void SetToken(HttpClient client, string token)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
     }
 }

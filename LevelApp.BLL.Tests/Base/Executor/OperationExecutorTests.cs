@@ -1,17 +1,12 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AutoMapper;
-using LevelApp.BLL.Base;
 using LevelApp.BLL.Base.Executor;
-using LevelApp.BLL.Base.Operation;
 using LevelApp.Crosscutting.Exceptions;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace LevelApp.BLL.Tests.Base.Executor
 {
@@ -24,7 +19,7 @@ namespace LevelApp.BLL.Tests.Base.Executor
         public OperationExecutorTests()
         {
             var unitOfWork = new Mock<IUnitOfWork>();
-            unitOfWork.Setup(u => u.Save()).Throws(new GeneralServerException("Test message"));
+            unitOfWork.Setup(u => u.Save(1)).Throws(new GeneralServerException("Test message"));
             var configuration = new Mock<IConfiguration>();
             var mapper = new Mock<IMapper>();
 
