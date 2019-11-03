@@ -3,16 +3,13 @@ export default class FormValidator {
     this.formRefs = [];
     for (let i = 0; i < arguments.length; i++) {
       this.formRefs.push(arguments[i]);
-      console.log(arguments[i]);
     }
-    console.log(this.formRefs);
   }
 
   validateForm() {
     for (let i = 0; i < this.formRefs.length; i++) {
       this.formRefs[i].validate();
     }
-    console.log(this.formRefs);
   }
 
   isFormValid() {

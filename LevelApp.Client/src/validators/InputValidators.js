@@ -5,5 +5,6 @@ export const InputValidators = {
     return re.test(String(val).toLowerCase());
   },
   MinLength: (val, length) => val.length >= length,
-  MaxLength: (val, length) => val.length <= length
+  MaxLength: (val, length) => val.length <= length,
+  Equals: (val, valToCompare) => val === valToCompare
 }
