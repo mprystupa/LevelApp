@@ -9,5 +9,6 @@
     {
         public const string Login = "login";
         public const string Register = "register";
+        public const string CheckEmail = "checkEmail/{email}";
     }
 }

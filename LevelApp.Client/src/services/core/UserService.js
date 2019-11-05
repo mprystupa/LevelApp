@@ -17,5 +17,13 @@ export default {
 
   login(payload) {
     return BaseService.post(`${resource}/login`, payload);
+  },
+
+  checkEmail(payload) {
+    return BaseService.get(`${resource}/checkEmail/${payload}`);
+  },
+
+  register(payload) {
+    return BaseService.post(`${resource}/register`, payload);
   }
 };

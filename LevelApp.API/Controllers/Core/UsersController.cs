@@ -33,6 +33,14 @@ namespace LevelApp.API.Controllers.Core
         {
             return await Executor.Execute<GetUserOperation, int, UserSearchDto>(id);
         }
+    
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(UserRoutes.CheckEmail)]
+        public async Task<ActionResult<bool>> CheckIfEmailExist(string email)
+        {
+            return await Executor.Execute<CheckEmailOperation, string, bool>(email);
+        }
         
         [AllowAnonymous]
         [HttpPost]
