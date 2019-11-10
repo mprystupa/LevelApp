@@ -185,6 +185,9 @@ export default {
               message: "Logged in!",
               position: "top"
             });
+
+            // Redirect to Main module of application
+            this.$router.push("/main");
           })
           .catch(error => {
             let errorMessage = "Something went wrong.";

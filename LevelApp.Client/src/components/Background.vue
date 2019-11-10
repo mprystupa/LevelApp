@@ -1,8 +1,8 @@
 <template>
-  <div class="full-width full-height">
+  <div class="full-width full-height background-wrapper">
     <div
       id="background"
-      class="background bg-transition bg-hex-overlay fixed full-width full-height"
+      class="background bg-transition fixed full-width full-height"
       :class="backgroundClass"
     ></div>
     <div class="bg-hex-overlay fixed full-width full-height"></div>
@@ -40,5 +40,10 @@ export default {
 
 .background {
   z-index: -2;
+}
+
+.background-wrapper {
+  position: absolute;
+  top: 0;
 }
 </style>

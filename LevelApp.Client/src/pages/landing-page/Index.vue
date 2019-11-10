@@ -209,39 +209,23 @@
             @click="onLoginClick"
           />
         </div>
-        <div class="row justify-center">
-          <div class="waveWrapper waveAnimation">
-            <div class="waveWrapperInner bgTop">
-              <div
-                class="wave waveTop"
-                style="background-image: url('http://front-end-noobs.com/jecko/img/wave-top.png')"
-              ></div>
-            </div>
-            <div class="waveWrapperInner bgMiddle">
-              <div
-                class="wave waveMiddle"
-                style="background-image: url('http://front-end-noobs.com/jecko/img/wave-mid.png')"
-              ></div>
-            </div>
-            <div class="waveWrapperInner bgBottom">
-              <div
-                class="wave waveBottom"
-                style="background-image: url('http://front-end-noobs.com/jecko/img/wave-bot.png')"
-              ></div>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white footer-filling z-index-100">
-          <div class="row mt-3 mb-1 justify-center">
+        <div class="flex">
+          <div class="row full-width mt-3 mb-1 justify-center">
             <div class="text-h3 text-weight-thin text-align-center text-black">
               Find us on social media!
             </div>
           </div>
-          <div class="row q-gutter-lg justify-center">
+          <div class="row full-width q-gutter-lg justify-center">
             <q-btn unelevated round color="indigo" icon="fab fa-facebook-f" />
             <q-btn unelevated round color="red" icon="fab fa-youtube" />
             <q-btn unelevated round color="blue" icon="fab fa-linkedin-in" />
             <q-btn unelevated round color="light-blue" icon="fab fa-twitter" />
+          </div>
+        </div>
+        <div class="footer-filling">
+          <div class="bg-white full-height">
+          </div>
+          <div class="bg-grey full-height">
           </div>
         </div>
       </div>
@@ -275,8 +259,6 @@
 <script>
 import Login from "./login-modal/Login";
 import SignUp from "./signup-modal/SignUp";
-// import { ServiceFactory } from "../../services/ServiceFactory";
-// const UsersService = ServiceFactory.get('users');
 
 export default {
   name: "PageIndex",
@@ -332,82 +314,27 @@ export default {
 };
 </script>
 
-<style>
+<style lang="stylus">
 .footer-filling {
   position: fixed;
   width: 100%;
-  height: 226px;
-  padding: 5px;
+  height: 900px;
   bottom: 0px;
+  z-index: -1;
+
+  div {
+    position: absolute;
+    width: 100%;
+  }
 }
 
-@keyframes move_wave {
-  0% {
-    transform: translateX(0) translateZ(0) scaleY(1);
-  }
-  50% {
-    transform: translateX(-25%) translateZ(0) scaleY(0.55);
-  }
-  100% {
-    transform: translateX(-50%) translateZ(0) scaleY(1);
-  }
+.footer-filling div:nth-child(1) {
+  clip-path: polygon(76% 67%, 100% 84%, 100% 100%, 0 100%, 0 77%, 38% 64%);
 }
-.waveWrapper {
-  overflow: hidden;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  margin: auto;
-}
-.waveWrapperInner {
-  position: absolute;
-  width: 100%;
-  overflow: hidden;
-  height: 100%;
-  bottom: -1px;
-}
-.bgTop {
-  z-index: 15;
-  opacity: 0.5;
-}
-.bgMiddle {
-  z-index: 10;
-  opacity: 0.75;
-}
-.bgBottom {
-  z-index: 5;
-}
-.wave {
-  position: absolute;
-  left: 0;
-  width: 200%;
-  height: 70%;
-  background-repeat: repeat no-repeat;
-  background-position: 0 bottom;
-  transform-origin: center bottom;
-}
-.waveTop {
-  background-size: 50% 100px;
-}
-.waveAnimation .waveTop {
-  animation: move-wave 3s;
-  -webkit-animation: move-wave 3s;
-  -webkit-animation-delay: 1s;
-  animation-delay: 1s;
-}
-.waveMiddle {
-  background-size: 50% 120px;
-}
-.waveAnimation .waveMiddle {
-  animation: move_wave 10s linear infinite;
-}
-.waveBottom {
-  background-size: 50% 100px;
-}
-.waveAnimation .waveBottom {
-  animation: move_wave 15s linear infinite;
+
+.footer-filling div:nth-child(2) {
+  clip-path: polygon(85% 60%, 100% 74%, 100% 100%, 0 100%, 0 68%, 44% 55%);
+  z-index: -2;
 }
 
 .btn-fixed-width {

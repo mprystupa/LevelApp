@@ -48,7 +48,7 @@ import { openURL } from "quasar";
 import Background from "../components/Background";
 
 export default {
-  name: "HomeLayout",
+  name: "LandingLayout",
   components: { Background },
   data() {
     return {

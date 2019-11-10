@@ -54,7 +54,8 @@ module.exports = function (ctx) {
         'QStepper',
         'QStep',
         'QStepperNavigation',
-        'QUploader'
+        'QUploader',
+        'QScrollArea'
       ],
 
       directives: [
