@@ -3,12 +3,44 @@
     <q-layout view="hHh LpR fFf">
       <q-header reveal elevated class="bg-primary text-white">
         <q-toolbar class="pt-1 pb-1 toolbar">
-          <q-input rounded outlined dense v-model="text" class="search-bar" color="white" bg-color="search-bar-bg" label="Rounded standout" />
-          <div class="">
-            <img
-              class="toolbar-logo"
-              src="../assets/levelapp-logo-horizontal.svg"
-            />
+          <div class="col-4">
+            <q-input
+              rounded
+              dark
+              dense
+              standout
+              v-model="searchText"
+              class="search-bar"
+              placeholder="Search for courses, categories etc."
+            >
+              <template v-slot:prepend>
+                <q-icon
+                  v-if="searchText === ''"
+                  name="fas fa-search"
+                  size="1.2rem"
+                />
+                <q-icon
+                  v-else
+                  name="fas fa-times"
+                  size="1.2rem"
+                  class="cursor-pointer"
+                  @click="searchText = ''"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div class="col-4 flex justify-center">
+            <div class="">
+              <img
+                class="toolbar-logo"
+                src="../assets/levelapp-logo-horizontal.svg"
+              />
+            </div>
+          </div>
+          <div class="col-4 flex justify-end">
+            <q-btn flat round>
+              <i class="fas fa-cogs fa-lg"></i>
+            </q-btn>
           </div>
         </q-toolbar>
       </q-header>
@@ -16,45 +48,72 @@
       <q-drawer
         v-model="drawer"
         show-if-above
-        :mini="!drawer || miniState"
-        @click.capture="drawerClick"
-        :width="200"
+        :mini="miniState"
+        @mouseover="miniState = false"
+        @mouseout="miniState = true"
+        :width="250"
         :breakpoint="500"
-        bordered
         class="drawer-transparent"
       >
-        <template v-slot:mini>
-          <q-scroll-area class="fit mini-slot cursor-pointer">
-            <div class="q-py-lg">
-              <div class="column items-center">
-                <q-icon name="inbox" color="blue" class="mini-icon" />
-                <q-icon name="star" color="orange" class="mini-icon" />
-                <q-icon name="send" color="purple" class="mini-icon" />
-                <q-icon name="drafts" color="teal" class="mini-icon" />
-              </div>
-            </div>
-          </q-scroll-area>
-        </template>
-
         <q-scroll-area class="fit">
-          <q-list padding class="menu-list">
-            <q-item clickable v-ripple>
+          <q-list padding>
+            <!-- Home -->
+            <q-item to="/main" exact clickable v-ripple>
               <q-item-section avatar>
-                <q-icon name="inbox" />
+                <q-icon name="fas fa-home" />
               </q-item-section>
 
               <q-item-section>
-                Inbox
+                Home
               </q-item-section>
             </q-item>
 
-            <q-item active clickable v-ripple>
+            <q-separator />
+
+            <!-- Courses -->
+            <q-item to="/main/courses" clickable v-ripple>
               <q-item-section avatar>
-                <q-icon name="star" />
+                <img
+                  style="width: 24px; height: 24px;"
+                  src="../assets/main/course-icon.svg"
+                />
               </q-item-section>
 
               <q-item-section>
-                Star
+                Courses
+              </q-item-section>
+            </q-item>
+
+            <!-- Lessons -->
+            <q-item to="/main/lessons" clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="fas fa-book" />
+              </q-item-section>
+
+              <q-item-section>
+                Lessons
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="fas fa-medal" />
+              </q-item-section>
+
+              <q-item-section>
+                Achievements
+              </q-item-section>
+            </q-item>
+
+            <q-separator />
+
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="fas fa-trophy" />
+              </q-item-section>
+
+              <q-item-section>
+                Leaderboards
               </q-item-section>
             </q-item>
 
@@ -64,44 +123,44 @@
               </q-item-section>
 
               <q-item-section>
-                Send
+                Leagues
               </q-item-section>
             </q-item>
 
             <q-item clickable v-ripple>
               <q-item-section avatar>
-                <q-icon name="drafts" />
+                <q-icon name="fas fa-chart-bar" />
               </q-item-section>
 
               <q-item-section>
-                Drafts
+                Stats
+              </q-item-section>
+            </q-item>
+
+            <q-separator />
+
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="fas fa-question" />
+              </q-item-section>
+
+              <q-item-section>
+                Help
               </q-item-section>
             </q-item>
           </q-list>
         </q-scroll-area>
-
-        <!--
-          in this case, we use a button (can be anything)
-          so that user can switch back
-          to mini-mode
-        -->
-        <div
-          class="q-mini-drawer-hide absolute"
-          style="top: 15px; right: -17px"
-        >
-          <q-btn
-            dense
-            round
-            unelevated
-            color="accent"
-            icon="chevron_left"
-            @click="miniState = true"
-          />
-        </div>
       </q-drawer>
 
       <q-page-container>
-        <router-view />
+        <transition
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+          mode="out-in"
+        >
+          <router-view class="q-ma-lg" />
+        </transition>
       </q-page-container>
     </q-layout>
     <!-- Background -->
@@ -116,7 +175,8 @@ export default {
   data() {
     return {
       drawer: false,
-      miniState: true
+      miniState: true,
+      searchText: ""
     };
   },
 
@@ -149,19 +209,13 @@ export default {
 
 .drawer-transparent {
   .q-drawer {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.4);
     border: none;
   }
 }
 
 .toolbar {
   justify-content: space-between;
-}
-
-.toolbar::after {
-  content: "";
-  width: 300px;
-  visibility: hidden;
 }
 
 .toolbar-logo {
@@ -172,7 +226,12 @@ export default {
   width: 300px;
 }
 
-.search-bar-bg {
-  background-color: rgba(0, 0, 0, 0.1);
+.input-icon {
+  transition: color 0.36s;
+}
+.q-field--focused {
+  & .input-icon {
+    color: white;
+  }
 }
 </style>

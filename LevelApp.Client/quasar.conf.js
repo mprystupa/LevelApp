@@ -11,7 +11,8 @@ module.exports = function (ctx) {
     ],
 
     css: [
-      'app.styl'
+      'app.styl',
+      'levelapp.colors.styl'
     ],
 
     extras: [
@@ -35,6 +36,7 @@ module.exports = function (ctx) {
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
+        'QBtnDropdown',
         'QIcon',
         'QList',
         'QItem',
@@ -55,7 +57,14 @@ module.exports = function (ctx) {
         'QStep',
         'QStepperNavigation',
         'QUploader',
-        'QScrollArea'
+        'QScrollArea',
+        'QTabs',
+        'QTab',
+        'QRouteTab',
+        'QTabPanels',
+        'QTabPanel',
+        'QBtnGroup',
+        'QPagination'
       ],
 
       directives: [

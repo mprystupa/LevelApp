@@ -1,5 +1,5 @@
 <template>
-  <div class="full-width full-height background-wrapper">
+  <div class="full-width full-height background background-wrapper">
     <div
       id="background"
       class="background bg-transition fixed full-width full-height"

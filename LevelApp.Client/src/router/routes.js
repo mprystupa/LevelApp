@@ -10,7 +10,18 @@ const routes = [
     path: "/main",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/main/dashboard/Dashboard.vue") }
+      {
+        path: "",
+        component: () => import("pages/main/dashboard/Dashboard.vue")
+      },
+      {
+        path: "courses",
+        component: () => import("pages/main/courses/CourseList.vue")
+      },
+      {
+        path: "lessons",
+        component: () => import("pages/main/lessons/LessonList.vue")
+      }
     ]
   }
 ];
