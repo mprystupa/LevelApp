@@ -14,13 +14,19 @@ const routes = [
         path: "",
         component: () => import("pages/main/dashboard/Dashboard.vue")
       },
+      // Courses
       {
         path: "courses",
         component: () => import("pages/main/courses/CourseList.vue")
       },
+      // Lessons
       {
         path: "lessons",
         component: () => import("pages/main/lessons/LessonList.vue")
+      },
+      {
+        path: "lessons/add",
+        component: () => import("pages/main/lessons/edit-lesson/EditLesson.vue")
       }
     ]
   }

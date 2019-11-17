@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered class="full-width courses-card empty-courses-card" :class="color">
+  <q-card flat bordered class="full-width empty-courses-card" :class="color">
     <q-card-section class="full-height">
       <div class="row full-width full-height flex flex-center">
         <div class="row full-width flex flex-center">

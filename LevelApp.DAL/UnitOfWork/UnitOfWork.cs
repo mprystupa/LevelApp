@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LevelApp.Crosscutting.Extensions;
 using LevelApp.DAL.Context;
 using LevelApp.DAL.Repositories.Base;
+using LevelApp.DAL.Repositories.Lesson;
 using Microsoft.AspNetCore.Http;
 
 namespace LevelApp.DAL.UnitOfWork
@@ -60,6 +61,7 @@ namespace LevelApp.DAL.UnitOfWork
         private void InitializeRepositories()
         {
             Repositories.Add(typeof(IUserRepository), new UserRepository(Context));
+            Repositories.Add(typeof(ILessonRepository), new LessonRepository(Context));
         }
     }
 }

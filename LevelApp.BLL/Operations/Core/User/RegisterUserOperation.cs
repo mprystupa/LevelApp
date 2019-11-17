@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using LevelApp.BLL.Base.Operation;
@@ -18,7 +19,7 @@ namespace LevelApp.BLL.Operations.Core.User
         {
             if (await Repository<IUserRepository>().CheckIfExistsAsync(x => x.Email == Parameter.Email))
             {
-                Errors.Add("User with this e-mail already exists.");
+                Errors.Add("User with this e-mail already exists.", HttpStatusCode.Conflict);
             }
             
             await base.Validate();

@@ -194,6 +194,7 @@ export default {
             if (error.response && error.response.data) {
               errorMessage = error.response.data.Message;
             }
+
             this.$q.notify({
               color: "negative",
               icon: "fas fa-times",

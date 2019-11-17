@@ -27,6 +27,7 @@ namespace LevelApp.DAL.Repositories.Base
         void InsertBatch(IEnumerable<TEntity> entities);
         TKey Update(TEntity entity);
         void UpdateBatch(IEnumerable<TEntity> entities);
+        TKey Delete(TKey id);
         TKey Delete(TEntity entity);
         void DeleteBatch(IEnumerable<TEntity> entities);
         void Save();

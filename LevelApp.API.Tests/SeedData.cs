@@ -23,10 +23,5 @@ namespace LevelApp.API.Tests
 
             context.SaveChanges();
         }
-
-        public static void GetTestUserToken()
-        {
-            
-        }
     }
 }

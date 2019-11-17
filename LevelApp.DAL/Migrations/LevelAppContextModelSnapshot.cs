@@ -56,6 +56,37 @@ namespace LevelApp.DAL.Migrations
 
                     b.ToTable("CoreAppUser");
                 });
+
+            modelBuilder.Entity("LevelApp.DAL.Models.Core.Lesson", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<DateTime?>("DateCreatedUtc");
+
+                    b.Property<DateTime?>("DateDeletedUtc");
+
+                    b.Property<DateTime?>("DateModifiedUtc");
+
+                    b.Property<int?>("DeletedBy");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500);
+
+                    b.Property<int?>("ModifiedBy");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CoreLesson");
+                });
 #pragma warning restore 612, 618
         }
     }

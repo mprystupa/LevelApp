@@ -11,4 +11,8 @@
         public const string Register = "register";
         public const string CheckEmail = "checkEmail/{email}";
     }
+
+    public class LessonRoutes : CoreRoutes
+    {
+    }
 }

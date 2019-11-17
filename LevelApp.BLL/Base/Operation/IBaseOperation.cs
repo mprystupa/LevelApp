@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,7 +16,7 @@ namespace LevelApp.BLL.Base
         IMapper Mapper { get; set; }
         TParameter Parameter { get; set; }
         TResult OperationResult { get; set; }
-        List<string> Errors { get; set; }
+        Dictionary<string, HttpStatusCode> Errors { get; set; }
 
         void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter);
         Task GetData();

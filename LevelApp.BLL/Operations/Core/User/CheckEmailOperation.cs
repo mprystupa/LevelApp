@@ -7,7 +7,7 @@ namespace LevelApp.BLL.Operations.Core.User
     {
         public override async Task ExecuteValidated()
         {
-            OperationResult = await UnitOfWork.GetRepository<IUserRepository>()
+            OperationResult = await Repository<IUserRepository>()
                 .CheckIfExistsAsync(x => x.Email == Parameter);
             await base.ExecuteValidated();
         }

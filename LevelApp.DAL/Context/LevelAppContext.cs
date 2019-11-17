@@ -37,6 +37,7 @@ namespace LevelApp.DAL.Context
         }
 
         public virtual DbSet<AppUser> AppUsers { get; set; }
+        public virtual DbSet<Lesson> Lessons { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

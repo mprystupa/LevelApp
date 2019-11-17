@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Threading.Tasks;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.DAL.UnitOfWork;
@@ -12,7 +14,7 @@ namespace LevelApp.BLL.Tests.Base.Executor
         {
             if (Parameter == 2)
             {
-                Errors.Add("Validation failed.");
+                Errors.Add("Validation failed.", HttpStatusCode.BadRequest);
             }
             
             await base.Validate();
@@ -26,7 +28,7 @@ namespace LevelApp.BLL.Tests.Base.Executor
             }
             else if (Parameter == 3)
             {
-                UnitOfWork.Save();
+                throw new Exception();
             }
             
             await base.ExecuteValidated();

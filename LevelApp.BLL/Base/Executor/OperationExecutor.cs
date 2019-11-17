@@ -35,7 +35,7 @@ namespace LevelApp.BLL.Base.Executor
                 await operation.ExecuteValidated();
                 return operation.OperationResult;
             }
-            catch (BusinessValidationException)
+            catch (ApiException)
             {
                 throw;
             }

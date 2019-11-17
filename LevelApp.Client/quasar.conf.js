@@ -64,7 +64,8 @@ module.exports = function (ctx) {
         'QTabPanels',
         'QTabPanel',
         'QBtnGroup',
-        'QPagination'
+        'QPagination',
+        'QExpansionItem'
       ],
 
       directives: [

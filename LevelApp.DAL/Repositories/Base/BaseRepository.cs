@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LevelApp.Crosscutting.Exceptions;
 using LevelApp.DAL.Models.Base;
+using Z.EntityFramework.Plus;
 
 namespace LevelApp.DAL.Repositories.Base
 {
@@ -124,6 +125,12 @@ namespace LevelApp.DAL.Repositories.Base
 
             Entities.AttachRange(enumerable);
             Entities.UpdateRange(enumerable);
+        }
+
+        public TKey Delete(TKey id)
+        {
+            var entity = Get(id);
+            return Delete(entity);
         }
 
         public TKey Delete(TEntity entity)
