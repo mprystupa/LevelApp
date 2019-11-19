@@ -3,12 +3,12 @@
     <q-card-section class="full-height">
       <div class="row full-width full-height">
         <!-- Course icon -->
-        <div class="col-1 q-pa-md">
+        <div class="icon-col q-pa-xs">
           <div class="full-width full-height clip-hex bg-courses" />
         </div>
 
         <!-- Course text -->
-        <div class="col-9">
+        <div class="col q-pl-sm">
           <!-- Course title -->
           <div class="row">
             <span class="text-h5">{{ lessonData.title }}</span>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- Course buttons -->
-        <div class="col-2 flex flex-center">
+        <div class="button-col flex flex-center">
           <!-- Edit course -->
           <div class="row full-width">
             <q-btn
@@ -58,4 +58,14 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.icon-col {
+  flex: 0 0 5em;
+  height: 100%;
+}
+
+.button-col {
+  flex: 0 0 15em;
+  height: 100%;
+}
+</style>

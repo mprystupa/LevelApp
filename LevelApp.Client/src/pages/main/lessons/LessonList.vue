@@ -24,13 +24,7 @@
       </div>
       <div class="row q-mb-xl">
         <q-btn-group flat spread class="full-width">
-          <q-btn-dropdown
-            rounded
-            outline
-            color="lessons"
-            label="Name"
-            icon="fas fa-sort-alpha-up"
-          >
+          <q-btn-dropdown rounded outline color="lessons" label="Name" icon="fas fa-sort-alpha-up">
             <q-list>
               <q-item clickable v-close-popup>
                 <q-item-section>
@@ -56,7 +50,7 @@
             outline
             color="lessons"
             label="Ascending"
-            icon="fas fa-arrow-up"
+            icon="fas fa-arrow-up fa-xs"
           >
             <q-list>
               <q-item clickable v-close-popup>
@@ -127,11 +121,7 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="created">
           <!-- Lessons tabs -->
-          <div
-            class="row q-ma-sm"
-            v-for="index in [1, 2, 3, 4, 5]"
-            :key="index"
-          >
+          <div class="row q-ma-sm" v-for="index in [1, 2, 3, 4, 5]" :key="index">
             <lesson-card
               :lesson-data="{
                 title: `Test course ${index}`,
@@ -144,8 +134,7 @@
 
           <!-- Pagination -->
           <div class="row q-ma-lg flex flex-center">
-            <q-pagination v-model="currentPage" :max="5" color="lessons">
-            </q-pagination>
+            <q-pagination v-model="currentPage" :max="5" color="lessons"></q-pagination>
           </div>
 
           <!-- Add new lesson -->
@@ -198,19 +187,19 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-@import "../../../css/quasar.variables.styl"
+@import '../../../css/quasar.variables.styl';
 
 .lesson-card-entry {
   color: $secondary;
 }
 
 .lesson-card-entry-light {
-  @extend .lesson-card-entry
+  @extend .lesson-card-entry;
   background-color: $lessons-item-light;
 }
 
 .lesson-card-entry-dark {
-  @extend .lesson-card-entry
+  @extend .lesson-card-entry;
   background-color: $lessons-item-dark;
 }
 </style>
