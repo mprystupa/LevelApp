@@ -1,8 +1,46 @@
 import axios from "axios";
+import LocalStorageService from "./local-storage/LocalStorageService";
+import { Notify } from "quasar";
 
 const baseDomain = "https://localhost:5001";
 const baseUrl = `${baseDomain}/api`;
 
-export default axios.create({
+let axiosInstance = axios.create({
   baseURL: baseUrl
 });
+
+// Initialize request interceptor
+axiosInstance.interceptors.request.use(
+  function(config) {
+    const token = LocalStorageService.getAccessToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  function(error) {
+    Promise.reject(error);
+  }
+);
+
+// Initialize response interceptor
+axiosInstance.interceptors.response.use(
+  function(response) {
+    return response;
+  },
+  function(error) {
+    if (error.response.status === 401) {
+      window.location = "";
+    } else {
+      Notify.create({
+        color: "warning",
+        icon: "fas fa-lock",
+        message: "You are not logged in.",
+        position: "top"
+      });
+      return Promise.reject(error);
+    }
+  }
+);
+
+export default axiosInstance;

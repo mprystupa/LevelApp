@@ -27,6 +27,10 @@ const routes = [
       {
         path: "lessons/add",
         component: () => import("pages/main/lessons/edit-lesson/EditLesson.vue")
+      },
+      {
+        path: "lessons/edit/:id",
+        component: () => import("pages/main/lessons/edit-lesson/EditLesson.vue")
       }
     ]
   }

@@ -17,10 +17,11 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             await base.Validate();
         }
 
-        public override Task ExecuteValidated()
+        public override async Task ExecuteValidated()
         {
             OperationResult = Repository<ILessonRepository>().Delete(Parameter);
-            return base.ExecuteValidated();
+            await UnitOfWork.SaveAsync();
+            await base.ExecuteValidated();
         }
     }
 }

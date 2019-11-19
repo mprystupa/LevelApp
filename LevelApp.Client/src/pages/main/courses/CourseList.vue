@@ -175,7 +175,7 @@
 
 <script>
 import CourseCard from "../../../components/main/CourseCard";
-import EmptyCourseCard from "../../../components/main/EmptyCourseCard";
+import EmptyCourseCard from "../../../components/main/AddCourseCard";
 import SearchComponent from "../../../components/main/SearchComponent";
 export default {
   name: "CourseList",

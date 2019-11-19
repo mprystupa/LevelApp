@@ -25,7 +25,7 @@
                   <q-input
                     class="full-width q-mb-lg"
                     filled
-                    v-model="name"
+                    v-model="lesson.name"
                     ref="name"
                     label="Name"
                     :rules="[
@@ -40,7 +40,7 @@
                   <q-input
                     class="full-width"
                     filled
-                    v-model="description"
+                    v-model="lesson.description"
                     type="textarea"
                     rows="15"
                     label="Description"
@@ -80,7 +80,7 @@
         <q-card>
           <q-card-section>
             <!-- Editable lesson -->
-            <editable-content :value="content" />
+            <editable-content :value="lesson.content" />
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -93,7 +93,12 @@
           <q-btn flat color="accent" label="Go back" icon="fas fa-arrow-left" />
         </div>
         <div class="col-6 flex justify-end">
-          <q-btn color="primary" label="Save" @click="saveLesson" icon-right="fas fa-check" />
+          <q-btn
+            color="primary"
+            label="Save"
+            @click="onSaveClick"
+            icon-right="fas fa-check"
+          />
         </div>
       </div>
     </q-card-section>
@@ -114,10 +119,17 @@ export default {
     return {
       inputValidators: InputValidators,
       formValidator: null,
-      name: "",
-      description: "",
-      content: ""
+      lesson: {
+        name: "",
+        description: "",
+        content: ""
+      }
     };
+  },
+  created() {
+    if (this.$route.params.id) {
+      this.getLessonData(this.$route.params.id);
+    }
   },
   mounted() {
     this.initializeForm();
@@ -126,37 +138,50 @@ export default {
     initializeForm() {
       this.formValidator = new FormValidator(this.$refs.name);
     },
-    saveLesson() {
+    getLessonData(id) {
+      LessonsService.getLesson(id).then(response => {
+        this.lesson = response.data;
+      });
+    },
+    onSaveClick() {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
-        LessonsService.createLesson({
-          name: this.name,
-          description: this.description,
-          content: this.content
-        })
-          .then(() => {
+        if (this.$route.params.id) {
+          LessonsService.updateLesson(this.lesson).then(() => {
             this.$q.notify({
               color: "positive",
               icon: "fa fas-check",
-              message: "Lesson has been added!"
+              message: "Lesson has been updated!"
             });
 
-            this.$router.push("/lessons");
-          })
-          .catch(error => {
-            let errorMessage = "Something went wrong.";
-            if (error.response && error.response.data) {
-              errorMessage = error.response.data.Message;
-            }
-
-            this.$q.notify({
-              color: "negative",
-              icon: "fas fa-times",
-              message: errorMessage,
-              position: "top"
-            });
+            this.$router.push("/main/lessons");
           });
+        } else {
+          LessonsService.createLesson(this.lesson)
+            .then(() => {
+              this.$q.notify({
+                color: "positive",
+                icon: "fa fas-check",
+                message: "Lesson has been added!"
+              });
+
+              this.$router.push("/main/lessons");
+            })
+            .catch(error => {
+              let errorMessage = "Something went wrong.";
+              if (error.response && error.response.data) {
+                errorMessage = error.response.data.Message;
+              }
+
+              this.$q.notify({
+                color: "negative",
+                icon: "fas fa-times",
+                message: errorMessage,
+                position: "top"
+              });
+            });
+        }
       }
     }
   }

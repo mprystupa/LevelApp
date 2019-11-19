@@ -1,13 +1,22 @@
 @import "levelapp.variables.styl"
 @import "quasar.variables.styl"
-@import "app.styl"
+
+@import "app.base.styl"
 
 .lessons-card {
   @extend .base-card
+  @extend .base-card-hover
   height $lessons-card-height
 }
 
 .empty-lessons-card {
+  @extend .base-card
+  height $lessons-card-height
+  background-color rgba(0, 0, 0, 0.05)
+  box-shadow none
+}
+
+.add-lessons-card {
   @extend .lessons-card
 
   color $lessons

@@ -12,7 +12,8 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             var lesson = Mapper.Map<DAL.Models.Core.Lesson>(Parameter);
             var result = Repository<ILessonRepository>().Insert(lesson);
             OperationResult = result;
-
+            await UnitOfWork.SaveAsync();
+            
             await base.ExecuteValidated();
         }
     }

@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered class="full-width empty-courses-card" :class="color">
+  <q-card flat bordered class="full-width add-courses-card" :class="color">
     <q-card-section class="full-height">
       <div class="row full-width full-height flex flex-center">
         <div class="row full-width flex flex-center">
@@ -16,7 +16,7 @@
 <script>
 export default {
   props: ["color"],
-  name: "EmptyCourseCard"
+  name: "AddCourseCard"
 };
 </script>
 

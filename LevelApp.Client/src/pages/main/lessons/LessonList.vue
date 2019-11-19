@@ -24,7 +24,13 @@
       </div>
       <div class="row q-mb-xl">
         <q-btn-group flat spread class="full-width">
-          <q-btn-dropdown rounded outline color="lessons" label="Name" icon="fas fa-sort-alpha-up">
+          <q-btn-dropdown
+            rounded
+            outline
+            color="lessons"
+            label="Name"
+            icon="fas fa-sort-alpha-up"
+          >
             <q-list>
               <q-item clickable v-close-popup>
                 <q-item-section>
@@ -121,20 +127,31 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="created">
           <!-- Lessons tabs -->
-          <div class="row q-ma-sm" v-for="index in [1, 2, 3, 4, 5]" :key="index">
-            <lesson-card
-              :lesson-data="{
-                title: `Test course ${index}`,
-                description: `Description of test course ${index}`
-              }"
-              :card-class="getCardClass(index)"
-              button-class="course-card-entry"
-            ></lesson-card>
+          <div v-if="lessons && lessons.length > 0">
+            <div class="row q-ma-sm" v-for="(lesson, index) in lessons" :key="lesson.id">
+              <lesson-card
+                :lesson-data="lesson"
+                :card-class="getCardClass(index)"
+                button-class="course-card-entry"
+                @edit="onEditClick(lesson.id)"
+              ></lesson-card>
+            </div>
+          </div>
+          <div
+            class="row q-ma-sm"
+            v-for="index in cardsPerPage - lessons.length"
+            :key="index"
+          >
+            <lesson-card :is-empty="true"> </lesson-card>
           </div>
 
           <!-- Pagination -->
           <div class="row q-ma-lg flex flex-center">
-            <q-pagination v-model="currentPage" :max="5" color="lessons"></q-pagination>
+            <q-pagination
+              v-model="currentPage"
+              :max="5"
+              color="lessons"
+            ></q-pagination>
           </div>
 
           <!-- Add new lesson -->
@@ -158,8 +175,10 @@
 
 <script>
 import LessonCard from "../../../components/main/LessonCard";
-import EmptyLessonCard from "../../../components/main/EmptyLessonCard";
+import EmptyLessonCard from "../../../components/main/AddLessonCard";
 import SearchComponent from "../../../components/main/SearchComponent";
+import { ServiceFactory } from "../../../services/ServiceFactory";
+const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "LessonList",
@@ -170,8 +189,13 @@ export default {
       currentPage: 1,
       searchName: "",
       searchDescription: "",
-      searchCategory: ""
+      searchCategory: "",
+      lessons: [],
+      cardsPerPage: 4
     };
+  },
+  created() {
+    this.getAllLessons();
   },
   methods: {
     getCardClass(index) {
@@ -181,6 +205,14 @@ export default {
     },
     onAddLessonClick() {
       this.$router.push("lessons/add");
+    },
+    onEditClick(id) {
+      this.$router.push(`lessons/edit/${id}`);
+    },
+    getAllLessons() {
+      LessonsService.get().then(response => {
+        this.lessons = response.data;
+      });
     }
   }
 };
@@ -193,12 +225,12 @@ export default {
   color: $secondary;
 }
 
-.lesson-card-entry-light {
+>>> .lesson-card-entry-light {
   @extend .lesson-card-entry;
   background-color: $lessons-item-light;
 }
 
-.lesson-card-entry-dark {
+>>> .lesson-card-entry-dark {
   @extend .lesson-card-entry;
   background-color: $lessons-item-dark;
 }

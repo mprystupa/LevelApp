@@ -129,6 +129,7 @@
 import { InputValidators } from "../../../validators/InputValidators";
 import FormValidator from "../../../validators/FormValidator";
 import { ServiceFactory } from "../../../services/ServiceFactory";
+import LocalStorageService from "../../../services/local-storage/LocalStorageService";
 const UsersService = ServiceFactory.get("users");
 
 export default {
@@ -185,6 +186,8 @@ export default {
               message: "Logged in!",
               position: "top"
             });
+
+            LocalStorageService.setToken({ accessToken: response.data });
 
             // Redirect to Main module of application
             this.$router.push("/main");
