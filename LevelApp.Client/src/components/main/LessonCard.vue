@@ -48,7 +48,7 @@
                 align="left"
                 label="Delete course"
                 icon="fas fa-times"
-                @delete="$emit('delete')"
+                @click="$emit('delete')"
               />
             </div>
           </div>

@@ -33,6 +33,10 @@ namespace LevelApp.BLL.Mappings
             // Lesson <-> LessonDto
             CreateMap<Lesson, LessonDto>()
                 .ReverseMap();
+            
+            // Lesson <-> LessonSearchEntryDto
+            CreateMap<Lesson, LessonSearchEntryDto>()
+                .ReverseMap();
         }
     }
 }

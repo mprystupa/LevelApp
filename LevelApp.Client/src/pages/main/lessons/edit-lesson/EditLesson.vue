@@ -90,7 +90,13 @@
       <!-- Buttons -->
       <div class="row full-width">
         <div class="col-6">
-          <q-btn flat color="accent" label="Go back" icon="fas fa-arrow-left" />
+          <q-btn
+            flat
+            color="accent"
+            label="Go back"
+            @click="onBackClick"
+            icon="fas fa-arrow-left"
+          />
         </div>
         <div class="col-6 flex justify-end">
           <q-btn
@@ -120,6 +126,7 @@ export default {
       inputValidators: InputValidators,
       formValidator: null,
       lesson: {
+        id: 0,
         name: "",
         description: "",
         content: ""
@@ -183,6 +190,9 @@ export default {
             });
         }
       }
+    },
+    onBackClick() {
+      this.$router.push("/main/lessons");
     }
   }
 };

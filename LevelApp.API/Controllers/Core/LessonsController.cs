@@ -21,36 +21,44 @@ namespace LevelApp.API.Controllers.Core
         {
         }
         
-        [HttpGet]
-        [Route(BaseRoutes.Root)]
+        [HttpGet(BaseRoutes.Root)]
         public async Task<ActionResult<List<LessonDto>>> GetAllLessons()
         {
             return await Executor.Execute<GetAllLessonsOperation, int, List<LessonDto>>(0);
         }
 
-        [HttpGet]
-        [Route(BaseRoutes.Id)]
+        [HttpGet(LessonRoutes.Search)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchLessons([FromQuery] int? pageIndex)
+        {
+            var parameter = new LessonSearchParametersDto()
+            {
+                PageSize = 4,
+                PageIndex = pageIndex ?? 1
+            };
+
+            return await Executor.Execute<SearchLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
+                parameter);
+        }
+
+        [HttpGet(BaseRoutes.Id)]
         public async Task<ActionResult<LessonDto>> GetLesson(int id)
         {
             return await Executor.Execute<GetLessonOperation, int, LessonDto>(id);
         }
 
-        [HttpPost]
-        [Route(BaseRoutes.Root)]
+        [HttpPost(BaseRoutes.Root)]
         public async Task<ActionResult<int>> AddLesson([FromBody] LessonDto lesson)
         {
             return await Executor.Execute<AddLessonOperation, LessonDto, int>(lesson);
         }
 
-        [HttpPut]
-        [Route(BaseRoutes.Root)]
-        public async Task<ActionResult<int>> UpdateLesson([FromBody] LessonDto lesson)
+        [HttpPut(BaseRoutes.Id)]
+        public async Task<ActionResult<int>> UpdateLesson(int id, [FromBody] LessonDto lesson)
         {
             return await Executor.Execute<UpdateLessonOperation, LessonDto, int>(lesson);
         }
 
-        [HttpDelete]
-        [Route(BaseRoutes.Id)]
+        [HttpDelete(BaseRoutes.Id)]
         public async Task<ActionResult<int>> DeleteLesson(int id)
         {
             return await Executor.Execute<DeleteLessonOperation, int, int>(id);

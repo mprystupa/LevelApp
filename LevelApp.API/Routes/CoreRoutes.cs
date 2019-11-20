@@ -14,5 +14,8 @@
 
     public class LessonRoutes : CoreRoutes
     {
+        public const string Search = "search";
+        public const string PageSize = "{pageSize}";
+        public const string PageIndex = "{pageIndex}";
     }
 }

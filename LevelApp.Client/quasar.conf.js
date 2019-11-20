@@ -77,8 +77,16 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
-      ]
+        'Notify',
+        'LoadingBar'
+      ],
+      config: {
+        loadingBar: {
+          color: 'accent',
+          position: 'bottom',
+          size: '10px'
+        }
+      }
 
       // iconSet: 'ionicons-v4'
       // lang: 'de' // Quasar language

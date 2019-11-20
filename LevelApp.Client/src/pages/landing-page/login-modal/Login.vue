@@ -184,7 +184,7 @@ export default {
               color: "primary",
               icon: "fas fa-check",
               message: "Logged in!",
-              position: "top"
+              position: "bottom"
             });
 
             LocalStorageService.setToken({ accessToken: response.data });

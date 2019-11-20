@@ -7,6 +7,10 @@ export default {
     return BaseService.get(`${resource}`);
   },
 
+  search(pageIndex) {
+    return BaseService.get(`${resource}/search?pageIndex=${pageIndex}`);
+  },
+
   getLesson(lessonId) {
     return BaseService.get(`${resource}/${lessonId}`);
   },
@@ -17,7 +21,7 @@ export default {
 
   updateLesson(payload) {
     if (payload.id) {
-      return BaseService.put(`${resource}/${payload.id}`);
+      return BaseService.put(`${resource}/${payload.id}`, payload);
     }
 
     console.log("Update payload does not contain an id.");
@@ -25,7 +29,7 @@ export default {
 
   deleteLesson(payload) {
     if (payload.id) {
-      return BaseService.delete(`${resource}/${payload.id}`);
+      return BaseService.delete(`${resource}/${payload.id}`, payload);
     }
 
     console.log("Delete payload does not contain an id.");

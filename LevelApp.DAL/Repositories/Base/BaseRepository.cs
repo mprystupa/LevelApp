@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using LevelApp.Crosscutting.Exceptions;
+using LevelApp.Crosscutting.Helpers.PaginatedList;
 using LevelApp.DAL.Models.Base;
 using Z.EntityFramework.Plus;
 
@@ -66,6 +67,25 @@ namespace LevelApp.DAL.Repositories.Base
             }
 
             return await (orderBy != null ? orderBy(query).ToListAsync() : query.ToListAsync());
+        }
+
+        public async Task<IPaginatedList<TEntity>> GetPaginatedAsync(int pageIndex, int pageSize,
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+        {
+            IQueryable<TEntity> query = Entities;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+
+            var entities = await (orderBy != null ? orderBy(query).ToListAsync() : query.ToListAsync());
+            var count = await Entities.CountAsync();
+
+            return new PaginatedList<TEntity>(entities, count, pageIndex, pageSize);
         }
 
         public TEntity GetDetail(Func<TEntity, bool> predicate)

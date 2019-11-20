@@ -35,6 +35,16 @@ namespace LevelApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("corsPolicy", builder =>
+                {
+                    builder
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod();
+                });
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Swagger service
@@ -106,7 +116,8 @@ namespace LevelApp.API
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "LevelApp API V1"); });
 
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader());
+            app.UseCors("corsPolicy");
+
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LevelApp.BLL.Dto
 {
@@ -6,5 +7,6 @@ namespace LevelApp.BLL.Dto
     public class BaseDto
     {
         public int Id { get; set; }
+        public Dictionary<string, bool> Permissions { get; set; }
     }
 }

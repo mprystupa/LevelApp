@@ -29,17 +29,29 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   function(error) {
-    if (error.response.status === 401) {
-      window.location = "";
-    } else {
-      Notify.create({
-        color: "warning",
-        icon: "fas fa-lock",
-        message: "You are not logged in.",
-        position: "top"
-      });
-      return Promise.reject(error);
+    if (error) {
+      if (error.response.status === 401) {
+        window.location = "";
+
+        Notify.create({
+          color: "warning",
+          icon: "fas fa-lock",
+          message: "You are not logged in.",
+          position: "top"
+        });
+      } else {
+        var message = error.response.data.title || error.response.data.Message;
+
+        Notify.create({
+          color: "negative",
+          icon: "fas fa-times",
+          message: message,
+          position: "top"
+        });
+      }
     }
+
+    return Promise.reject(error);
   }
 );
 

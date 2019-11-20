@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using LevelApp.Crosscutting.Helpers.PaginatedList;
 using LevelApp.DAL.Models.Base;
 
 namespace LevelApp.DAL.Repositories.Base
@@ -14,6 +15,10 @@ namespace LevelApp.DAL.Repositories.Base
         Task<IList<TEntity>> GetAllAsync();
         TEntity Get(TKey id);
         Task<TEntity> GetAsync(TKey id);
+
+        Task<IPaginatedList<TEntity>> GetPaginatedAsync(int pageIndex, int pageSize,
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
         IList<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
         Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null,
