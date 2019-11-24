@@ -7,6 +7,7 @@ using LevelApp.BLL.Dto.Core.Lesson;
 using LevelApp.BLL.Dto.Core.User;
 using LevelApp.BLL.Operations.Core.Lesson;
 using LevelApp.BLL.Operations.Core.User;
+using LevelApp.Crosscutting.Enums.Main;
 using LevelApp.DAL.Models.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,16 +28,58 @@ namespace LevelApp.API.Controllers.Core
             return await Executor.Execute<GetAllLessonsOperation, int, List<LessonDto>>(0);
         }
 
-        [HttpGet(LessonRoutes.Search)]
-        public async Task<ActionResult<LessonSearchResultsDto>> SearchLessons([FromQuery] int? pageIndex)
+        [HttpGet(LessonRoutes.SearchCreated)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchCreatedLessons([FromQuery] int? pageIndex)
         {
-            var parameter = new LessonSearchParametersDto()
+            var parameter = new LessonSearchCreatedParametersDto()
             {
                 PageSize = 4,
                 PageIndex = pageIndex ?? 1
             };
 
-            return await Executor.Execute<SearchLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
+            return await Executor.Execute<SearchCreatedLessonsOperation, LessonSearchCreatedParametersDto, LessonSearchResultsDto>(
+                parameter);
+        }
+        
+        [HttpGet(LessonRoutes.SearchFavourite)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchFavouriteLessons([FromQuery] int? pageIndex)
+        {
+            var parameter = new LessonSearchAttendingParametersDto()
+            {
+                PageSize = 4,
+                PageIndex = pageIndex ?? 1,
+                IsFavourite = true
+            };
+
+            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchAttendingParametersDto, LessonSearchResultsDto>(
+                parameter);
+        }
+        
+        [HttpGet(LessonRoutes.SearchCompleted)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchCompletedLessons([FromQuery] int? pageIndex)
+        {
+            var parameter = new LessonSearchAttendingParametersDto()
+            {
+                PageSize = 4,
+                PageIndex = pageIndex ?? 1,
+                LessonStatus = LessonStatusEnum.Completed
+            };
+
+            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchAttendingParametersDto, LessonSearchResultsDto>(
+                parameter);
+        }
+        
+        [HttpGet(LessonRoutes.SearchAwaiting)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchAwaitingLessons([FromQuery] int? pageIndex)
+        {
+            var parameter = new LessonSearchAttendingParametersDto()
+            {
+                PageSize = 4,
+                PageIndex = pageIndex ?? 1,
+                LessonStatus = LessonStatusEnum.Awaiting
+            };
+
+            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchAttendingParametersDto, LessonSearchResultsDto>(
                 parameter);
         }
 

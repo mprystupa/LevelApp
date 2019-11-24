@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.Extensions.Configuration;
 
@@ -17,8 +18,11 @@ namespace LevelApp.BLL.Base
         TParameter Parameter { get; set; }
         TResult OperationResult { get; set; }
         Dictionary<string, HttpStatusCode> Errors { get; set; }
+        
+        int CurrentUserId { get; }
+        string CurrentUserEmail { get;  }
 
-        void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter);
+        void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter, IUserResolverService userResolver);
         Task GetData();
         Task Validate();
         Task ExecuteValidated();

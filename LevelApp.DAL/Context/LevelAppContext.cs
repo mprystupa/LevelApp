@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using LevelApp.Crosscutting.Enums.Main;
 using LevelApp.DAL.Models.Base.Interfaces;
 using LevelApp.DAL.Models.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LevelApp.DAL.Context
 {
@@ -38,10 +40,21 @@ namespace LevelApp.DAL.Context
 
         public virtual DbSet<AppUser> AppUsers { get; set; }
         public virtual DbSet<Lesson> Lessons { get; set; }
+        public virtual DbSet<AppUserLesson> AppUserLessons { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            // Entities setup
+            modelBuilder
+                .Entity<AppUserLesson>()
+                .HasKey(c => new {c.UserId, c.LessonId});
+
+            modelBuilder
+                .Entity<AppUserLesson>()
+                .Property(e => e.Status)
+                .HasConversion(new EnumToNumberConverter<LessonStatusEnum, int>());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {

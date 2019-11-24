@@ -8,6 +8,7 @@ using LevelApp.BLL.Mappings;
 using LevelApp.DAL.Repositories.User;
 using LevelApp.DAL.UnitOfWork;
 using LevelApp.Crosscutting.Models;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -73,8 +74,9 @@ namespace LevelApp.API
             services.AddDbContext<LevelAppContext>(options =>
                 options.UseMySql(Configuration["ConnectionStrings:DevConnection"]));
             
-            // HttpContextAccessor
+            // Http services
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IUserResolverService, UserResolverService>();
 
             // DI container (BLL)
             services.AddTransient<IOperationExecutor, OperationExecutor>();

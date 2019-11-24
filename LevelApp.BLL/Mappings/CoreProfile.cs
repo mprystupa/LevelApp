@@ -19,11 +19,13 @@ namespace LevelApp.BLL.Mappings
         {
             // AppUser <-> UserSearchDto
             CreateMap<AppUser, UserSearchDto>()
+                .ForMember(x => x.Permissions, x => x.Ignore())
                 .ReverseMap();
 
             // AppUser <-> UserLoginDto
             CreateMap<AppUser, UserLoginDto>()
                 .ForMember(d => d.Password, o => o.Ignore())
+                .ForMember(x => x.Permissions, x => x.Ignore())
                 .ReverseMap();
         }
         
@@ -32,11 +34,14 @@ namespace LevelApp.BLL.Mappings
         {
             // Lesson <-> LessonDto
             CreateMap<Lesson, LessonDto>()
+                .ForMember(x => x.Permissions, x => x.Ignore())
                 .ReverseMap();
             
             // Lesson <-> LessonSearchEntryDto
             CreateMap<Lesson, LessonSearchEntryDto>()
-                .ReverseMap();
+                .ForMember(x => x.Permissions, x => x.Ignore())
+                .ReverseMap()
+                .ForAllOtherMembers(x => x.Ignore());
         }
     }
 }

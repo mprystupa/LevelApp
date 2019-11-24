@@ -7,8 +7,8 @@ export default {
     return BaseService.get(`${resource}`);
   },
 
-  search(pageIndex) {
-    return BaseService.get(`${resource}/search?pageIndex=${pageIndex}`);
+  searchCreated(pageIndex) {
+    return BaseService.get(`${resource}/search/created?pageIndex=${pageIndex}`);
   },
 
   getLesson(lessonId) {

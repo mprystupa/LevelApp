@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LevelApp.Crosscutting.Extensions;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.Context;
 using LevelApp.DAL.Repositories.User;
 using Microsoft.AspNetCore.Http;
@@ -22,11 +23,13 @@ namespace LevelApp.DAL.Tests.UnitOfWork
             // Arrange
             const int savingUserId = -1;
             var context = new Mock<LevelAppContext>();
+            var userResolver = new Mock<IUserResolverService>();
+            userResolver.Setup(x => x.GetUserId<int>()).Returns(savingUserId);
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, userResolver.Object);
 
             // Act
-            unitOfWork.Save(savingUserId);
+            unitOfWork.Save();
             
             // Assert
             context.Verify(x => x.SaveChanges(savingUserId));
@@ -38,11 +41,13 @@ namespace LevelApp.DAL.Tests.UnitOfWork
             // Arrange
             const int savingUserId = -1;
             var context = new Mock<LevelAppContext>();
+            var userResolver = new Mock<IUserResolverService>();
+            userResolver.Setup(x => x.GetUserId<int>()).Returns(savingUserId);
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, userResolver.Object);
 
             // Act
-            unitOfWork.SaveAsync(savingUserId);
+            unitOfWork.SaveAsync();
             
             // Assert
             context.Verify(x => x.SaveChangesAsync(savingUserId));
@@ -53,8 +58,9 @@ namespace LevelApp.DAL.Tests.UnitOfWork
         {
             // Arrange
             var context = new Mock<LevelAppContext>();
+            var userResolver = new Mock<IUserResolverService>();
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, userResolver.Object);
 
             // Act
             var result = unitOfWork.GetRepository<IUserRepository>();
@@ -68,8 +74,9 @@ namespace LevelApp.DAL.Tests.UnitOfWork
         {
             // Arrange
             var context = new Mock<LevelAppContext>();
+            var userResolver = new Mock<IUserResolverService>();
 
-            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object);
+            var unitOfWork = new DAL.UnitOfWork.UnitOfWork(context.Object, userResolver.Object);
             
             // Act
             unitOfWork.Dispose();

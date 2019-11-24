@@ -5,6 +5,7 @@ using LevelApp.BLL.Base.Executor;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Mappings;
 using LevelApp.BLL.Operations.Core.Lesson;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.Repositories.Base;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ namespace LevelApp.BLL.Tests.Operations
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
+        private Mock<IUserResolverService> _userResolver = new Mock<IUserResolverService>();
         private IMapper _mapper;
         protected TParameter Parameter { get; set; }
         
@@ -36,7 +38,7 @@ namespace LevelApp.BLL.Tests.Operations
         protected TOperation GetOperation()
         {
             var operation = GetOperationInstance<TOperation>();
-            operation.SetupOperation(_unitOfWorkMock.Object, _configurationMock.Object, _mapper, Parameter);
+            operation.SetupOperation(_unitOfWorkMock.Object, _configurationMock.Object, _mapper, Parameter, _userResolver.Object);
 
             return operation;
         }
@@ -44,6 +46,11 @@ namespace LevelApp.BLL.Tests.Operations
         protected void MockRepository<TRepository>(Mock<TRepository> repositoryMock) where TRepository : class
         {
             _unitOfWorkMock.Setup(x => x.GetRepository<TRepository>()).Returns(repositoryMock.Object);
+        }
+
+        protected void MockUserResolver(Mock<IUserResolverService> userResolverMock)
+        {
+            _userResolver = userResolverMock;
         }
 
         private void GenerateMapper()

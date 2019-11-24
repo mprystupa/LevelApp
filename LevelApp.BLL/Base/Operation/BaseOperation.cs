@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using LevelApp.Crosscutting.Exceptions;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.Repositories.Base;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.Extensions.Configuration;
@@ -20,18 +21,24 @@ namespace LevelApp.BLL.Base.Operation
         public TParameter Parameter { get; set; }
         public TResult OperationResult { get; set; }
         public Dictionary<string, HttpStatusCode> Errors { get; set; }
+        
+        public int CurrentUserId => UserResolver.GetUserId<int>();
+        public string CurrentUserEmail => UserResolver.GetUserEmail();
+        private IUserResolverService UserResolver { get; set; }
 
         protected BaseOperation()
         {
             Errors = new Dictionary<string, HttpStatusCode>();
         }
 
-        public void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter)
+        public void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter, IUserResolverService userResolver)
         {
             UnitOfWork = unitOfWork;
             Configuration = configuration;
             Mapper = mapper;
             Parameter = parameter;
+
+            UserResolver = userResolver;
         }
 
         public virtual Task GetData()

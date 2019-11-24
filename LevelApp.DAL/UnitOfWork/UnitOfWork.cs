@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using LevelApp.Crosscutting.Extensions;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.Context;
 using LevelApp.DAL.Repositories.Base;
 using LevelApp.DAL.Repositories.Lesson;
@@ -17,12 +18,14 @@ namespace LevelApp.DAL.UnitOfWork
     public sealed class UnitOfWork : IUnitOfWork
     {
         private LevelAppContext Context { get; set; }
+        private readonly IUserResolverService _userResolver;
         private Dictionary<Type, object> Repositories { get; set; }
         private bool _disposed = false;
 
-        public UnitOfWork(LevelAppContext context)
+        public UnitOfWork(LevelAppContext context, IUserResolverService userResolver)
         {
             Context = context;
+            _userResolver = userResolver;
             Repositories = new Dictionary<Type, object>();
             InitializeRepositories();
         }
@@ -32,13 +35,17 @@ namespace LevelApp.DAL.UnitOfWork
             return (TRepository) Repositories[typeof(TRepository)];
         }
 
-        public void Save(int userId = -1)
+        public void Save()
         {
+            var userId = _userResolver.GetUserId<int>();
+            
             Context.SaveChanges(userId);
         }
 
-        public async Task SaveAsync(int userId = -1)
+        public async Task SaveAsync()
         {
+            var userId = _userResolver.GetUserId<int>();
+            
             await Context.SaveChangesAsync(userId);
         }
 

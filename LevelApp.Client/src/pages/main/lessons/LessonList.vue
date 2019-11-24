@@ -243,7 +243,7 @@ export default {
     };
   },
   created() {
-    this.getAllLessons(this.currentPage);
+    this.getAllCreatedLessons(this.currentPage);
   },
   methods: {
     getCardClass(index) {
@@ -251,7 +251,7 @@ export default {
         ? "lesson-card-entry-light"
         : "lesson-card-entry-dark";
     },
-    getAllLessons(pageIndex) {
+    getAllCreatedLessons(pageIndex) {
       LessonsService.search(pageIndex).then(response => {
         this.lessons = response.data.searchResults;
         this.totalPages = response.data.totalPages;
@@ -276,7 +276,7 @@ export default {
             icon: "fa fas-check",
             message: "Lesson has been deleted!"
           });
-          this.getAllLessons();
+          this.getAllLessons(this.currentPage);
         });
       };
     },

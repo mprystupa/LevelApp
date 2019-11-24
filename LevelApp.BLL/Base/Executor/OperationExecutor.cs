@@ -2,6 +2,7 @@
 using LevelApp.Crosscutting.Exceptions;
 using System.Threading.Tasks;
 using AutoMapper;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.Extensions.Configuration;
 
@@ -12,19 +13,21 @@ namespace LevelApp.BLL.Base.Executor
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        
-        public OperationExecutor(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper)
+        private readonly IUserResolverService _userResolver;
+
+        public OperationExecutor(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, IUserResolverService userResolver)
         {
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _mapper = mapper;
+            _userResolver = userResolver;
         }
         
         public async Task<TResult> Execute<TOperation, TParameter, TResult>(TParameter parameter) where TOperation : IBaseOperation<TParameter, TResult>
         {
             // Setup operation instance
             var operation = GetOperationInstance<TOperation>();
-            operation.SetupOperation(_unitOfWork, _configuration, _mapper, parameter);
+            operation.SetupOperation(_unitOfWork, _configuration, _mapper, parameter, _userResolver);
 
             // Operation pipeline
             try

@@ -4,4 +4,4 @@ cd ../..
 cd LevelApp.DAL
 dotnet ef --startup-project ../LevelApp.API migrations add %name%
 
-cd LevelApp.Utils/DatabaseUtils
+cd ../LevelApp.Utils/DatabaseUtils

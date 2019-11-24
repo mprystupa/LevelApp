@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LevelApp.BLL.Base.Executor;
 using LevelApp.Crosscutting.Exceptions;
+using LevelApp.Crosscutting.Services;
 using LevelApp.DAL.UnitOfWork;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -19,11 +20,12 @@ namespace LevelApp.BLL.Tests.Base.Executor
         public OperationExecutorTests()
         {
             var unitOfWork = new Mock<IUnitOfWork>();
-            unitOfWork.Setup(u => u.Save(1)).Throws(new GeneralServerException("Test message"));
+            unitOfWork.Setup(u => u.Save()).Throws(new GeneralServerException("Test message"));
             var configuration = new Mock<IConfiguration>();
             var mapper = new Mock<IMapper>();
+            var userResolver = new Mock<IUserResolverService>();
 
-            _executor = new OperationExecutor(unitOfWork.Object, configuration.Object, mapper.Object);
+            _executor = new OperationExecutor(unitOfWork.Object, configuration.Object, mapper.Object, userResolver.Object);
         }
         
         [Fact]
