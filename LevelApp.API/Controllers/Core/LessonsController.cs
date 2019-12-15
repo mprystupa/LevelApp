@@ -28,58 +28,61 @@ namespace LevelApp.API.Controllers.Core
             return await Executor.Execute<GetAllLessonsOperation, int, List<LessonDto>>(0);
         }
 
-        [HttpGet(LessonRoutes.SearchCreated)]
-        public async Task<ActionResult<LessonSearchResultsDto>> SearchCreatedLessons([FromQuery] int? pageIndex)
+        [HttpGet(LessonRoutes.Search)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchAllLessons([FromQuery] LessonSearchParametersDto parameter)
         {
-            var parameter = new LessonSearchCreatedParametersDto()
-            {
-                PageSize = 4,
-                PageIndex = pageIndex ?? 1
-            };
+            return await Executor.Execute<SearchAllLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
+                parameter);
+        }
 
-            return await Executor.Execute<SearchCreatedLessonsOperation, LessonSearchCreatedParametersDto, LessonSearchResultsDto>(
+        [HttpGet(LessonRoutes.SearchCreated)]
+        public async Task<ActionResult<LessonSearchResultsDto>> SearchCreatedLessons([FromQuery] LessonSearchParametersDto parameter)
+        {
+            parameter.IsCreatedByUserOnly = true;
+
+            return await Executor.Execute<SearchCreatedLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
                 parameter);
         }
         
         [HttpGet(LessonRoutes.SearchFavourite)]
         public async Task<ActionResult<LessonSearchResultsDto>> SearchFavouriteLessons([FromQuery] int? pageIndex)
         {
-            var parameter = new LessonSearchAttendingParametersDto()
+            var parameter = new LessonSearchParametersDto()
             {
-                PageSize = 4,
-                PageIndex = pageIndex ?? 1,
+                CardsPerPage = 4,
+                CurrentPage = pageIndex ?? 1,
                 IsFavourite = true
             };
 
-            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchAttendingParametersDto, LessonSearchResultsDto>(
+            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
                 parameter);
         }
         
         [HttpGet(LessonRoutes.SearchCompleted)]
         public async Task<ActionResult<LessonSearchResultsDto>> SearchCompletedLessons([FromQuery] int? pageIndex)
         {
-            var parameter = new LessonSearchAttendingParametersDto()
+            var parameter = new LessonSearchParametersDto()
             {
-                PageSize = 4,
-                PageIndex = pageIndex ?? 1,
+                CardsPerPage = 4,
+                CurrentPage = pageIndex ?? 1,
                 LessonStatus = LessonStatusEnum.Completed
             };
 
-            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchAttendingParametersDto, LessonSearchResultsDto>(
+            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
                 parameter);
         }
         
         [HttpGet(LessonRoutes.SearchAwaiting)]
         public async Task<ActionResult<LessonSearchResultsDto>> SearchAwaitingLessons([FromQuery] int? pageIndex)
         {
-            var parameter = new LessonSearchAttendingParametersDto()
+            var parameter = new LessonSearchParametersDto()
             {
-                PageSize = 4,
-                PageIndex = pageIndex ?? 1,
+                CardsPerPage = 4,
+                CurrentPage = pageIndex ?? 1,
                 LessonStatus = LessonStatusEnum.Awaiting
             };
 
-            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchAttendingParametersDto, LessonSearchResultsDto>(
+            return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
                 parameter);
         }
 

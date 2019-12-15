@@ -7,15 +7,18 @@ using LevelApp.DAL.Repositories.Lesson;
 
 namespace LevelApp.BLL.Operations.Core.Lesson
 {
-    public class SearchCreatedLessonsOperation : BaseOperation<LessonSearchCreatedParametersDto, LessonSearchResultsDto>
+    public class SearchCreatedLessonsOperation : BaseOperation<LessonSearchParametersDto, LessonSearchResultsDto>
     {
         public override async Task ExecuteValidated()
         {
             var results = await Repository<ILessonRepository>()
                 .GetPaginatedAsync(
-                    Parameter.PageIndex, 
-                    Parameter.PageSize, 
-                    lesson => lesson.CreatedBy == CurrentUserId);
+                    Parameter.CurrentPage, 
+                    Parameter.CardsPerPage, 
+                    lesson => lesson.CreatedBy == CurrentUserId 
+                              && (string.IsNullOrEmpty(Parameter.SearchName) || lesson.Name.Contains(Parameter.SearchName))
+                              && (string.IsNullOrEmpty(Parameter.SearchDescription)  || lesson.Description.Contains(Parameter.SearchDescription))
+                              );
             
             OperationResult = new LessonSearchResultsDto()
             {

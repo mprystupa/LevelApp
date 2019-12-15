@@ -1,6 +1,10 @@
 <template>
   <div class="full-width">
-    <q-card v-if="isEmpty" class="full-width empty-lessons-card" :class="cardClass">
+    <q-card
+      v-if="isEmpty"
+      class="full-width empty-lessons-card"
+      :class="cardClass"
+    >
       <q-card-section></q-card-section>
     </q-card>
     <q-card v-else class="full-width lessons-card" :class="cardClass">
@@ -53,6 +57,12 @@
             </div>
           </div>
         </div>
+
+        <q-card class="lesson-statistics-card">
+          <q-card-section>
+            <i class="fas fa-star"></i>
+          </q-card-section>
+        </q-card>
       </q-card-section>
     </q-card>
   </div>
@@ -65,7 +75,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="stylus" scoped>
 .icon-col {
   flex: 0 0 5em;
   height: 100%;
@@ -74,5 +84,18 @@ export default {
 .button-col {
   flex: 0 0 15em;
   height: 100%;
+}
+
+.lesson-statistics-card {
+  width: 45%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  top: -10px;
+  border-radius 15px;
+
+  & .q-card__section {
+    padding: 5px;
+  }
 }
 </style>

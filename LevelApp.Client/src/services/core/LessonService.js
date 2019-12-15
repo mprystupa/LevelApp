@@ -7,8 +7,12 @@ export default {
     return BaseService.get(`${resource}`);
   },
 
-  searchCreated(pageIndex) {
-    return BaseService.get(`${resource}/search/created?pageIndex=${pageIndex}`);
+  searchAll(params) {
+    return BaseService.get(`${resource}/search`, { params });
+  },
+
+  searchCreated(params) {
+    return BaseService.get(`${resource}/search/created`, { params });
   },
 
   getLesson(lessonId) {

@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
   },
   function(error) {
     if (error) {
-      if (error.response.status === 401) {
+      if (error && error.response && error.response.status === 401 && window.location !== "") {
         window.location = "";
 
         Notify.create({
@@ -39,8 +39,17 @@ axiosInstance.interceptors.response.use(
           message: "You are not logged in.",
           position: "top"
         });
+      } else if (error && error.response) {
+        let message = error.response.data.title || error.response.data.Message;
+
+        Notify.create({
+          color: "negative",
+          icon: "fas fa-times",
+          message: message,
+          position: "top"
+        });
       } else {
-        var message = error.response.data.title || error.response.data.Message;
+        let message = 'Something went wrong.';
 
         Notify.create({
           color: "negative",

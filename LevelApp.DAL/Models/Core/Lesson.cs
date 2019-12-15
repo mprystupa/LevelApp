@@ -16,9 +16,10 @@ namespace LevelApp.DAL.Models.Core
         
         [MaxLength(500)]
         public string Description { get; set; }
-        
         public string Content { get; set; }
+        public int AuthorId { get; set; }
         
+        public virtual AppUser Author { get; set; }
         public virtual ICollection<AppUserLesson> AppUserLessons { get; set; }
     }
 }

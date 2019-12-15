@@ -20,7 +20,8 @@ namespace LevelApp.BLL.Operations.Core.Lesson
 
         public override async Task ExecuteValidated()
         {
-            var lesson = Mapper.Map<DAL.Models.Core.Lesson>(Parameter);
+            var lesson = await Repository<ILessonRepository>().GetDetailAsync(x => x.Id == Parameter.Id);
+
             var result = UnitOfWork.GetRepository<ILessonRepository>().Update(lesson);
             OperationResult = result;
             await UnitOfWork.SaveAsync();

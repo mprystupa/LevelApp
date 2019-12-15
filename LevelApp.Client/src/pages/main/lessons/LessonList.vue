@@ -9,22 +9,39 @@
       </template>
 
       <template v-slot:tabs>
-        <q-tabs align="right" no-caps shrink v-model="tab" class="text-lessons">
-          <q-tab name="created" icon="fas fa-user-edit" label="Created" />
+        <q-tabs align="right" no-caps shrink v-model="tab" @input="getLessons" class="text-lessons">
           <q-tab
-            name="completed"
-            icon="fas fa-check-square"
-            label="Completed"
+            :name="lessonCards.search()"
+            icon="fas fa-search"
+            :label="lessonCards.search()"
           />
-          <q-tab name="awaiting" icon="fas fa-clock" label="Awaiting" />
-          <q-tab name="favourite" icon="fas fa-star" label="Favourite" />
+          <q-tab
+            :name="lessonCards.created()"
+            icon="fas fa-user-edit"
+            :label="lessonCards.created()"
+          />
+          <q-tab
+            :name="lessonCards.completed()"
+            icon="fas fa-check-square"
+            :label="lessonCards.completed()"
+          />
+          <q-tab
+            :name="lessonCards.awaiting()"
+            icon="fas fa-clock"
+            :label="lessonCards.awaiting()"
+          />
+          <q-tab
+            :name="lessonCards.favourite()"
+            icon="fas fa-star"
+            :label="lessonCards.favourite()"
+          />
         </q-tabs>
       </template>
 
       <template v-slot:filters>
         <div class="row q-mb-sm">
           <span class="text-lessons text-subtitle2">
-            <q-icon name="fas fa-filter q-mr-sm" />Filter by
+            <q-icon name="fas fa-sort-amount-up-alt q-mr-sm" />Sort by
           </span>
         </div>
         <div class="row q-mb-xl">
@@ -33,25 +50,19 @@
               rounded
               outline
               color="lessons"
-              label="Name"
-              icon="fas fa-sort-alpha-up"
+              :label="lessonOrderBySelected.text"
+              :icon="lessonOrderBySelected.icon"
             >
               <q-list>
-                <q-item clickable v-close-popup>
+                <q-item
+                  v-for="(orderBy, index) in lessonOrderBy"
+                  clickable
+                  v-close-popup
+                  @click="onOrderByClick(orderBy)"
+                  :key="index"
+                >
                   <q-item-section>
-                    <q-item-label>Photos</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup>
-                  <q-item-section>
-                    <q-item-label>Videos</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup>
-                  <q-item-section>
-                    <q-item-label>Articles</q-item-label>
+                    <q-item-label>{{ orderBy.text }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -60,25 +71,19 @@
               rounded
               outline
               color="lessons"
-              label="Ascending"
-              icon="fas fa-arrow-up fa-xs"
+              :label="lessonOrderByDirectionSelected.text"
+              :icon="lessonOrderByDirectionSelected.icon"
             >
               <q-list>
-                <q-item clickable v-close-popup>
+                <q-item
+                  v-for="(orderByDirection, index) in lessonOrderByDirection"
+                  clickable
+                  v-close-popup
+                  @click="onOrderByDirectionClick(orderByDirection)"
+                  :key="index"
+                >
                   <q-item-section>
-                    <q-item-label>Photos</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup>
-                  <q-item-section>
-                    <q-item-label>Videos</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup>
-                  <q-item-section>
-                    <q-item-label>Articles</q-item-label>
+                    <q-item-label>{{ orderByDirection.text }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -87,7 +92,7 @@
         </div>
       </template>
 
-      <template v-slot:search>
+      <template v-if="tab !== lessonCards.search()" v-slot:search>
         <div class="row q-mb-sm">
           <span class="text-lessons text-subtitle2">
             <q-icon name="fas fa-search q-mr-sm" />Search by
@@ -97,41 +102,83 @@
           <q-input
             rounded
             outlined
-            v-model="searchName"
+            clearable
+            debounce="500"
+            v-model="searchData.searchName"
             dense
             class="full-width"
             color="lessons"
             hint="Name"
+            @input="getLessons"
           />
         </div>
         <div class="row q-mb-sm">
           <q-input
             rounded
             outlined
-            v-model="searchDescription"
+            clearable
+            debounce="500"
+            v-model="searchData.searchDescription"
             dense
             class="full-width"
             color="lessons"
             hint="Description"
+            @input="getLessons"
           />
         </div>
         <div class="row q-mb-sm">
           <q-input
             rounded
             outlined
-            v-model="searchCategory"
+            clearable
+            debounce="500"
+            v-model="searchData.searchCategory"
             dense
             class="full-width"
             color="lessons"
             hint="Category"
+            @input="getLessons"
           />
         </div>
       </template>
 
       <template v-slot:tabsContent>
         <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="created">
-            <!-- Lessons tabs -->
+          <!-- Search tab -->
+          <q-tab-panel :name="lessonCards.search()">
+            <div class="row q-mb-lg">
+              <div class="col-12">
+                <q-input
+                  rounded
+                  debounce="500"
+                  @input="getAllLessons"
+                  standout="bg-lessons text-white"
+                  v-model="searchData.searchLessonText"
+                  class="full-width"
+                  placeholder="Search for courses by name, description or author"
+                >
+                  <template v-slot:prepend>
+                    <q-icon
+                      v-if="searchData.searchLessonText === ''"
+                      name="fas fa-search"
+                      size="1.2rem"
+                    />
+                    <q-icon
+                      v-else
+                      name="fas fa-times"
+                      size="1.2rem"
+                      class="cursor-pointer"
+                      @click="searchData.searchLessonText = ''"
+                    />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+
+            <div class="row q-mb-lg">
+              <q-separator inset color="lessons" />
+            </div>
+
             <div v-if="lessons && lessons.length > 0">
               <div
                 class="row q-ma-sm"
@@ -144,13 +191,13 @@
                   button-class="course-card-entry"
                   @edit="onEditClick(lesson.id)"
                   @delete="onDeleteClick(lesson)"
-                ></lesson-card>
+                />
               </div>
             </div>
             <div
               class="row q-ma-sm"
-              v-for="index in cardsPerPage - lessons.length >= 0
-                ? cardsPerPage - lessons.length
+              v-for="index in searchData.cardsPerPage - lessons.length >= 0
+                ? searchData.cardsPerPage - lessons.length
                 : 0"
               :key="index"
             >
@@ -158,22 +205,59 @@
             </div>
 
             <!-- Pagination -->
-            <div class="row q-ma-lg flex flex-center">
+            <div class="row q-mx-lg q-mt-lg flex flex-center">
               <q-pagination
-                v-model="currentPage"
+                v-model="searchData.currentPage"
                 :max="totalPages"
                 color="lessons"
                 @input="onPageChange"
-              ></q-pagination>
+              />
+            </div>
+          </q-tab-panel>
+          <q-tab-panel :name="lessonCards.created()">
+            <!-- Lessons tabs -->
+            <div v-if="lessons && lessons.length > 0">
+              <div
+                class="row q-ma-md"
+                v-for="(lesson, index) in lessons"
+                :key="lesson.id"
+              >
+                <lesson-card
+                  :lesson-data="lesson"
+                  :card-class="getCardClass(index)"
+                  button-class="course-card-entry"
+                  @edit="onEditClick(lesson.id)"
+                  @delete="onDeleteClick(lesson)"
+                />
+              </div>
+            </div>
+            <div
+              class="row q-ma-md"
+              v-for="index in searchData.cardsPerPage - lessons.length >= 0
+                ? searchData.cardsPerPage - lessons.length
+                : 0"
+              :key="index"
+            >
+              <lesson-card :is-empty="true"> </lesson-card>
+            </div>
+
+            <!-- Pagination -->
+            <div class="row q-mx-lg q-mb-lg flex flex-center">
+              <q-pagination
+                v-model="searchData.currentPage"
+                :max="totalPages"
+                color="lessons"
+                @input="onPageChange"
+              />
             </div>
 
             <!-- Add new lesson -->
-            <div class="row q-ma-sm">
+            <div class="row q-ma-md">
               <empty-lesson-card
                 class="cursor-pointer"
                 color="courses"
                 @click.native="onAddLessonClick()"
-              ></empty-lesson-card>
+              />
             </div>
           </q-tab-panel>
           <q-tab-panel name="attended">
@@ -225,25 +309,69 @@ import SearchComponent from "../../../components/main/SearchComponent";
 import { ServiceFactory } from "../../../services/ServiceFactory";
 const LessonsService = ServiceFactory.get("lessons");
 
+const lessonTabs = {
+  search: () => "Search",
+  created: () => "Created",
+  completed: () => "Completed",
+  awaiting: () => "Awaiting",
+  favourite: () => "Favourite"
+};
+
+const lessonOrderBy = [
+  {
+    text: "Name",
+    parameter: "name",
+    icon: "fas fa-sort-alpha-up"
+  },
+  {
+    text: "Author",
+    parameter: "author",
+    icon: "fas fa-user-circle"
+  }
+];
+
+const lessonOrderByDirection = [
+  {
+    text: "Ascending",
+    parameter: "asc",
+    icon: "fas fa-arrow-up fa-xs"
+  },
+  {
+    text: "Descending",
+    parameter: "desc",
+    icon: "fas fa-arrow-down fa-xs"
+  }
+];
+
 export default {
   name: "LessonList",
   components: { EmptyLessonCard, LessonCard, SearchComponent },
   data() {
     return {
-      tab: "created",
-      currentPage: 1,
+      lessonCards: lessonTabs,
+      lessonOrderBy: lessonOrderBy,
+      lessonOrderBySelected: lessonOrderBy[0],
+      lessonOrderByDirection: lessonOrderByDirection,
+      lessonOrderByDirectionSelected: lessonOrderByDirection[0],
+      tab: lessonTabs.created(),
+      searchData: {
+        currentPage: 1,
+        cardsPerPage: 4,
+        searchName: "",
+        searchDescription: "",
+        searchCategory: "",
+        searchLessonText: "",
+        orderBy: lessonOrderBy[0].parameter,
+        orderDirection: lessonOrderByDirection[0].parameter
+      },
       totalPages: 1,
-      searchName: "",
-      searchDescription: "",
-      searchCategory: "",
       lessons: [],
-      cardsPerPage: 4,
       isDeleteDialogVisible: false,
       resolveDeleteDialog: null
     };
   },
   created() {
-    this.getAllCreatedLessons(this.currentPage);
+    this.getLessons();
   },
   methods: {
     getCardClass(index) {
@@ -251,14 +379,33 @@ export default {
         ? "lesson-card-entry-light"
         : "lesson-card-entry-dark";
     },
-    getAllCreatedLessons(pageIndex) {
-      LessonsService.search(pageIndex).then(response => {
+    getLessons() {
+      this.lessons = [];
+
+      switch (this.tab) {
+        case lessonTabs.search():
+          this.getAllLessons();
+          break;
+
+        case lessonTabs.created():
+          this.getAllCreatedLessons();
+          break;
+      }
+    },
+    getAllCreatedLessons() {
+      LessonsService.searchCreated(this.searchData).then(response => {
+        this.lessons = response.data.searchResults;
+        this.totalPages = response.data.totalPages;
+      });
+    },
+    getAllLessons() {
+      LessonsService.searchAll(this.searchData).then(response => {
         this.lessons = response.data.searchResults;
         this.totalPages = response.data.totalPages;
       });
     },
     onPageChange() {
-      this.getAllLessons(this.currentPage);
+      this.getAllCreatedLessons();
     },
     onAddLessonClick() {
       this.$router.push("lessons/add");
@@ -279,6 +426,18 @@ export default {
           this.getAllLessons(this.currentPage);
         });
       };
+    },
+    onOrderByClick(orderByItem) {
+      this.lessonOrderBySelected = orderByItem;
+      this.searchData.orderBy = orderByItem.parameter;
+
+      this.getLessons();
+    },
+    onOrderByDirectionClick(orderByDirectionItem) {
+      this.lessonOrderByDirectionSelected = orderByDirectionItem;
+      this.searchData.orderDirection = orderByDirectionItem.parameter;
+
+      this.getLessons();
     },
     deleteModalHandler(shouldDelete) {
       if (shouldDelete) {

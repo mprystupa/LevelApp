@@ -3,14 +3,16 @@ using System;
 using LevelApp.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LevelApp.DAL.Migrations
 {
     [DbContext(typeof(LevelAppContext))]
-    partial class LevelAppContextModelSnapshot : ModelSnapshot
+    [Migration("20191214122809_AddAuthorIdInLesson")]
+    partial class AddAuthorIdInLesson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

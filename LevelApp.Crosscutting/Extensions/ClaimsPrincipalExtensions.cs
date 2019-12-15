@@ -14,7 +14,12 @@ namespace LevelApp.Crosscutting.Extensions
                 throw new ArgumentNullException(nameof(principal));
             }
 
-            var loggedInUserId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var loggedInUserId = "0";
+
+            if (principal.FindFirst(ClaimTypes.NameIdentifier) != null)
+            {
+                loggedInUserId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
             
             if (typeof(T) == typeof(string))
             {

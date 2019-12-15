@@ -2,7 +2,7 @@
 {
     public enum LessonStatusEnum
     {
-        Created,
+        Created = 1,
         NotStarted,
         Locked,
         Awaiting,

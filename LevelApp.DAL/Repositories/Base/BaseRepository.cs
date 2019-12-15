@@ -15,14 +15,14 @@ namespace LevelApp.DAL.Repositories.Base
 {
     public class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey> where TEntity : Entity<TKey>
     {
-        private readonly DbContext _context;
         private DbSet<TEntity> _entities;
 
-        private DbSet<TEntity> Entities => _entities ?? (_entities = _context.Set<TEntity>());
+        protected DbSet<TEntity> Entities => _entities ?? (_entities = Context.Set<TEntity>());
+        protected readonly DbContext Context;
 
         public BaseRepository(DbContext context)
         {
-            _context = context;
+            Context = context;
         }
 
         public IList<TEntity> GetAll()
@@ -155,7 +155,7 @@ namespace LevelApp.DAL.Repositories.Base
 
         public TKey Delete(TEntity entity)
         {
-            if (_context.Entry(entity).State == EntityState.Detached)
+            if (Context.Entry(entity).State == EntityState.Detached)
             {
                 Entities.Attach(entity);
             }
@@ -171,12 +171,12 @@ namespace LevelApp.DAL.Repositories.Base
 
         public void Save()
         {
-            _context.SaveChanges();
+            Context.SaveChanges();
         }
 
         public async void SaveAsync()
         {
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
     }
 }

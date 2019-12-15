@@ -191,19 +191,6 @@ export default {
 
             // Redirect to Main module of application
             this.$router.push("/main");
-          })
-          .catch(error => {
-            let errorMessage = "Something went wrong.";
-            if (error.response && error.response.data) {
-              errorMessage = error.response.data.Message;
-            }
-
-            this.$q.notify({
-              color: "negative",
-              icon: "fas fa-times",
-              message: errorMessage,
-              position: "top"
-            });
           });
       }
     }
