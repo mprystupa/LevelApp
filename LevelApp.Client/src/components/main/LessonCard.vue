@@ -58,9 +58,15 @@
           </div>
         </div>
 
+        <!-- Lesson statistics -->
         <q-card class="lesson-statistics-card">
           <q-card-section>
-            <i class="fas fa-star"></i>
+            <div class="flex flex-center justify-around">
+              <span>
+                Not appointed to any course.
+              </span>
+              <q-btn flat icon="fas fa-star" rounded color="favourite" label="Amazing?" />
+            </div>
           </q-card-section>
         </q-card>
       </q-card-section>

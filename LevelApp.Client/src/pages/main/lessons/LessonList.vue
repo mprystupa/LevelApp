@@ -181,7 +181,7 @@
 
             <div v-if="lessons && lessons.length > 0">
               <div
-                class="row q-ma-sm"
+                class="row q-ma-md"
                 v-for="(lesson, index) in lessons"
                 :key="lesson.id"
               >
@@ -195,7 +195,7 @@
               </div>
             </div>
             <div
-              class="row q-ma-sm"
+              class="row q-ma-md"
               v-for="index in searchData.cardsPerPage - lessons.length >= 0
                 ? searchData.cardsPerPage - lessons.length
                 : 0"
