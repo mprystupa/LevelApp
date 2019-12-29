@@ -3,7 +3,10 @@ const routes = [
     path: "/",
     component: () => import("layouts/LandingLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/landing-page/Index.vue") }
+      {
+        path: "",
+        component: () => import("pages/landing-page/Index.vue")
+      }
     ]
   },
   {
@@ -31,6 +34,10 @@ const routes = [
       {
         path: "lessons/edit/:id",
         component: () => import("pages/main/lessons/edit-lesson/EditLesson.vue")
+      },
+      {
+        path: "lessons/view/:id",
+        component: () => import("pages/main/lessons/view-lesson/ViewLesson.vue")
       }
     ]
   }

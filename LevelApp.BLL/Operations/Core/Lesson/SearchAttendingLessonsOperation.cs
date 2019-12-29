@@ -9,7 +9,7 @@ using LevelApp.DAL.Repositories.Lesson;
 
 namespace LevelApp.BLL.Operations.Core.Lesson
 {
-    public class SearchAttendingLessonsOperation : BaseOperation<LessonSearchParametersDto, LessonSearchResultsDto>
+    public class SearchAttendingLessonsOperation : BaseLessonOperation<LessonSearchParametersDto, LessonSearchResultsDto>
     {
         public override async Task ExecuteValidated()
         {
@@ -26,12 +26,19 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             
             OperationResult = new LessonSearchResultsDto()
             {
-                SearchResults = Mapper.Map<List<LessonSearchEntryDto>>(results.ToList()),
+                SearchResults = MapLessonSearchEntry(results),
                 TotalPages = results.TotalPages,
                 PageIndex = results.PageIndex
             };
             
             await base.ExecuteValidated();
+        }
+
+        public override Task AddFrontendPermissions()
+        {
+            OperationResult.SearchResults = AddLessonsFrontendPermissions(OperationResult.SearchResults);
+
+            return base.AddFrontendPermissions();
         }
     }
 }

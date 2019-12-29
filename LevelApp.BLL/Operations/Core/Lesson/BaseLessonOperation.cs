@@ -4,7 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Dto.Core.Lesson;
+using LevelApp.BLL.Permissions;
 using LevelApp.Crosscutting.Enums.Main;
+using LevelApp.DAL.Models.Core;
 
 namespace LevelApp.BLL.Operations.Core.Lesson
 {
@@ -31,6 +33,70 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             return lessons => lessonDto.OrderDirection == "asc" ? 
                 lessons.OrderBy(GetOrderParameter(lessonDto.OrderBy)) 
                 : lessons.OrderByDescending(GetOrderParameter(lessonDto.OrderBy));
+        }
+
+        protected List<LessonSearchEntryDto> AddLessonsFrontendPermissions(List<LessonSearchEntryDto> lessons)
+        {
+            foreach(var lesson in lessons)
+            {
+                if (lesson.AuthorId == CurrentUserId)
+                {
+                    lesson.Permissions.Add(FrontendPermissions.CanEdit, true);
+                }
+            }
+
+            return lessons;
+        }
+
+        protected LessonSearchEntryDto MapLessonSearchEntry(DAL.Models.Core.Lesson lesson)
+        {
+            var lessonSearchEntry = Mapper.Map<LessonSearchEntryDto>(lesson);
+            var userLesson = lesson.AppUserLessons?.FirstOrDefault(x => x.UserId == CurrentUserId);
+
+            if (userLesson != null)
+            {
+                lessonSearchEntry.LessonStatus = userLesson.Status;
+                lessonSearchEntry.IsFavourite = userLesson.IsFavourite;
+            }
+
+            return lessonSearchEntry;
+        }
+
+        protected List<LessonSearchEntryDto> MapLessonSearchEntry(IEnumerable<DAL.Models.Core.Lesson> lessons)
+        {
+            var result = new List<LessonSearchEntryDto>();
+
+            foreach(var lesson in lessons)
+            {
+                result.Add(MapLessonSearchEntry(lesson));
+            }
+
+            return result;
+        }
+
+        protected DAL.Models.Core.Lesson SetFavourite(DAL.Models.Core.Lesson lesson, bool isFavourite)
+        {
+            AppUserLesson userLesson;
+
+            if (lesson.AppUserLessons != null && lesson.AppUserLessons.Any(x => x.UserId == CurrentUserId))
+            {
+               userLesson = lesson.AppUserLessons.First(x => x.UserId == CurrentUserId);
+            }
+            else
+            {
+                userLesson = new AppUserLesson()
+                {
+                    UserId = CurrentUserId,
+                    LessonId = lesson.Id,
+                    Status = LessonStatusEnum.NotStarted
+                };
+
+                lesson.AppUserLessons.Add(userLesson);
+            }
+
+            userLesson.IsFavourite = isFavourite;
+
+            return lesson;
         }
     }
 }

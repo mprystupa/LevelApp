@@ -61,6 +61,11 @@ namespace LevelApp.BLL.Base.Operation
             return Task.FromResult(false);
         }
 
+        public virtual Task AddFrontendPermissions()
+        {
+            return Task.FromResult(false);
+        }
+
         protected TRepository Repository<TRepository>()
         {
             return UnitOfWork.GetRepository<TRepository>();

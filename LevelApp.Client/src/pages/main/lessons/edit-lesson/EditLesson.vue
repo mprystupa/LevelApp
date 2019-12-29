@@ -25,9 +25,7 @@
                 <q-icon name="fas fa-tags" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">
-                Metadata
-              </q-item-section>
+              <q-item-section class="text-lessons text-h6">Metadata</q-item-section>
             </template>
             <q-card>
               <q-card-section>
@@ -88,9 +86,7 @@
                 <q-icon name="fas fa-book-open" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">
-                Content
-              </q-item-section>
+              <q-item-section class="text-lessons text-h6">Content</q-item-section>
             </template>
             <q-card>
               <q-card-section>
@@ -113,14 +109,12 @@
                 <q-icon name="fas fa-book-open" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">
-                Lesson preview
-              </q-item-section>
+              <q-item-section class="text-lessons text-h6">Lesson preview</q-item-section>
             </template>
             <q-card>
               <q-card-section>
                 <!-- Lesson preview -->
-                <div v-html="htmlContent" />
+                <lesson-content :lessonData="lesson"></lesson-content>
               </q-card-section>
             </q-card>
           </q-expansion-item>
@@ -132,21 +126,10 @@
       <!-- Buttons -->
       <div class="row full-width">
         <div class="col-6">
-          <q-btn
-            flat
-            color="accent"
-            label="Go back"
-            @click="onBackClick"
-            icon="fas fa-arrow-left"
-          />
+          <q-btn flat color="accent" label="Go back" @click="onBackClick" icon="fas fa-arrow-left" />
         </div>
         <div class="col-6 flex justify-end">
-          <q-btn
-            color="primary"
-            label="Save"
-            @click="onSaveClick"
-            icon-right="fas fa-check"
-          />
+          <q-btn color="primary" label="Save" @click="onSaveClick" icon-right="fas fa-check" />
         </div>
       </div>
     </q-card-section>
@@ -157,12 +140,13 @@
 import { InputValidators } from "../../../../validators/InputValidators";
 import FormValidator from "../../../../validators/FormValidator";
 import EditableContent from "../../../../components/main/EditableContent";
+import LessonContent from "../../../../components/main/lessons/LessonContent";
 import { ServiceFactory } from "../../../../services/ServiceFactory";
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "EditLesson",
-  components: { EditableContent },
+  components: { EditableContent, LessonContent },
   data() {
     return {
       inputValidators: InputValidators,
@@ -214,16 +198,15 @@ export default {
             this.$router.push("/main/lessons");
           });
         } else {
-          LessonsService.createLesson(this.lesson)
-            .then(() => {
-              this.$q.notify({
-                color: "positive",
-                icon: "fa fas-check",
-                message: "Lesson has been added!"
-              });
-
-              this.$router.push("/main/lessons");
+          LessonsService.createLesson(this.lesson).then(() => {
+            this.$q.notify({
+              color: "positive",
+              icon: "fa fas-check",
+              message: "Lesson has been added!"
             });
+
+            this.$router.push("/main/lessons");
+          });
         }
       }
     },

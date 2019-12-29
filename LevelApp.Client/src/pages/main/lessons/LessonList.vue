@@ -9,7 +9,14 @@
       </template>
 
       <template v-slot:tabs>
-        <q-tabs align="right" no-caps shrink v-model="tab" @input="getLessons" class="text-lessons">
+        <q-tabs
+          align="right"
+          no-caps
+          shrink
+          v-model="tab"
+          @input="getLessons"
+          class="text-lessons"
+        >
           <q-tab
             :name="lessonCards.search()"
             icon="fas fa-search"
@@ -179,91 +186,96 @@
               <q-separator inset color="lessons" />
             </div>
 
-            <div v-if="lessons && lessons.length > 0">
-              <div
-                class="row q-ma-md"
-                v-for="(lesson, index) in lessons"
-                :key="lesson.id"
-              >
-                <lesson-card
-                  :lesson-data="lesson"
-                  :card-class="getCardClass(index)"
-                  button-class="course-card-entry"
-                  @edit="onEditClick(lesson.id)"
-                  @delete="onDeleteClick(lesson)"
-                />
-              </div>
-            </div>
-            <div
-              class="row q-ma-md"
-              v-for="index in searchData.cardsPerPage - lessons.length >= 0
-                ? searchData.cardsPerPage - lessons.length
-                : 0"
-              :key="index"
-            >
-              <lesson-card :is-empty="true"> </lesson-card>
-            </div>
-
-            <!-- Pagination -->
-            <div class="row q-mx-lg q-mt-lg flex flex-center">
-              <q-pagination
-                v-model="searchData.currentPage"
-                :max="totalPages"
-                color="lessons"
-                @input="onPageChange"
-              />
-            </div>
+            <lessons-list-component
+              :lessons="lessons"
+              :cardsPerPage.sync="searchData.cardsPerPage"
+              :currentPage.sync="searchData.currentPage"
+              :totalPages="totalPages"
+              @edit="onEditClick($event)"
+              @delete="onDeleteClick($event)"
+              @view="onViewClick($event)"
+              @favourite="
+                onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
+              "
+              @pageChange="onPageChange"
+            ></lessons-list-component>
           </q-tab-panel>
-          <q-tab-panel :name="lessonCards.created()">
-            <!-- Lessons tabs -->
-            <div v-if="lessons && lessons.length > 0">
-              <div
-                class="row q-ma-md"
-                v-for="(lesson, index) in lessons"
-                :key="lesson.id"
-              >
-                <lesson-card
-                  :lesson-data="lesson"
-                  :card-class="getCardClass(index)"
-                  button-class="course-card-entry"
-                  @edit="onEditClick(lesson.id)"
-                  @delete="onDeleteClick(lesson)"
-                />
-              </div>
-            </div>
-            <div
-              class="row q-ma-md"
-              v-for="index in searchData.cardsPerPage - lessons.length >= 0
-                ? searchData.cardsPerPage - lessons.length
-                : 0"
-              :key="index"
-            >
-              <lesson-card :is-empty="true"> </lesson-card>
-            </div>
 
-            <!-- Pagination -->
-            <div class="row q-mx-lg q-mb-lg flex flex-center">
-              <q-pagination
-                v-model="searchData.currentPage"
-                :max="totalPages"
-                color="lessons"
-                @input="onPageChange"
-              />
-            </div>
+          <!-- Created tab -->
+          <q-tab-panel :name="lessonCards.created()">
+            <lessons-list-component
+              :lessons="lessons"
+              :cardsPerPage.sync="searchData.cardsPerPage"
+              :currentPage.sync="searchData.currentPage"
+              :totalPages="totalPages"
+              @edit="onEditClick($event)"
+              @delete="onDeleteClick($event)"
+              @view="onViewClick($event)"
+              @favourite="
+                onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
+              "
+              @pageChange="onPageChange"
+            ></lessons-list-component>
 
             <!-- Add new lesson -->
             <div class="row q-ma-md">
-              <empty-lesson-card
+              <add-lesson-card
                 class="cursor-pointer"
                 color="courses"
                 @click.native="onAddLessonClick()"
               />
             </div>
           </q-tab-panel>
-          <q-tab-panel name="attended">
-            With so much content to display at once, and often so little screen
-            real-estate, Cards have fast become the design pattern of choice for
-            many companies, including the likes of Google and Twitter.
+
+          <!-- Completed tab -->
+          <q-tab-panel :name="lessonCards.completed()">
+            <lessons-list-component
+              :lessons="lessons"
+              :cardsPerPage.sync="searchData.cardsPerPage"
+              :currentPage.sync="searchData.currentPage"
+              :totalPages="totalPages"
+              @edit="onEditClick($event)"
+              @delete="onDeleteClick($event)"
+              @view="onViewClick($event)"
+              @favourite="
+                onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
+              "
+              @pageChange="onPageChange"
+            ></lessons-list-component>
+          </q-tab-panel>
+
+          <!-- Awaiting tab -->
+          <q-tab-panel :name="lessonCards.awaiting()">
+            <lessons-list-component
+              :lessons="lessons"
+              :cardsPerPage.sync="searchData.cardsPerPage"
+              :currentPage.sync="searchData.currentPage"
+              :totalPages="totalPages"
+              @edit="onEditClick($event)"
+              @delete="onDeleteClick($event)"
+              @view="onViewClick($event)"
+              @favourite="
+                onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
+              "
+              @pageChange="onPageChange"
+            ></lessons-list-component>
+          </q-tab-panel>
+
+          <!-- Favourite tab -->
+          <q-tab-panel :name="lessonCards.favourite()">
+            <lessons-list-component
+              :lessons="lessons"
+              :cardsPerPage.sync="searchData.cardsPerPage"
+              :currentPage.sync="searchData.currentPage"
+              :totalPages="totalPages"
+              @edit="onEditClick($event)"
+              @delete="onDeleteClick($event)"
+              @view="onViewClick($event)"
+              @favourite="
+                onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
+              "
+              @pageChange="onPageChange"
+            ></lessons-list-component>
           </q-tab-panel>
         </q-tab-panels>
       </template>
@@ -303,9 +315,9 @@
 </template>
 
 <script>
-import LessonCard from "../../../components/main/LessonCard";
-import EmptyLessonCard from "../../../components/main/AddLessonCard";
+import AddLessonCard from "../../../components/main/lessons/AddLessonCard";
 import SearchComponent from "../../../components/main/SearchComponent";
+import LessonsListComponent from "../../../components/main/lessons/LessonsListComponent";
 import { ServiceFactory } from "../../../services/ServiceFactory";
 const LessonsService = ServiceFactory.get("lessons");
 
@@ -345,7 +357,11 @@ const lessonOrderByDirection = [
 
 export default {
   name: "LessonList",
-  components: { EmptyLessonCard, LessonCard, SearchComponent },
+  components: {
+    AddLessonCard,
+    SearchComponent,
+    LessonsListComponent
+  },
   data() {
     return {
       lessonCards: lessonTabs,
@@ -410,8 +426,11 @@ export default {
     onAddLessonClick() {
       this.$router.push("lessons/add");
     },
-    onEditClick(id) {
-      this.$router.push(`lessons/edit/${id}`);
+    onEditClick(lessonId) {
+      this.$router.push(`lessons/edit/${lessonId}`);
+    },
+    onViewClick(lessonId) {
+      this.$router.push(`lessons/view/${lessonId}`);
     },
     onDeleteClick(lesson) {
       this.isDeleteDialogVisible = true;
@@ -426,6 +445,36 @@ export default {
           this.getAllLessons(this.currentPage);
         });
       };
+    },
+    onFavouriteClick(lessonId, loadingHandler) {
+      let lesson = this.lessons.find(x => x.id === lessonId);
+      console.log(loadingHandler);
+
+      if (lesson) {
+        if (!lesson.isFavourite) {
+          LessonsService.addFavouriteLesson(lessonId).then(() => {
+            this.$q.notify({
+              color: "positive",
+              icon: "fa fas-check",
+              message: "Lesson added to favourites!"
+            });
+
+            this.getAllLessons(this.currentPage);
+            loadingHandler();
+          });
+        } else {
+          LessonsService.removeFavouriteLesson(lessonId).then(() => {
+            this.$q.notify({
+              color: "positive",
+              icon: "fa fas-check",
+              message: "Lesson removed from favourites!"
+            });
+
+            this.getAllLessons(this.currentPage);
+            loadingHandler();
+          });
+        }
+      }
     },
     onOrderByClick(orderByItem) {
       this.lessonOrderBySelected = orderByItem;
@@ -450,20 +499,4 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-@import '../../../css/quasar.variables.styl';
-
-.lesson-card-entry {
-  color: $secondary;
-}
-
->>> .lesson-card-entry-light {
-  @extend .lesson-card-entry;
-  background-color: $lessons-item-light;
-}
-
->>> .lesson-card-entry-dark {
-  @extend .lesson-card-entry;
-  background-color: $lessons-item-dark;
-}
-</style>
+<style scoped lang="stylus"></style>

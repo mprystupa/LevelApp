@@ -2,13 +2,8 @@
   <search-component color="courses">
     <template v-slot:title>
       <div class="row full-height">
-        <div class="col-2 svg-wrapper">
-          <img class="svg q-pa-md" src="../../../assets/main/course-icon.svg" />
-        </div>
-        <div class="col-10 flex align-center">
-          <div>
-            <span class="text-h4 text-courses">Courses</span>
-          </div>
+        <div class="text-courses q-pa-md">
+          <span class="text-h4">Courses</span>
         </div>
       </div>
     </template>
@@ -16,11 +11,7 @@
     <template v-slot:tabs>
       <q-tabs align="right" no-caps shrink v-model="tab" class="text-courses">
         <q-tab name="created" icon="fas fa-user-edit" label="Created" />
-        <q-tab
-          name="attended"
-          icon="fas fa-chalkboard-teacher"
-          label="Attended"
-        />
+        <q-tab name="attended" icon="fas fa-chalkboard-teacher" label="Attended" />
         <q-tab name="favourite" icon="fas fa-star" label="Favourite" />
         <q-tab name="popular" icon="fas fa-fire-alt" label="Popular" />
         <q-tab name="new" icon="fas fa-calendar-plus" label="New" />
@@ -35,13 +26,7 @@
       </div>
       <div class="row q-mb-xl">
         <q-btn-group flat spread class="full-width">
-          <q-btn-dropdown
-            rounded
-            outline
-            color="courses"
-            label="Name"
-            icon="fas fa-sort-alpha-up"
-          >
+          <q-btn-dropdown rounded outline color="courses" label="Name" icon="fas fa-sort-alpha-up">
             <q-list>
               <q-item clickable v-close-popup>
                 <q-item-section>
@@ -62,13 +47,7 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn-dropdown
-            rounded
-            outline
-            color="courses"
-            label="Ascending"
-            icon="fas fa-arrow-up"
-          >
+          <q-btn-dropdown rounded outline color="courses" label="Ascending" icon="fas fa-arrow-up">
             <q-list>
               <q-item clickable v-close-popup>
                 <q-item-section>
@@ -151,16 +130,12 @@
 
           <!-- Pagination -->
           <div class="row q-ma-lg flex flex-center">
-            <q-pagination v-model="currentPage" :max="5" color="courses">
-            </q-pagination>
+            <q-pagination v-model="currentPage" :max="5" color="courses"></q-pagination>
           </div>
 
           <!-- Add new course -->
           <div class="row q-ma-sm">
-            <empty-course-card
-              class="cursor-pointer"
-              color="courses"
-            ></empty-course-card>
+            <empty-course-card class="cursor-pointer" color="courses"></empty-course-card>
           </div>
         </q-tab-panel>
         <q-tab-panel name="attended">
@@ -174,8 +149,8 @@
 </template>
 
 <script>
-import CourseCard from "../../../components/main/CourseCard";
-import EmptyCourseCard from "../../../components/main/AddCourseCard";
+import CourseCard from "../../../components/main/courses/CourseCard";
+import EmptyCourseCard from "../../../components/main/courses/AddCourseCard";
 import SearchComponent from "../../../components/main/SearchComponent";
 export default {
   name: "CourseList",
@@ -200,19 +175,19 @@ export default {
 </script>
 
 <style lang="stylus">
-@import "../../../css/quasar.variables.styl"
+@import '../../../css/quasar.variables.styl';
 
 .course-card-entry {
   color: $secondary;
 }
 
 .course-card-entry-light {
-  @extend .course-card-entry
+  @extend .course-card-entry;
   background-color: $courses-item-light;
 }
 
 .course-card-entry-dark {
-  @extend .course-card-entry
+  @extend .course-card-entry;
   background-color: $courses-item-dark;
 }
 </style>

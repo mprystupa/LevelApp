@@ -34,8 +34,9 @@ namespace LevelApp.BLL.Base.Executor
             {
                 await operation.GetData();
                 await operation.Validate();
-
                 await operation.ExecuteValidated();
+                await operation.AddFrontendPermissions();
+
                 return operation.OperationResult;
             }
             catch (ApiException)

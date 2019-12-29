@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using LevelApp.Crosscutting.Exceptions;
 using LevelApp.Crosscutting.Helpers.PaginatedList;
 using LevelApp.DAL.Models.Core;
 using LevelApp.DAL.Repositories.Base;
@@ -37,12 +40,26 @@ namespace LevelApp.DAL.Repositories.Lesson
                 lessonsQuery = lessonsQuery.Intersect(userLessonsQueryFilteredLessons);
             }
 
-            lessonsQuery = lessonsQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            lessonsQuery = lessonsQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize).Include(x => x.AppUserLessons);
             
             var entities = await (orderBy != null ? orderBy(lessonsQuery).ToListAsync() : lessonsQuery.ToListAsync());
             var count = await Entities.CountAsync();
             
             return new PaginatedList<Models.Core.Lesson>(entities, count, pageIndex, pageSize);
+        }
+
+        public async Task<Models.Core.Lesson> GetLessonWithUserLessonsDataAsync(Expression<Func<Models.Core.Lesson, bool>> predicate)
+        {
+            var result = await Entities
+                .Include(x => x.AppUserLessons)
+                .FirstOrDefaultAsync(predicate, CancellationToken.None);
+
+            if (result == null)
+            {
+                throw new NotFoundException($"Entity of type {typeof(Models.Core.Lesson)} has not been found.", HttpStatusCode.NotFound);
+            }
+
+            return result;
         }
     }
 }

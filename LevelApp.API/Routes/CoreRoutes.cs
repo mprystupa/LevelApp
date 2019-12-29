@@ -20,11 +20,16 @@
         public const string Favourite = "favourite";
         
         public const string Search = "search";
+
         public const string PageSize = "{pageSize}";
         public const string PageIndex = "{pageIndex}";
+
         public const string SearchCreated = Search + "/" + Created;
         public const string SearchCompleted = Search + "/" + Completed;
         public const string SearchAwaiting = Search + "/" + Awaiting;
         public const string SearchFavourite = Search + "/" + Favourite;
+
+        public const string AddFavourite = Id + "/" + Favourite + "/" + Add;
+        public const string RemoveFavourite = Id + "/" + Favourite + "/" + Remove;
     }
 }

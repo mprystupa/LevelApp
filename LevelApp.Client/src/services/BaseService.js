@@ -1,8 +1,10 @@
 import axios from "axios";
 import LocalStorageService from "./local-storage/LocalStorageService";
-import { Notify } from "quasar";
+import {
+  Notify
+} from "quasar";
 
-const baseDomain = "https://localhost:5001";
+const baseDomain = "https://localhost:44394";
 const baseUrl = `${baseDomain}/api`;
 
 let axiosInstance = axios.create({
@@ -11,24 +13,24 @@ let axiosInstance = axios.create({
 
 // Initialize request interceptor
 axiosInstance.interceptors.request.use(
-  function(config) {
+  function (config) {
     const token = LocalStorageService.getAccessToken();
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
-  function(error) {
+  function (error) {
     Promise.reject(error);
   }
 );
 
 // Initialize response interceptor
 axiosInstance.interceptors.response.use(
-  function(response) {
+  function (response) {
     return response;
   },
-  function(error) {
+  function (error) {
     if (error) {
       if (error && error.response && error.response.status === 401 && window.location !== "") {
         window.location = "";

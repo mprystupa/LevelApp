@@ -26,5 +26,6 @@ namespace LevelApp.BLL.Base
         Task GetData();
         Task Validate();
         Task ExecuteValidated();
+        Task AddFrontendPermissions();
     }
 }

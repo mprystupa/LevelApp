@@ -8,11 +8,15 @@ export default {
   },
 
   searchAll(params) {
-    return BaseService.get(`${resource}/search`, { params });
+    return BaseService.get(`${resource}/search`, {
+      params
+    });
   },
 
   searchCreated(params) {
-    return BaseService.get(`${resource}/search/created`, { params });
+    return BaseService.get(`${resource}/search/created`, {
+      params
+    });
   },
 
   getLesson(lessonId) {
@@ -37,5 +41,11 @@ export default {
     }
 
     console.log("Delete payload does not contain an id.");
+  },
+  addFavouriteLesson(payload) {
+    return BaseService.post(`${resource}/${payload}/favourite/add`);
+  },
+  removeFavouriteLesson(payload) {
+    return BaseService.post(`${resource}/${payload}/favourite/remove`);
   }
 };

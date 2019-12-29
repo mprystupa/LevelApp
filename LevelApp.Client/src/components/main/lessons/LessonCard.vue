@@ -28,21 +28,25 @@
             </div>
           </div>
 
-          <!-- Course buttons -->
-          <div class="button-col flex flex-center">
-            <!-- Edit course -->
+          <!-- Lesson buttons (edit) -->
+          <div
+            v-if="lessonData.permissions.CanEdit"
+            class="button-col flex flex-center"
+          >
+            <!-- Edit lesson -->
             <div class="row full-width">
               <q-btn
                 flat
                 rounded
                 class="full-width"
                 align="left"
-                label="Edit course"
+                label="Edit lesson"
                 icon="fas fa-edit"
                 @click="$emit('edit')"
               />
             </div>
-            <!-- Delete course -->
+
+            <!-- Delete lesson -->
             <div class="row full-width">
               <q-btn
                 flat
@@ -50,9 +54,25 @@
                 class="full-width"
                 :class="buttonClass"
                 align="left"
-                label="Delete course"
+                label="Delete lesson"
                 icon="fas fa-times"
                 @click="$emit('delete')"
+              />
+            </div>
+          </div>
+
+          <!-- Lesson buttons (view) -->
+          <div v-else class="button-col flex flex-center">
+            <div class="row full-width">
+              <q-btn
+                flat
+                rounded
+                class="full-width"
+                :class="buttonClass"
+                align="left"
+                label="View lesson"
+                icon="fas fa-book-open"
+                @click="$emit('view')"
               />
             </div>
           </div>
@@ -62,10 +82,31 @@
         <q-card class="lesson-statistics-card">
           <q-card-section>
             <div class="flex flex-center justify-around">
-              <span>
-                Not appointed to any course.
-              </span>
-              <q-btn flat icon="fas fa-star" rounded color="favourite" label="Amazing?" />
+              <span>Not appointed to any course.</span>
+              <div v-if="!lessonData.permissions.CanEdit">
+                <!-- Not favourite -->
+                <q-btn
+                  v-if="!lessonData.isFavourite"
+                  flat
+                  :loading="isFavouriteButtonLoading"
+                  icon="fas fa-star"
+                  rounded
+                  color="favourite"
+                  label="Amazing?"
+                  @click="onFavouriteClick"
+                />
+
+                <!-- Favourite -->
+                <q-btn
+                  v-else
+                  :loading="isFavouriteButtonLoading"
+                  icon="fas fa-star"
+                  rounded
+                  color="favourite"
+                  label="Amazing!"
+                  @click="onFavouriteClick"
+                />
+              </div>
             </div>
           </q-card-section>
         </q-card>
@@ -77,7 +118,23 @@
 <script>
 export default {
   props: ["lessonData", "cardClass", "buttonClass", "isEmpty"],
-  name: "LessonCard"
+  name: "LessonCard",
+  data() {
+    return {
+      isFavouriteButtonLoading: false
+    };
+  },
+  methods: {
+    onFavouriteClick() {
+      this.isFavouriteButtonLoading = true;
+      this.$emit("favourite", this.finishLoading);
+    },
+    finishLoading() {
+      setTimeout(() => {
+        this.isFavouriteButtonLoading = false;
+      }, 400);
+    }
+  }
 };
 </script>
 
@@ -93,12 +150,13 @@ export default {
 }
 
 .lesson-statistics-card {
+  min-height: 46px;
   width: 45%;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   top: -10px;
-  border-radius 15px;
+  border-radius: 15px;
 
   & .q-card__section {
     padding: 5px;
