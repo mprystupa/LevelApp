@@ -130,10 +130,26 @@
                 </span>
               </div>
               <q-scroll-area style="height: 500px;">
-                <div class="q-pa-sm q-gutter-sm">
-                  <q-card style="height: 100px;" class="edit-course-lesson-card" v-for="(val, index) in new Array(3)" :key="index">
-                    <q-card-section> Test {{ index }} </q-card-section>
-                  </q-card>
+                <div class="q-pa-sm">
+                  <draggable
+                    @start="onDragStart($event)"
+                    @end="onDragEnd"
+                  >
+                    <transition-group
+                      appear
+                      leave-active-class="animated heightAnimation fadeOut"
+                      class="q-gutter-sm q-ma-none"
+                    >
+                      <q-card
+                        class="edit-course-lesson-card"
+                        v-for="(val, index) in availableLessons"
+                        :key="val.name"
+                        :data-lesson-index="index"
+                      >
+                        <q-card-section> {{ val.name }} </q-card-section>
+                      </q-card>
+                    </transition-group>
+                  </draggable>
                 </div>
               </q-scroll-area>
             </q-tab-panel>
@@ -175,11 +191,46 @@
         'col-0': currentTab !== 'courseTree',
         'col-9': currentTab === 'courseTree'
       }"
-    ></div>
+    >
+      <div class="q-pa-md full-height">
+        <!-- Dragged lesson info -->
+        <transition
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
+          <div
+            draggable="true"
+            v-if="isDragging"
+            @dragover="onDragOver($event)"
+            @dragleave="onDragLeave"
+            @drop="onLessonDrop"
+            :class="{
+              'tree-edit-dragged-over': isDraggedOverDropZone
+            }"
+            class="flex flex-center flex-dir-col full-height tree-edit-dropzone tree-edit-dragged"
+          >
+            <div class="row relative-position q-mb-md">
+              <img
+                src="../../../../assets/main/drag-drop-icon.svg"
+                class="drag-drop-icon"
+              />
+              <div class="pulse"></div>
+            </div>
+            <div class="row">
+              <span class="text-white text-h6"
+                >Drop lesson here to add it to your course tree</span
+              >
+            </div>
+          </div>
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import Draggable from "vuedraggable";
 import { InputValidators } from "../../../../validators/InputValidators";
 
 import FormValidator from "../../../../validators/FormValidator";
@@ -187,19 +238,31 @@ import TagListComponent from "../../../../components/main/TagListComponent";
 
 export default {
   name: "EdiCourse",
-  components: { TagListComponent },
+  components: { TagListComponent, Draggable },
   data() {
     return {
       inputValidators: InputValidators,
       formValidator: null,
+      isDragging: false,
+      draggedLessonIndex: null,
+      isDraggedOverDropZone: false,
       course: {
         id: 0,
         name: "",
         description: "",
         tagList: []
       },
+      availableLessons: [],
+      lessonsOnTree: [],
       currentTab: "metadata"
     };
+  },
+  created() {
+    for (let i = 0; i < 25; i++) {
+      this.availableLessons.push({
+        name: `Test ${i}`
+      });
+    }
   },
   mounted() {
     this.initializeForm();
@@ -237,6 +300,33 @@ export default {
     },
     onBackClick() {
       this.$router.go(-1);
+    },
+    onDragStart(event) {
+      this.draggedLessonIndex = event.item.getAttribute("data-lesson-index");
+      this.isDragging = true;
+    },
+    onDragEnd() {
+      this.draggedLessonIndex = null;
+      this.isDragging = false;
+    },
+    onDragOver(event) {
+      this.isDraggedOverDropZone = true;
+      event.preventDefault();
+    },
+    onDragLeave() {
+      this.isDraggedOverDropZone = false;
+    },
+    onLessonDrop() {
+      if (this.draggedLessonIndex) {
+        let droppedLesson = this.availableLessons.splice(
+          this.draggedLessonIndex,
+          1
+        );
+        this.lessonsOnTree.push(droppedLesson);
+
+        console.log(this.availableLessons);
+        console.log(this.lessonsOnTree);
+      }
     }
   }
 };
@@ -264,5 +354,46 @@ export default {
 
 .edit-course-lesson-card {
   background-color: $lessons-item-light;
+  height: 100px;
+  transition: height ease-in-out 0.2s;
+}
+
+.tree-edit-dragged {
+  border: white dashed 4px;
+  background-color: rgba(black, 0.1);
+  transition: background-color ease-in-out 0.2s;
+}
+
+.tree-edit-dragged-over {
+  background-color: rgba(white, 0.05);
+}
+
+.drag-drop-icon {
+  width: 150px;
+  height: 150px;
+}
+
+.pulse {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  from {
+    transform: scale(0);
+    background-color: rgba(white, 0.7);
+  }
+  to {
+    transform: scale(1);
+    background-color: rgba(white, 0);
+  }
+}
+
+.heightAnimation {
+  height: 0px;
 }
 </style>
