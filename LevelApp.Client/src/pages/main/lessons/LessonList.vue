@@ -3,7 +3,7 @@
     <search-component color="lessons">
       <template v-slot:title>
         <div class="text-lessons q-pa-md">
-          <i class="fas fa-book fa-2x q-mr-md"></i>
+          <i class="fas fa-book fa-2x q-mr-md"/>
           <span class="text-h4">Lessons</span>
         </div>
       </template>
@@ -198,7 +198,7 @@
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
               @pageChange="onPageChange"
-            ></lessons-list-component>
+            />
           </q-tab-panel>
 
           <!-- Created tab -->
@@ -215,7 +215,7 @@
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
               @pageChange="onPageChange"
-            ></lessons-list-component>
+            />
 
             <!-- Add new lesson -->
             <div class="row q-ma-md">
@@ -241,7 +241,7 @@
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
               @pageChange="onPageChange"
-            ></lessons-list-component>
+            />
           </q-tab-panel>
 
           <!-- Awaiting tab -->
@@ -258,7 +258,7 @@
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
               @pageChange="onPageChange"
-            ></lessons-list-component>
+            />
           </q-tab-panel>
 
           <!-- Favourite tab -->
@@ -275,7 +275,7 @@
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
               @pageChange="onPageChange"
-            ></lessons-list-component>
+            />
           </q-tab-panel>
         </q-tab-panels>
       </template>

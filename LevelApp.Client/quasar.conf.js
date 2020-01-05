@@ -65,7 +65,9 @@ module.exports = function (ctx) {
         'QTabPanel',
         'QBtnGroup',
         'QPagination',
-        'QExpansionItem'
+        'QExpansionItem',
+        'QChip',
+        'QTooltip'
       ],
 
       directives: [

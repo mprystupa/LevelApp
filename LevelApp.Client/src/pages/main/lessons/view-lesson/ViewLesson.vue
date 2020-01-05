@@ -49,7 +49,7 @@ export default {
       });
     },
     onBackClick() {
-      this.$router.push("/main/lessons");
+      this.$router.go(-1);
     }
   }
 };

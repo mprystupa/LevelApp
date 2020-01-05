@@ -22,6 +22,10 @@ const routes = [
         path: "courses",
         component: () => import("pages/main/courses/CourseList.vue")
       },
+      {
+        path: "courses/add",
+        component: () => import("pages/main/courses/edit-course/EditCourse.vue")
+      },
       // Lessons
       {
         path: "lessons",

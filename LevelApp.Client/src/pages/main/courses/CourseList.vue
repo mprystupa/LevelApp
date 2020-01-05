@@ -125,7 +125,7 @@
               }"
               :card-class="getCardClass(index)"
               button-class="course-card-entry"
-            ></course-card>
+            />
           </div>
 
           <!-- Pagination -->
@@ -135,7 +135,7 @@
 
           <!-- Add new course -->
           <div class="row q-ma-sm">
-            <empty-course-card class="cursor-pointer" color="courses"></empty-course-card>
+            <empty-course-card class="cursor-pointer" @click.native="onAddNewCourseClick" color="courses"></empty-course-card>
           </div>
         </q-tab-panel>
         <q-tab-panel name="attended">
@@ -169,6 +169,9 @@ export default {
       return index % 2 === 0
         ? "course-card-entry-light"
         : "course-card-entry-dark";
+    },
+    onAddNewCourseClick() {
+      this.$router.push("courses/add");
     }
   }
 };

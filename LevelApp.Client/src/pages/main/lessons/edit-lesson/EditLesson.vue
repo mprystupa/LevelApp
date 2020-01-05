@@ -217,7 +217,7 @@ export default {
       }, 20);
     },
     onBackClick() {
-      this.$router.push("/main/lessons");
+      this.$router.go(-1);
     },
     onEditableContentInput($event) {
       this.lesson.content = $event.stringContent;
