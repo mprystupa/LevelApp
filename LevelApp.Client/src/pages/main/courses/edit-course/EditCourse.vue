@@ -131,19 +131,15 @@
               </div>
               <q-scroll-area style="height: 500px;">
                 <div class="q-pa-sm">
-                  <draggable
-                    @start="onDragStart($event)"
-                    @end="onDragEnd"
-                  >
+                  <draggable @start="onDragStart($event)" @end="onDragEnd">
                     <transition-group
-                      appear
+                      enter-active-class="animated heightAnimation fadeIn"
                       leave-active-class="animated heightAnimation fadeOut"
-                      class="q-gutter-sm q-ma-none"
                     >
                       <q-card
-                        class="edit-course-lesson-card"
+                        class="edit-course-lesson-card q-mb-sm"
                         v-for="(val, index) in availableLessons"
-                        :key="val.name"
+                        :key="val.id"
                         :data-lesson-index="index"
                       >
                         <q-card-section> {{ val.name }} </q-card-section>
@@ -187,28 +183,30 @@
     <!-- Course tree edit -->
     <div
       class="tree-edit"
+      v-show="currentTab === 'courseTree'"
       :class="{
         'col-0': currentTab !== 'courseTree',
         'col-9': currentTab === 'courseTree'
       }"
     >
-      <div class="q-pa-md full-height">
-        <!-- Dragged lesson info -->
-        <transition
+      <div class="q-px-md full-height relative-position">
+        <transition-group
           appear
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut"
         >
+          <!-- Dragged lesson info -->
           <div
             draggable="true"
             v-if="isDragging"
             @dragover="onDragOver($event)"
             @dragleave="onDragLeave"
-            @drop="onLessonDrop"
+            @drop="onLessonDrop($event)"
             :class="{
               'tree-edit-dragged-over': isDraggedOverDropZone
             }"
-            class="flex flex-center flex-dir-col full-height tree-edit-dropzone tree-edit-dragged"
+            class="flex flex-center flex-dir-col full-height tree-edit-dragged"
+            key="dropzone"
           >
             <div class="row relative-position q-mb-md">
               <img
@@ -223,22 +221,36 @@
               >
             </div>
           </div>
-        </transition>
+
+          <!-- Cytoscape window for tree management -->
+          <course-tree-editor v-model="course.courseTree" @removeLesson="onLessonRemovedFromTree($event)" ref="treeEditor" :read-only="false" key="editor" />
+        </transition-group>
       </div>
+
+      <!-- Drag overlay -->
+      <transition
+        appear
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+      >
+        <div v-if="isDragging" class="drag-overlay"></div>
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import Draggable from "vuedraggable";
+
 import { InputValidators } from "../../../../validators/InputValidators";
 
 import FormValidator from "../../../../validators/FormValidator";
 import TagListComponent from "../../../../components/main/TagListComponent";
+import CourseTreeEditor from "../../../../components/main/courses/CourseTreeEditor";
 
 export default {
   name: "EdiCourse",
-  components: { TagListComponent, Draggable },
+  components: { TagListComponent, Draggable, CourseTreeEditor },
   data() {
     return {
       inputValidators: InputValidators,
@@ -250,7 +262,8 @@ export default {
         id: 0,
         name: "",
         description: "",
-        tagList: []
+        tagList: [],
+        courseTree: {}
       },
       availableLessons: [],
       lessonsOnTree: [],
@@ -260,6 +273,7 @@ export default {
   created() {
     for (let i = 0; i < 25; i++) {
       this.availableLessons.push({
+        id: i,
         name: `Test ${i}`
       });
     }
@@ -272,10 +286,11 @@ export default {
       this.formValidator = new FormValidator(this.$refs.name);
     },
     onSaveClick() {
-      this.formValidator.validateForm();
+      console.log(this.course.courseTree);
+      /* this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
-        /* if (this.$route.params.id) {
+        if (this.$route.params.id) {
           LessonsService.updateLesson(this.lesson).then(() => {
             this.$q.notify({
               color: "positive",
@@ -295,8 +310,8 @@ export default {
 
             this.$router.push("/main/lessons");
           });
-        } */
-      }
+        }
+      } */
     },
     onBackClick() {
       this.$router.go(-1);
@@ -316,16 +331,28 @@ export default {
     onDragLeave() {
       this.isDraggedOverDropZone = false;
     },
-    onLessonDrop() {
-      if (this.draggedLessonIndex) {
-        let droppedLesson = this.availableLessons.splice(
-          this.draggedLessonIndex,
-          1
-        );
-        this.lessonsOnTree.push(droppedLesson);
+    onLessonDrop(event) {
+      if (
+        this.draggedLessonIndex &&
+        this.availableLessons[this.draggedLessonIndex]
+      ) {
+        let droppedLesson = this.availableLessons[this.draggedLessonIndex];
 
-        console.log(this.availableLessons);
-        console.log(this.lessonsOnTree);
+        try {
+          this.$refs.treeEditor.addLesson(droppedLesson, { x: event.x, y: event.y });
+          this.lessonsOnTree.push(droppedLesson);
+          this.availableLessons.splice(this.draggedLessonIndex, 1);
+        } catch {
+          console.error("Error on creating new lesson node.");
+        }
+      }
+    },
+    onLessonRemovedFromTree(event) {
+      let lessonIndex = this.lessonsOnTree.findIndex(x => x.id.toString() === event);
+
+      if (lessonIndex >= 0) {
+        let removedLesson = this.lessonsOnTree.splice(lessonIndex, 1)[0];
+        this.availableLessons.unshift(removedLesson);
       }
     }
   }
@@ -360,12 +387,18 @@ export default {
 
 .tree-edit-dragged {
   border: white dashed 4px;
-  background-color: rgba(black, 0.1);
+  border-radius: 5px;
+  background-color: rgba(black, 0.2);
+  position: absolute;
+  top: 0;
+  // Margin of wrapping element
+  width: calc(100% - 32px);
   transition: background-color ease-in-out 0.2s;
+  z-index: 10001;
 }
 
 .tree-edit-dragged-over {
-  background-color: rgba(white, 0.05);
+  background-color: rgba(black, 0.05);
 }
 
 .drag-drop-icon {
@@ -391,6 +424,16 @@ export default {
     transform: scale(1);
     background-color: rgba(white, 0);
   }
+}
+
+.drag-overlay {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  background-color: rgba(black, 0.5);
+  z-index: 10000;
 }
 
 .heightAnimation {
