@@ -28,6 +28,8 @@ namespace LevelApp.DAL.Repositories.Base
         Task<TEntity> GetDetailAsync(Expression<Func<TEntity, bool>> predicate);
         bool CheckIfExists(Func<TEntity, bool> predicate);
         Task<bool> CheckIfExistsAsync(Expression<Func<TEntity, bool>> predicate);
+        bool CheckIfAllExistByIds(IEnumerable<TKey> idList);
+        Task<bool> CheckIfAllExistByIdsAsync(IEnumerable<TKey> idList);
         TKey Insert(TEntity entity);
         void InsertBatch(IEnumerable<TEntity> entities);
         TKey Update(TEntity entity);

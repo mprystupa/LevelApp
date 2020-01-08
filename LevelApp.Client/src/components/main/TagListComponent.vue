@@ -9,14 +9,14 @@
       <q-chip
         v-for="(tag, index) in value"
         class="chip"
-        :key="`${tag.name}-${index}`"
+        :key="`${tag}-${index}`"
         :data-flip-key="`tag-chip-${index}`"
         removable
         @remove="removeTag(index)"
-        :style="getTagBackgroundStyle(tag.name)"
+        :style="getTagBackgroundStyle(tag)"
         text-color="white"
       >
-        {{ tag.name }}
+        {{ tag }}
       </q-chip>
     </transition-group>
 
@@ -78,7 +78,7 @@ export default {
 
       tagText = tagText.trim();
       if (tagText && tagText !== "") {
-        this.value.push({ name: tagText });
+        this.value.push(tagText);
       }
 
       this.updateValue();

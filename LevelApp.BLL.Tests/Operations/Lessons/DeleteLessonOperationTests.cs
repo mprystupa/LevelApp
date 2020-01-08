@@ -43,15 +43,19 @@ namespace LevelApp.BLL.Tests.Operations.Lessons
             
             var repository = new Mock<ILessonRepository>();
             repository
-                .Setup(x => x.CheckIfExists(It.IsAny<Func<Lesson, bool>>()))
-                .Returns(true);
+                .Setup(x => x.GetDetailAsync(It.IsAny<Expression<Func<Lesson, bool>>>()))
+                .ReturnsAsync(new Lesson());
             
             MockRepository(repository);
 
             Parameter = lessonToDeleteId;
 
             // Act
-            var exception = await Record.ExceptionAsync(() => Operation.Validate());
+            var exception = await Record.ExceptionAsync(() =>
+            {
+                Operation.GetData();
+                return Operation.Validate();
+            });
 
             // Assert
             Assert.Null(exception);
@@ -65,18 +69,47 @@ namespace LevelApp.BLL.Tests.Operations.Lessons
             
             var repository = new Mock<ILessonRepository>();
             repository
-                .Setup(x => x.CheckIfExists(It.IsAny<Func<Lesson, bool>>()))
-                .Returns(false);
+                .Setup(x => x.GetDetailAsync(It.IsAny<Expression<Func<Lesson, bool>>>()))
+                .ThrowsAsync(new NotFoundException("not found"));
             
             MockRepository(repository);
 
             Parameter = lessonToDeleteId;
 
             // Act
-            async Task Act() => await Operation.Validate();
+            async Task Act() => await Operation.GetData();
             
             // Assert
-            await Assert.ThrowsAsync<BusinessValidationException>(Act);
+            await Assert.ThrowsAsync<NotFoundException>(Act);
+        }
+
+        [Fact]
+        public async Task DeleteLessonOperation_Should_Throw_Exception_When_Entity_Is_Assigned()
+        {
+            // Arrange
+            var lessonToDeleteId = 1;
+            
+            var repository = new Mock<ILessonRepository>();
+            repository
+                .Setup(x => x.GetDetailAsync(It.IsAny<Expression<Func<Lesson, bool>>>()))
+                .ReturnsAsync(new Lesson()
+                {
+                    CourseId = 1
+                });
+            
+            MockRepository(repository);
+
+            Parameter = lessonToDeleteId;
+
+            // Act
+            var exception = await Record.ExceptionAsync(() =>
+            {
+                Operation.GetData();
+                return Operation.Validate();
+            });
+
+            // Assert
+            Assert.IsType<BusinessValidationException>(exception);
         }
     }
 }

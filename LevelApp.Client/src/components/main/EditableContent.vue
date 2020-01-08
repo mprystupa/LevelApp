@@ -33,7 +33,9 @@ export default {
       });
     },
     reloadData(data) {
-      this.editor.setContents(JSON.parse(data));
+      if (data && data !== "") {
+        this.editor.setContents(JSON.parse(data));
+      }
     }
   },
   watch: {

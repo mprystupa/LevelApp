@@ -1,59 +1,66 @@
 <template>
-  <q-card class="full-width courses-card" :class="cardClass">
-    <q-card-section class="full-height">
-      <div class="row full-width full-height">
-        <!-- Course icon -->
-        <div class="icon-col q-pa-xs">
-          <div class="full-width full-height clip-hex bg-courses" />
-        </div>
-
-        <!-- Course text -->
-        <div class="col q-pl-md">
-          <!-- Course title -->
-          <div class="row">
-            <span class="text-h5">{{ courseData.title }}</span>
+  <div class="full-width">
+    <q-card v-if="isEmpty" class="full-width empty-courses-card">
+      <q-card-section></q-card-section>
+    </q-card>
+    <q-card v-else class="courses-card" :class="cardClass">
+      <q-card-section class="full-height">
+        <div class="row full-width full-height">
+          <!-- Course icon -->
+          <div class="icon-col q-pa-xs">
+            <div class="full-width full-height clip-hex bg-courses" />
           </div>
 
-          <!-- Course description -->
-          <div class="row">
-            <span class="text-body2">{{ courseData.description }}</span>
-          </div>
-        </div>
+          <!-- Course text -->
+          <div class="col q-pl-md">
+            <!-- Course title -->
+            <div class="row">
+              <span class="text-h5">{{ courseData.name }}</span>
+            </div>
 
-        <!-- Course buttons -->
-        <div class="button-col flex flex-center">
-          <!-- Edit course -->
-          <div class="row full-width">
-            <q-btn
-              flat
-              rounded
-              class="full-width"
-              align="left"
-              label="Edit course"
-              icon="fas fa-edit"
-            />
+            <!-- Course description -->
+            <div class="row">
+              <span class="text-body2">{{ courseData.description }}</span>
+            </div>
           </div>
-          <!-- Delete course -->
-          <div class="row full-width">
-            <q-btn
-              flat
-              rounded
-              class="full-width"
-              :class="buttonClass"
-              align="left"
-              label="Delete course"
-              icon="fas fa-times"
-            />
+
+          <!-- Course buttons -->
+          <div class="button-col flex flex-center">
+            <!-- Edit course -->
+            <div class="row full-width">
+              <q-btn
+                flat
+                rounded
+                class="full-width"
+                align="left"
+                label="Edit course"
+                icon="fas fa-edit"
+                @click="$emit('edit')"
+              />
+            </div>
+            <!-- Delete course -->
+            <div class="row full-width">
+              <q-btn
+                flat
+                rounded
+                class="full-width"
+                :class="buttonClass"
+                align="left"
+                label="Delete course"
+                icon="fas fa-times"
+                @click="$emit('delete')"
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </q-card-section>
-  </q-card>
+      </q-card-section>
+    </q-card>
+  </div>
 </template>
 
 <script>
 export default {
-  props: ["courseData", "cardClass", "buttonClass"],
+  props: ["courseData", "cardClass", "buttonClass", "isEmpty"],
   name: "CourseCard"
 };
 </script>

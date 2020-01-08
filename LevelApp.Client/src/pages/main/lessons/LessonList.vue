@@ -442,7 +442,7 @@ export default {
             icon: "fa fas-check",
             message: "Lesson has been deleted!"
           });
-          this.getAllLessons(this.currentPage);
+          this.getLessons();
         });
       };
     },

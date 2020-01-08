@@ -62,6 +62,24 @@ namespace LevelApp.DAL.Context
                 .Entity<AppUserLesson>()
                 .Property(e => e.Status)
                 .HasConversion(new EnumToNumberConverter<LessonStatusEnum, int>());
+            
+            // Course setup
+            modelBuilder
+                .Entity<Course>()
+                .HasOne(u => u.Author)
+                .WithMany()
+                .HasForeignKey(u => u.AuthorId)
+                .IsRequired();
+            
+            // AppUserCourse setup
+            modelBuilder
+                .Entity<AppUserCourse>()
+                .HasKey(c => new {c.UserId, c.CourseId});
+
+            modelBuilder
+                .Entity<AppUserCourse>()
+                .Property(e => e.Status)
+                .HasConversion(new EnumToNumberConverter<CourseStatusEnum, int>());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {

@@ -122,6 +122,22 @@ namespace LevelApp.DAL.Repositories.Base
             return await Entities.AsNoTracking().AnyAsync(predicate);
         }
 
+        public bool CheckIfAllExistByIds(IEnumerable<TKey> idList)
+        {
+            var validIds = Entities.Select(x => x.Id).ToList();
+            var ids = idList.ToList();
+            
+            return validIds.Any() && ids.Any() && ids.All(x => validIds.Contains(x));
+        }
+
+        public async Task<bool> CheckIfAllExistByIdsAsync(IEnumerable<TKey> idList)
+        {
+            var validIds = await Entities.Select(x => x.Id).ToListAsync();
+            var ids = idList.ToList();
+            
+            return validIds.Any() && ids.Any() && ids.All(x => validIds.Contains(x));
+        }
+
         public TKey Insert(TEntity entity)
         {
             Entities.Add(entity);

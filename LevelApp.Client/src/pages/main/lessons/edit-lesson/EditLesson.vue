@@ -214,6 +214,7 @@ export default {
       // Fix for disappearing Quill content after card change
       setTimeout(() => {
         this.$refs.editor.reloadData(this.lesson.content);
+        this.initializeForm();
       }, 20);
     },
     onBackClick() {

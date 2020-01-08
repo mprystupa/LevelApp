@@ -1,24 +1,18 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using LevelApp.BLL.Base.Operation;
+using LevelApp.DAL.Repositories.Course;
 using LevelApp.DAL.Repositories.Lesson;
 
-namespace LevelApp.BLL.Operations.Core.Lesson
+namespace LevelApp.BLL.Operations.Core.Course
 {
-    public class DeleteLessonOperation : BaseOperation<int, int>
+    public class DeleteCourseOperation: BaseOperation<int, int>
     {
-        private DAL.Models.Core.Lesson _lesson;
-        public override async Task GetData()
-        {
-            _lesson = await Repository<ILessonRepository>().GetDetailAsync(x => x.Id == Parameter);
-            await base.GetData();
-        }
-
         public override async Task Validate()
         {
-            if (_lesson.CourseId != null)
+            if (!Repository<ICourseRepository>().CheckIfExists(x => x.Id == Parameter))
             {
-                Errors.Add("Lesson is assigned to course.", HttpStatusCode.Conflict);
+                Errors.Add("Course does not exist", HttpStatusCode.NotFound);
             }
             
             await base.Validate();

@@ -1,5 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using LevelApp.BLL.Dto;
+using LevelApp.BLL.Dto.Core.Course;
 using LevelApp.BLL.Dto.Core.Lesson;
 using LevelApp.BLL.Dto.Core.User;
 using LevelApp.DAL.Models.Core;
@@ -8,10 +10,12 @@ namespace LevelApp.BLL.Mappings
 {
     public class CoreProfile : Profile
     {
+        private const string TagListDelimiter = "|";
         public CoreProfile()
         {
             CreateUserMaps();
             CreateLessonMaps();
+            CreateCourseMaps();
         }
 
         // User
@@ -42,8 +46,31 @@ namespace LevelApp.BLL.Mappings
                 .ForMember(x => x.LessonStatus, o => o.Ignore())
                 .ForMember(x => x.IsFavourite, o => o.Ignore())
                 .ForMember(x => x.Permissions, o => o.Ignore())
+                .ReverseMap();
+            
+            // Lesson <-> LessonCourseEntryDto
+            CreateMap<Lesson, LessonCourseEntryDto>()
+                .ForMember(x => x.Permissions, o => o.Ignore())
+                .ReverseMap();
+        }
+        
+        // Course
+        private void CreateCourseMaps()
+        {
+            // Course <-> CourseDto
+            CreateMap<Course, CourseDto>()
+                .ForMember(x => x.Permissions, o => o.Ignore())
+                .ForMember(x => x.TagList, o => o.MapFrom(s => s.TagList.Split(TagListDelimiter[0]).ToList()))
+                .ForMember(x => x.Lessons, o => o.Ignore())
                 .ReverseMap()
-                .ForAllOtherMembers(x => x.Ignore());
+                .ForMember(x => x.TagList, o => o.MapFrom(s => string.Join(TagListDelimiter, s.TagList.ToArray())));
+            
+            // Course <-> CourseSearchEntryDto
+            CreateMap<Course, CourseSearchEntryDto>()
+                .ForMember(x => x.Permissions, o => o.Ignore())
+                .ForMember(x => x.CourseStatus, o => o.Ignore())
+                .ForMember(x => x.IsFavourite, o => o.Ignore())
+                .ReverseMap();
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using LevelApp.Crosscutting.Enums.Main;
+﻿using LevelApp.Crosscutting.Enums.Main;
 
-namespace LevelApp.BLL.Dto.Core.Lesson
+namespace LevelApp.BLL.Dto.Core.Course
 {
-    [ExcludeFromCodeCoverage]
-    public class LessonSearchParametersDto
+    public class CourseSearchParametersDto
     {
         public int CurrentPage { get; set; }
         public int CardsPerPage { get; set; }
@@ -15,7 +13,7 @@ namespace LevelApp.BLL.Dto.Core.Lesson
         public string OrderBy { get; set; }
         public string OrderDirection { get; set; }
         public bool IsCreatedByUserOnly { get; set; }
-        public LessonStatusEnum? LessonStatus { get; set; }
+        public CourseStatusEnum? CourseStatus { get; set; }
         public bool? IsFavourite { get; set; }
     }
 }

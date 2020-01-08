@@ -10,11 +10,31 @@
 
     <template v-slot:tabs>
       <q-tabs align="right" no-caps shrink v-model="tab" class="text-courses">
-        <q-tab name="created" icon="fas fa-user-edit" label="Created" />
-        <q-tab name="attended" icon="fas fa-chalkboard-teacher" label="Attended" />
-        <q-tab name="favourite" icon="fas fa-star" label="Favourite" />
-        <q-tab name="popular" icon="fas fa-fire-alt" label="Popular" />
-        <q-tab name="new" icon="fas fa-calendar-plus" label="New" />
+        <q-tab
+          :name="coursesTabs.created()"
+          icon="fas fa-user-edit"
+          :label="coursesTabs.created()"
+        />
+        <q-tab
+          :name="coursesTabs.attended()"
+          icon="fas fa-chalkboard-teacher"
+          :label="coursesTabs.attended()"
+        />
+        <q-tab
+          :name="coursesTabs.favourite()"
+          icon="fas fa-star"
+          :label="coursesTabs.favourite()"
+        />
+        <q-tab
+          :name="coursesTabs.popular()"
+          icon="fas fa-fire-alt"
+          :label="coursesTabs.popular()"
+        />
+        <q-tab
+          :name="coursesTabs.new()"
+          icon="fas fa-calendar-plus"
+          :label="coursesTabs.new()"
+        />
       </q-tabs>
     </template>
 
@@ -26,7 +46,13 @@
       </div>
       <div class="row q-mb-xl">
         <q-btn-group flat spread class="full-width">
-          <q-btn-dropdown rounded outline color="courses" label="Name" icon="fas fa-sort-alpha-up">
+          <q-btn-dropdown
+            rounded
+            outline
+            color="courses"
+            label="Name"
+            icon="fas fa-sort-alpha-up"
+          >
             <q-list>
               <q-item clickable v-close-popup>
                 <q-item-section>
@@ -47,7 +73,13 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn-dropdown rounded outline color="courses" label="Ascending" icon="fas fa-arrow-up">
+          <q-btn-dropdown
+            rounded
+            outline
+            color="courses"
+            label="Ascending"
+            icon="fas fa-arrow-up"
+          >
             <q-list>
               <q-item clickable v-close-popup>
                 <q-item-section>
@@ -82,7 +114,7 @@
         <q-input
           rounded
           outlined
-          v-model="searchName"
+          v-model="searchData.searchName"
           dense
           class="full-width"
           color="courses"
@@ -93,7 +125,7 @@
         <q-input
           rounded
           outlined
-          v-model="searchDescription"
+          v-model="searchData.searchDescription"
           dense
           class="full-width"
           color="courses"
@@ -104,7 +136,7 @@
         <q-input
           rounded
           outlined
-          v-model="searchCategory"
+          v-model="searchData.searchCategory"
           dense
           class="full-width"
           color="courses"
@@ -115,27 +147,22 @@
 
     <template v-slot:tabsContent>
       <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="created">
+        <q-tab-panel :name="coursesTabs.created()">
           <!-- Courses tabs -->
-          <div class="row q-ma-sm" v-for="index in [1, 2, 3]" :key="index">
-            <course-card
-              :course-data="{
-                title: `Test course ${index}`,
-                description: `Description of test course ${index}`
-              }"
-              :card-class="getCardClass(index)"
-              button-class="course-card-entry"
-            />
-          </div>
-
-          <!-- Pagination -->
-          <div class="row q-ma-lg flex flex-center">
-            <q-pagination v-model="currentPage" :max="5" color="courses"></q-pagination>
-          </div>
+          <course-list-component
+            :courses="courses"
+            :current-page="searchData.currentPage"
+            :cards-per-page="searchData.cardsPerPage"
+            :total-pages="totalPages"
+          />
 
           <!-- Add new course -->
-          <div class="row q-ma-sm">
-            <empty-course-card class="cursor-pointer" @click.native="onAddNewCourseClick" color="courses"></empty-course-card>
+          <div class="row q-ma-md">
+            <empty-course-card
+              class="cursor-pointer"
+              @click.native="onAddNewCourseClick"
+              color="courses"
+            />
           </div>
         </q-tab-panel>
         <q-tab-panel name="attended">
@@ -149,22 +176,73 @@
 </template>
 
 <script>
-import CourseCard from "../../../components/main/courses/CourseCard";
 import EmptyCourseCard from "../../../components/main/courses/AddCourseCard";
 import SearchComponent from "../../../components/main/SearchComponent";
+import CourseListComponent from "../../../components/main/courses/CourseListComponent";
+
+import { ServiceFactory } from "../../../services/ServiceFactory";
+const CoursesService = ServiceFactory.get("courses");
+
+const coursesTabs = {
+  search: () => "Search",
+  created: () => "Created",
+  favourite: () => "Favourite",
+  attended: () => "Attended",
+  popular: () => "Popular",
+  new: () => "New"
+};
+
 export default {
   name: "CourseList",
-  components: { SearchComponent, EmptyCourseCard, CourseCard },
+  components: {
+    CourseListComponent,
+    SearchComponent,
+    EmptyCourseCard
+  },
   data() {
     return {
-      tab: "created",
-      currentPage: 1,
-      searchName: "",
-      searchDescription: "",
-      searchCategory: ""
+      coursesTabs: coursesTabs,
+      tab: coursesTabs.created(),
+      searchData: {
+        currentPage: 1,
+        cardsPerPage: 3,
+        searchName: "",
+        searchDescription: "",
+        searchCategory: ""
+      },
+      totalPages: 1,
+      courses: []
     };
   },
+  created() {
+    this.getCourses();
+  },
   methods: {
+    getCourses() {
+      this.courses = [];
+
+      switch (this.tab) {
+        case coursesTabs.search():
+          this.getAllCourses();
+          break;
+
+        case coursesTabs.created():
+          this.getAllCreatedCourses();
+          break;
+      }
+    },
+    getAllCreatedCourses() {
+      CoursesService.searchCreated(this.searchData).then(response => {
+        this.courses = response.data.searchResults;
+        this.totalPages = response.data.totalPages;
+      });
+    },
+    getAllCourses() {
+      CoursesService.searchAll(this.searchData).then(response => {
+        this.courses = response.data.searchResults;
+        this.totalPages = response.data.totalPages;
+      });
+    },
     getCardClass(index) {
       return index % 2 === 0
         ? "course-card-entry-light"
@@ -177,20 +255,4 @@ export default {
 };
 </script>
 
-<style lang="stylus">
-@import '../../../css/quasar.variables.styl';
-
-.course-card-entry {
-  color: $secondary;
-}
-
-.course-card-entry-light {
-  @extend .course-card-entry;
-  background-color: $courses-item-light;
-}
-
-.course-card-entry-dark {
-  @extend .course-card-entry;
-  background-color: $courses-item-dark;
-}
-</style>
+<style lang="stylus"></style>

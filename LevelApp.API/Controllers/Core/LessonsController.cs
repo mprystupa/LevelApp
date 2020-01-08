@@ -22,10 +22,22 @@ namespace LevelApp.API.Controllers.Core
         {
         }
         
+        [HttpGet(BaseRoutes.Id)]
+        public async Task<ActionResult<LessonDto>> GetLesson(int id)
+        {
+            return await Executor.Execute<GetLessonOperation, int, LessonDto>(id);
+        }
+        
         [HttpGet(BaseRoutes.Root)]
         public async Task<ActionResult<List<LessonDto>>> GetAllLessons()
         {
             return await Executor.Execute<GetAllLessonsOperation, int, List<LessonDto>>(0);
+        }
+        
+        [HttpGet(LessonRoutes.Unassigned)]
+        public async Task<ActionResult<List<LessonCourseEntryDto>>> GetUnassignedLessons()
+        {
+            return await Executor.Execute<GetUnassignedLessonsOperation, int, List<LessonCourseEntryDto>>(0);
         }
 
         [HttpGet(LessonRoutes.Search)]
@@ -84,12 +96,6 @@ namespace LevelApp.API.Controllers.Core
 
             return await Executor.Execute<SearchAttendingLessonsOperation, LessonSearchParametersDto, LessonSearchResultsDto>(
                 parameter);
-        }
-
-        [HttpGet(BaseRoutes.Id)]
-        public async Task<ActionResult<LessonDto>> GetLesson(int id)
-        {
-            return await Executor.Execute<GetLessonOperation, int, LessonDto>(id);
         }
 
         [HttpPost(BaseRoutes.Root)]

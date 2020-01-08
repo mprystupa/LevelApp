@@ -204,9 +204,10 @@ export default {
       cy.minZoom(0.5);
       cy.maxZoom(2);
 
-      if (this.value) {
-        cy.json(this.value);
-        this.treeValue = this.value;
+      if (this.value && this.value !== "") {
+        let jsonValue = JSON.parse(this.value);
+        cy.json(jsonValue);
+        this.treeValue = jsonValue;
       }
 
       this.registerEventHandlers(cy);
@@ -417,7 +418,7 @@ export default {
      * Handles tree data change event
      */
     onDataChange() {
-      this.$emit("input", this.cytoscape.json());
+      this.$emit("input", JSON.stringify(this.cytoscape.json()));
     },
 
     /**

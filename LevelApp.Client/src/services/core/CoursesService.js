@@ -1,14 +1,10 @@
 import BaseService from "../BaseService";
 
-const resource = "lessons";
+const resource = "courses";
 
 export default {
   get() {
     return BaseService.get(`${resource}`);
-  },
-
-  getUnassigned() {
-    return BaseService.get(`${resource}/unassigned`);
   },
 
   searchAll(params) {
@@ -23,15 +19,15 @@ export default {
     });
   },
 
-  getLesson(lessonId) {
-    return BaseService.get(`${resource}/${lessonId}`);
+  getCourse(courseId) {
+    return BaseService.get(`${resource}/${courseId}`);
   },
 
-  createLesson(payload) {
+  createCourse(payload) {
     return BaseService.post(`${resource}`, payload);
   },
 
-  updateLesson(payload) {
+  updateCourse(payload) {
     if (payload.id) {
       return BaseService.put(`${resource}/${payload.id}`, payload);
     }
@@ -39,17 +35,19 @@ export default {
     console.log("Update payload does not contain an id.");
   },
 
-  deleteLesson(payload) {
+  deleteCourse(payload) {
     if (payload.id) {
       return BaseService.delete(`${resource}/${payload.id}`, payload);
     }
 
     console.log("Delete payload does not contain an id.");
   },
-  addFavouriteLesson(payload) {
+
+  addFavouriteCourse(payload) {
     return BaseService.post(`${resource}/${payload}/favourite/add`);
   },
-  removeFavouriteLesson(payload) {
+
+  removeFavouriteCourse(payload) {
     return BaseService.post(`${resource}/${payload}/favourite/remove`);
   }
 };

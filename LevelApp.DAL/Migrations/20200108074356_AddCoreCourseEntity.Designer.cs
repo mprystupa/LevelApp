@@ -3,14 +3,16 @@ using System;
 using LevelApp.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LevelApp.DAL.Migrations
 {
     [DbContext(typeof(LevelAppContext))]
-    partial class LevelAppContextModelSnapshot : ModelSnapshot
+    [Migration("20200108074356_AddCoreCourseEntity")]
+    partial class AddCoreCourseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,38 +57,6 @@ namespace LevelApp.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CoreAppUser");
-                });
-
-            modelBuilder.Entity("LevelApp.DAL.Models.Core.AppUserCourse", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("CourseId");
-
-                    b.Property<int>("CreatedBy");
-
-                    b.Property<DateTime?>("DateCreatedUtc");
-
-                    b.Property<DateTime?>("DateDeletedUtc");
-
-                    b.Property<DateTime?>("DateModifiedUtc");
-
-                    b.Property<int?>("DeletedBy");
-
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsFavourite");
-
-                    b.Property<int?>("ModifiedBy");
-
-                    b.Property<int>("Status");
-
-                    b.HasKey("UserId", "CourseId");
-
-                    b.HasAlternateKey("CourseId", "Id", "UserId");
-
-                    b.ToTable("CoreAppUserCourse");
                 });
 
             modelBuilder.Entity("LevelApp.DAL.Models.Core.AppUserLesson", b =>
@@ -152,8 +122,6 @@ namespace LevelApp.DAL.Migrations
                     b.Property<string>("TagList")
                         .HasMaxLength(1000);
 
-                    b.Property<string>("TreeData");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
@@ -198,19 +166,6 @@ namespace LevelApp.DAL.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("CoreLesson");
-                });
-
-            modelBuilder.Entity("LevelApp.DAL.Models.Core.AppUserCourse", b =>
-                {
-                    b.HasOne("LevelApp.DAL.Models.Core.Course", "Course")
-                        .WithMany("AppUserCourses")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LevelApp.DAL.Models.Core.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("LevelApp.DAL.Models.Core.AppUserLesson", b =>

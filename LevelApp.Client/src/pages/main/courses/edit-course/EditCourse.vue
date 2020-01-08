@@ -123,31 +123,43 @@
             </q-tab-panel>
 
             <!-- Course tree tab -->
-            <q-tab-panel name="courseTree">
-              <div class="q-pa-sm">
-                <span class="text-h6 text-lessons">
-                  Select lessons to include in your course:
-                </span>
-              </div>
-              <q-scroll-area style="height: 500px;">
+            <q-tab-panel style="min-height: 600px;" name="courseTree">
+              <div v-show="availableLessons.length > 0">
                 <div class="q-pa-sm">
-                  <draggable @start="onDragStart($event)" @end="onDragEnd">
-                    <transition-group
-                      enter-active-class="animated heightAnimation fadeIn"
-                      leave-active-class="animated heightAnimation fadeOut"
-                    >
-                      <q-card
-                        class="edit-course-lesson-card q-mb-sm"
-                        v-for="(val, index) in availableLessons"
-                        :key="val.id"
-                        :data-lesson-index="index"
-                      >
-                        <q-card-section> {{ val.name }} </q-card-section>
-                      </q-card>
-                    </transition-group>
-                  </draggable>
+                  <span class="text-h6 text-lessons">
+                    Select lessons to include in your course:
+                  </span>
                 </div>
-              </q-scroll-area>
+                <q-scroll-area style="height: 500px;">
+                  <div class="q-pa-sm">
+                    <draggable @start="onDragStart($event)" @end="onDragEnd">
+                      <transition-group
+                        enter-active-class="animated heightAnimation fadeIn"
+                        leave-active-class="animated heightAnimation fadeOut"
+                      >
+                        <q-card
+                          class="edit-course-lesson-card q-mb-sm"
+                          v-for="(val, index) in availableLessons"
+                          :key="val.id"
+                          :data-lesson-index="index"
+                        >
+                          <q-card-section> {{ val.name }} </q-card-section>
+                        </q-card>
+                      </transition-group>
+                    </draggable>
+                  </div>
+                </q-scroll-area>
+              </div>
+
+              <div v-if="availableLessons.length <= 0">
+                <div class="q-pa-sm flex flex-center">
+                  <div class="text-subtitle2 text-align-center q-mb-md">
+                    It seems like you do not have any unassigned lessons.<br/>
+                    Maybe you should create some?
+                  </div>
+                  <q-btn color="lessons" label="Add lesson" @click="onAddLessonClick" />
+                </div>
+              </div>
             </q-tab-panel>
 
             <!-- Achievements tab -->
@@ -223,7 +235,13 @@
           </div>
 
           <!-- Cytoscape window for tree management -->
-          <course-tree-editor v-model="course.courseTree" @removeLesson="onLessonRemovedFromTree($event)" ref="treeEditor" :read-only="false" key="editor" />
+          <course-tree-editor
+            v-model="course.treeData"
+            @removeLesson="onLessonRemovedFromTree($event)"
+            ref="treeEditor"
+            :read-only="false"
+            key="editor"
+          />
         </transition-group>
       </div>
 
@@ -248,6 +266,10 @@ import FormValidator from "../../../../validators/FormValidator";
 import TagListComponent from "../../../../components/main/TagListComponent";
 import CourseTreeEditor from "../../../../components/main/courses/CourseTreeEditor";
 
+import { ServiceFactory } from "../../../../services/ServiceFactory";
+const CoursesService = ServiceFactory.get("courses");
+const LessonsService = ServiceFactory.get("lessons");
+
 export default {
   name: "EdiCourse",
   components: { TagListComponent, Draggable, CourseTreeEditor },
@@ -263,33 +285,33 @@ export default {
         name: "",
         description: "",
         tagList: [],
-        courseTree: {}
+        treeData: "",
+        lessons: []
       },
       availableLessons: [],
-      lessonsOnTree: [],
       currentTab: "metadata"
     };
   },
   created() {
-    for (let i = 0; i < 25; i++) {
-      this.availableLessons.push({
-        id: i,
-        name: `Test ${i}`
-      });
-    }
+    this.getUnassignedLessons();
   },
   mounted() {
     this.initializeForm();
   },
   methods: {
+    getUnassignedLessons() {
+      LessonsService.getUnassigned().then(response => {
+        this.availableLessons = response.data;
+      })
+    },
     initializeForm() {
       this.formValidator = new FormValidator(this.$refs.name);
     },
     onSaveClick() {
-      console.log(this.course.courseTree);
-      /* this.formValidator.validateForm();
+      this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
+        console.log(this.course);
         if (this.$route.params.id) {
           LessonsService.updateLesson(this.lesson).then(() => {
             this.$q.notify({
@@ -301,17 +323,17 @@ export default {
             this.$router.push("/main/lessons");
           });
         } else {
-          LessonsService.createLesson(this.lesson).then(() => {
+          CoursesService.createCourse(this.course).then(() => {
             this.$q.notify({
               color: "positive",
               icon: "fa fas-check",
-              message: "Lesson has been added!"
+              message: "Course has been added!"
             });
 
-            this.$router.push("/main/lessons");
+            this.$router.push("/main/courses");
           });
         }
-      } */
+      }
     },
     onBackClick() {
       this.$router.go(-1);
@@ -339,8 +361,11 @@ export default {
         let droppedLesson = this.availableLessons[this.draggedLessonIndex];
 
         try {
-          this.$refs.treeEditor.addLesson(droppedLesson, { x: event.x, y: event.y });
-          this.lessonsOnTree.push(droppedLesson);
+          this.$refs.treeEditor.addLesson(droppedLesson, {
+            x: event.x,
+            y: event.y
+          });
+          this.course.lessons.push(droppedLesson);
           this.availableLessons.splice(this.draggedLessonIndex, 1);
         } catch {
           console.error("Error on creating new lesson node.");
@@ -348,12 +373,17 @@ export default {
       }
     },
     onLessonRemovedFromTree(event) {
-      let lessonIndex = this.lessonsOnTree.findIndex(x => x.id.toString() === event);
+      let lessonIndex = this.course.lessons.findIndex(
+        x => x.id.toString() === event
+      );
 
       if (lessonIndex >= 0) {
-        let removedLesson = this.lessonsOnTree.splice(lessonIndex, 1)[0];
+        let removedLesson = this.course.lessons.splice(lessonIndex, 1)[0];
         this.availableLessons.unshift(removedLesson);
       }
+    },
+    onAddLessonClick() {
+      this.$router.push("/main/lessons/add");
     }
   }
 };
