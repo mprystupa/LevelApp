@@ -36,11 +36,7 @@ export default {
   },
 
   deleteCourse(payload) {
-    if (payload.id) {
-      return BaseService.delete(`${resource}/${payload.id}`, payload);
-    }
-
-    console.log("Delete payload does not contain an id.");
+    return BaseService.delete(`${resource}/${payload}`, payload);
   },
 
   addFavouriteCourse(payload) {

@@ -26,29 +26,45 @@
 
           <!-- Course buttons -->
           <div class="button-col flex flex-center">
-            <!-- Edit course -->
-            <div class="row full-width">
-              <q-btn
-                flat
-                rounded
-                class="full-width"
-                align="left"
-                label="Edit course"
-                icon="fas fa-edit"
-                @click="$emit('edit')"
-              />
+            <!-- Edit buttons -->
+            <div v-if="courseData.permissions.CanEdit">
+              <!-- Edit course -->
+              <div class="row full-width">
+                <q-btn
+                  flat
+                  rounded
+                  class="full-width"
+                  align="left"
+                  label="Edit course"
+                  icon="fas fa-edit"
+                  @click="$emit('edit')"
+                />
+              </div>
+              <!-- Delete course -->
+              <div class="row full-width">
+                <q-btn
+                  flat
+                  rounded
+                  class="full-width"
+                  :class="buttonClass"
+                  align="left"
+                  label="Delete course"
+                  icon="fas fa-times"
+                  @click="$emit('delete')"
+                />
+              </div>
             </div>
-            <!-- Delete course -->
-            <div class="row full-width">
+
+            <!-- View buttons -->
+            <div v-else>
               <q-btn
                 flat
                 rounded
                 class="full-width"
-                :class="buttonClass"
                 align="left"
-                label="Delete course"
-                icon="fas fa-times"
-                @click="$emit('delete')"
+                label="Attend course"
+                icon="fas fa-chalkboard-teacher"
+                @click="$emit('attend')"
               />
             </div>
           </div>

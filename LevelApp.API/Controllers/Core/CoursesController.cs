@@ -30,6 +30,13 @@ namespace LevelApp.API.Controllers.Core
             return await Executor.Execute<GetCourseOperation, int, CourseDto>(id);
         }
         
+        [HttpGet(CourseRoutes.Search)]
+        public async Task<ActionResult<CourseSearchResultsDto>> SearchAllLessons([FromQuery] CourseSearchParametersDto parameter)
+        {
+            return await Executor.Execute<SearchAllCoursesOperation, CourseSearchParametersDto, CourseSearchResultsDto>(
+                parameter);
+        }
+        
         [HttpGet(CourseRoutes.SearchCreated)]
         public async Task<ActionResult<CourseSearchResultsDto>> SearchCreatedLessons([FromQuery] CourseSearchParametersDto parameter)
         {

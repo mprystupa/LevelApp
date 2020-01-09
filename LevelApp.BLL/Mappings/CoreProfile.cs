@@ -63,7 +63,8 @@ namespace LevelApp.BLL.Mappings
                 .ForMember(x => x.TagList, o => o.MapFrom(s => s.TagList.Split(TagListDelimiter[0]).ToList()))
                 .ForMember(x => x.Lessons, o => o.Ignore())
                 .ReverseMap()
-                .ForMember(x => x.TagList, o => o.MapFrom(s => string.Join(TagListDelimiter, s.TagList.ToArray())));
+                .ForMember(x => x.TagList, o => o.MapFrom(s => string.Join(TagListDelimiter, s.TagList.ToArray())))
+                .ForMember(x => x.Lessons, o => o.Ignore());
             
             // Course <-> CourseSearchEntryDto
             CreateMap<Course, CourseSearchEntryDto>()

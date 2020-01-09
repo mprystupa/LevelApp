@@ -20,6 +20,11 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             {
                 Errors.Add("Lesson is assigned to course.", HttpStatusCode.Conflict);
             }
+
+            if (_lesson.AuthorId != CurrentUserId)
+            {
+                Errors.Add("Lesson is not created by user.", HttpStatusCode.Forbidden);
+            }
             
             await base.Validate();
         }

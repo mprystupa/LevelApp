@@ -162,7 +162,7 @@
                   standout="bg-lessons text-white"
                   v-model="searchData.searchLessonText"
                   class="full-width"
-                  placeholder="Search for courses by name, description or author"
+                  placeholder="Search for lessons by name, description or author"
                 >
                   <template v-slot:prepend>
                     <q-icon
@@ -432,11 +432,11 @@ export default {
     onViewClick(lessonId) {
       this.$router.push(`lessons/view/${lessonId}`);
     },
-    onDeleteClick(lesson) {
+    onDeleteClick(lessonId) {
       this.isDeleteDialogVisible = true;
 
       this.resolveDeleteDialog = () => {
-        LessonsService.deleteLesson(lesson).then(() => {
+        LessonsService.deleteLesson(lessonId).then(() => {
           this.$q.notify({
             color: "positive",
             icon: "fa fas-check",

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Dto.Core.Course;
 using LevelApp.BLL.Dto.Core.Lesson;
@@ -10,8 +11,9 @@ namespace LevelApp.BLL.Operations.Core.Course
     {
         public override async Task ExecuteValidated()
         {
-            var course = await Repository<ICourseRepository>().GetDetailAsync(x => x.Id == Parameter);
+            var course = await Repository<ICourseRepository>().GetCourseWithLessonsAsync(x => x.Id == Parameter);
             OperationResult = Mapper.Map<CourseDto>(course);
+            OperationResult.Lessons = Mapper.Map<List<LessonCourseEntryDto>>(course.Lessons);
             
             await base.ExecuteValidated();
         }

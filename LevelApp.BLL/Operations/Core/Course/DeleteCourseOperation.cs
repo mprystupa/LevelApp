@@ -8,11 +8,18 @@ namespace LevelApp.BLL.Operations.Core.Course
 {
     public class DeleteCourseOperation: BaseOperation<int, int>
     {
+        private DAL.Models.Core.Course _course;
+        public override async Task GetData()
+        {
+            _course = await Repository<ICourseRepository>().GetDetailAsync(x => x.Id == Parameter);
+            await base.GetData();
+        }
+
         public override async Task Validate()
         {
-            if (!Repository<ICourseRepository>().CheckIfExists(x => x.Id == Parameter))
+            if (_course.AuthorId != CurrentUserId)
             {
-                Errors.Add("Course does not exist", HttpStatusCode.NotFound);
+                Errors.Add("Course is not created by user.", HttpStatusCode.Forbidden);
             }
             
             await base.Validate();
@@ -20,7 +27,7 @@ namespace LevelApp.BLL.Operations.Core.Course
 
         public override async Task ExecuteValidated()
         {
-            OperationResult = Repository<ILessonRepository>().Delete(Parameter);
+            OperationResult = Repository<ICourseRepository>().Delete(Parameter);
             await UnitOfWork.SaveAsync();
             await base.ExecuteValidated();
         }

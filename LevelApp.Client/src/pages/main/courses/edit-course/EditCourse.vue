@@ -236,7 +236,6 @@
 
           <!-- Cytoscape window for tree management -->
           <course-tree-editor
-            v-model="course.treeData"
             @removeLesson="onLessonRemovedFromTree($event)"
             ref="treeEditor"
             :read-only="false"
@@ -271,7 +270,7 @@ const CoursesService = ServiceFactory.get("courses");
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
-  name: "EdiCourse",
+  name: "EditCourse",
   components: { TagListComponent, Draggable, CourseTreeEditor },
   data() {
     return {
@@ -293,12 +292,22 @@ export default {
     };
   },
   created() {
+    if (this.$route.params.id) {
+      this.getCourseData(this.$route.params.id);
+    }
+
     this.getUnassignedLessons();
   },
   mounted() {
     this.initializeForm();
   },
   methods: {
+    getCourseData(id) {
+      CoursesService.getCourse(id).then(response => {
+        this.course = response.data;
+        this.$refs.treeEditor.setData(this.course.treeData);
+      });
+    },
     getUnassignedLessons() {
       LessonsService.getUnassigned().then(response => {
         this.availableLessons = response.data;
@@ -311,16 +320,17 @@ export default {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
-        console.log(this.course);
+        this.course.treeData = this.$refs.treeEditor.getData();
+
         if (this.$route.params.id) {
-          LessonsService.updateLesson(this.lesson).then(() => {
+          CoursesService.updateCourse(this.course).then(() => {
             this.$q.notify({
               color: "positive",
               icon: "fa fas-check",
-              message: "Lesson has been updated!"
+              message: "Course has been updated!"
             });
 
-            this.$router.push("/main/lessons");
+            this.$router.push("/main/courses");
           });
         } else {
           CoursesService.createCourse(this.course).then(() => {

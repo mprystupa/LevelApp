@@ -38,9 +38,15 @@
             </div>
           </div>
           <div class="col-4 flex justify-end">
-            <q-btn flat round>
-              <i class="fas fa-cogs fa-lg"></i>
-            </q-btn>
+            <q-btn-dropdown rounded flat icon="fas fa-cogs fa-sm">
+              <q-list>
+                <q-item clickable v-close-popup @click="onLogoutClick">
+                  <q-item-section>
+                    <q-item-label>Logout</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
           </div>
         </q-toolbar>
       </q-header>
@@ -194,6 +200,9 @@ export default {
         // intended for switching drawer to "normal" mode only
         e.stopPropagation();
       }
+    },
+    onLogoutClick() {
+      this.$router.push("/");
     }
   }
 };

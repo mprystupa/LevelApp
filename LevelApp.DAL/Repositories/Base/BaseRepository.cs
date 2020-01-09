@@ -166,6 +166,11 @@ namespace LevelApp.DAL.Repositories.Base
         public TKey Delete(TKey id)
         {
             var entity = Get(id);
+
+            if (entity == null)
+            {
+                throw new NotFoundException($"Entity of type {typeof(TEntity)} has not been found.", HttpStatusCode.NotFound);
+            }
             return Delete(entity);
         }
 

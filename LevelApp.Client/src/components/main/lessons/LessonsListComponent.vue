@@ -2,7 +2,7 @@
   <div>
     <div v-if="lessons && lessons.length > 0">
       <div
-        class="row q-ma-md"
+        class="row q-ma-lg"
         v-for="(lesson, index) in lessons"
         :key="lesson.id"
       >
@@ -11,7 +11,7 @@
           :card-class="getCardClass(index)"
           button-class="course-card-entry"
           @edit="$emit('edit', lesson.id)"
-          @delete="$emit('delete', lesson)"
+          @delete="$emit('delete', lesson.id)"
           @view="$emit('view', lesson.id)"
           @favourite="
             $emit('favourite', {
@@ -23,7 +23,7 @@
       </div>
     </div>
     <div
-      class="row q-ma-md"
+      class="row q-ma-lg"
       v-for="index in cardsPerPage - lessons.length >= 0
         ? cardsPerPage - lessons.length
         : 0"

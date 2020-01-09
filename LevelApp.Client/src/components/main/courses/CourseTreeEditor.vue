@@ -9,8 +9,15 @@
 
     <!-- Context menu -->
     <q-popup-proxy context-menu>
-      <div v-if="isContextMenuVisible">
+      <div v-if="isContextMenuVisible && !readOnly">
         <q-btn-group push>
+          <q-btn
+            push
+            v-if="contextMenuVisibility.link"
+            label="Link"
+            icon="fas fa-link"
+            @click="onLinkClick"
+          />
           <q-btn
             push
             v-if="contextMenuVisibility.remove"
@@ -44,19 +51,19 @@ Cytoscape.use(Popper);
 export default {
   cytoscape: {},
   edgehandles: {},
-  selectedNode: null,
+  selectedElement: null,
   name: "CourseTreeEditor",
-  props: ["value", "cytoscapeOptions", "readOnly"],
+  props: ["cytoscapeOptions", "readOnly"],
   data() {
     return {
-      isNodeSelected: !!this.selectedNode,
+      isNodeSelected: !!this.selectedElement,
       isContextMenuVisible: false,
       contextMenuVisibility: {
+        link: true,
         remove: true,
         setAsStarting: false
       },
-      treeValue: {},
-      lessonNodeSelector: 'node[name]'
+      lessonNodeSelector: "node[name]"
     };
   },
   mounted() {
@@ -204,12 +211,6 @@ export default {
       cy.minZoom(0.5);
       cy.maxZoom(2);
 
-      if (this.value && this.value !== "") {
-        let jsonValue = JSON.parse(this.value);
-        cy.json(jsonValue);
-        this.treeValue = jsonValue;
-      }
-
       this.registerEventHandlers(cy);
 
       this.cytoscape = cy;
@@ -230,8 +231,18 @@ export default {
             this.cytoscape.remove(addedEles);
             console.error(error);
           }
+
+          this.edgehandles.disableDrawMode();
+          this.edgehandles.disable();
+        },
+        cancel: (sourceNode, targetNode, addedEles) => {
+          this.edgehandles.disableDrawMode();
+          this.edgehandles.disable();
         }
       });
+
+      this.edgehandles.disableDrawMode();
+      this.edgehandles.disable();
     },
 
     /**
@@ -290,7 +301,9 @@ export default {
             name: lessonData.name,
             isFirst: isFirstLesson
           },
-          classes: `label-background label-bottom ${isFirstLesson ? 'first-lesson' : ''}`,
+          classes: `label-background label-bottom ${
+            isFirstLesson ? "first-lesson" : ""
+          }`,
           renderedPosition: {
             x: position.x,
             y: position.y
@@ -341,7 +354,10 @@ export default {
      * Detects loop in whole tree
      */
     detectLoop() {
-      let allNodes = this.cytoscape.nodes(this.lessonNodeSelector).toArray().filter(x => x.isNode());
+      let allNodes = this.cytoscape
+        .nodes(this.lessonNodeSelector)
+        .toArray()
+        .filter(x => x.isNode());
       let visitedNodeIds = [];
       let nodesToVisit = [];
 
@@ -352,20 +368,20 @@ export default {
       while (nodesToVisit.length > 0) {
         let currentNode = nodesToVisit.pop();
 
-        if (visitedNodeIds.includes(currentNode.data('id'))) {
+        if (visitedNodeIds.includes(currentNode.data("id"))) {
           return true;
         }
 
-        visitedNodeIds.push(currentNode.data('id'));
+        visitedNodeIds.push(currentNode.data("id"));
 
         currentNode.outgoers(this.lessonNodeSelector).forEach(node => {
-          if (!visitedNodeIds.includes(node.data('id'))) {
+          if (!visitedNodeIds.includes(node.data("id"))) {
             nodesToVisit.push(node);
           }
         });
 
         currentNode.incomers(this.lessonNodeSelector).forEach(node => {
-          if (!visitedNodeIds.includes(node.data('id'))) {
+          if (!visitedNodeIds.includes(node.data("id"))) {
             nodesToVisit.push(node);
           }
         });
@@ -380,10 +396,11 @@ export default {
      */
     onContextTap(event) {
       let target = event.target;
+      this.isContextMenuVisible = false;
 
       // Deselect currently selected node
-      if (this.selectedNode) {
-        this.selectedNode.unselect();
+      if (this.selectedElement) {
+        this.selectedElement.unselect();
       }
 
       // Select new node and recalculate options visibility
@@ -399,18 +416,18 @@ export default {
      * @param event: event data
      */
     onElementSelect(event) {
-      if (this.selectedNode) {
+      if (this.selectedElement) {
         this.isContextMenuVisible = false;
       }
 
-      this.selectedNode = event.target;
+      this.selectedElement = event.target;
     },
 
     /**
      * Handles element deselection event
      */
     onElementUnselect() {
-      this.selectedNode = null;
+      this.selectedElement = null;
       this.isContextMenuVisible = false;
     },
 
@@ -421,28 +438,38 @@ export default {
       this.$emit("input", JSON.stringify(this.cytoscape.json()));
     },
 
+    onLinkClick() {
+      if (this.selectedElement.isNode()) {
+        this.edgehandles.enable();
+        this.edgehandles.enableDrawMode();
+        this.edgehandles.start(this.selectedElement);
+      }
+
+      this.isContextMenuVisible = false;
+    },
+
     /**
      * Handles remove element button click
      */
     onRemoveClick() {
-      if (this.selectedNode) {
-        this.removeElement(this.selectedNode);
-        this.selectedNode = null;
+      if (this.selectedElement) {
+        this.removeElement(this.selectedElement);
+        this.selectedElement = null;
       }
 
       this.isContextMenuVisible = false;
     },
 
     onSetAsStartingClick() {
-      if (this.selectedNode) {
+      if (this.selectedElement) {
         let currentStarting = this.cytoscape.elements("node[isFirst = true]");
 
         currentStarting.forEach(element => {
           this.setElementAsIsFirst(element, false);
-        })
+        });
 
-        this.setElementAsIsFirst(this.selectedNode, true);
-        this.selectedNode.unselect();
+        this.setElementAsIsFirst(this.selectedElement, true);
+        this.selectedElement.unselect();
       }
 
       this.isContextMenuVisible = false;
@@ -450,14 +477,32 @@ export default {
 
     setElementAsIsFirst(element, value) {
       element.data("isFirst", value);
-      value ? element.addClass("first-lesson") : element.removeClass("first-lesson");
+      value
+        ? element.addClass("first-lesson")
+        : element.removeClass("first-lesson");
     },
 
     setContextMenuVisibility() {
       this.contextMenuVisibility = {
+        link: this.selectedElement && this.selectedElement.isNode(),
         remove: true,
-        setAsStarting: !(this.selectedNode && this.selectedNode.data("isFirst"))
+        setAsStarting: !(
+          this.selectedElement &&
+          (this.selectedElement.data("isFirst") ||
+            this.selectedElement.isEdge())
+        )
+      };
+    },
+
+    setData(value) {
+      if (value && value !== "") {
+        let jsonValue = JSON.parse(value);
+        this.cytoscape.json(jsonValue);
       }
+    },
+
+    getData() {
+      return JSON.stringify(this.cytoscape.json());
     }
   }
 };

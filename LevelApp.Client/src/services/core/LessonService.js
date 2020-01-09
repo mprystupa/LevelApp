@@ -40,11 +40,7 @@ export default {
   },
 
   deleteLesson(payload) {
-    if (payload.id) {
-      return BaseService.delete(`${resource}/${payload.id}`, payload);
-    }
-
-    console.log("Delete payload does not contain an id.");
+    return BaseService.delete(`${resource}/${payload}`, payload);
   },
   addFavouriteLesson(payload) {
     return BaseService.post(`${resource}/${payload}/favourite/add`);

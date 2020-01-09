@@ -140,7 +140,7 @@ export default {
 
 <style lang="stylus" scoped>
 .icon-col {
-  flex: 0 0 5em;
+  flex: 0 0 6em;
   height: 100%;
 }
 

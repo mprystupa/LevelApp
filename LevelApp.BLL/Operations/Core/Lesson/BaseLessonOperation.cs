@@ -37,12 +37,9 @@ namespace LevelApp.BLL.Operations.Core.Lesson
 
         protected List<LessonSearchEntryDto> AddLessonsFrontendPermissions(List<LessonSearchEntryDto> lessons)
         {
-            foreach(var lesson in lessons)
+            foreach (var lesson in lessons.Where(lesson => lesson.AuthorId == CurrentUserId))
             {
-                if (lesson.AuthorId == CurrentUserId)
-                {
-                    lesson.Permissions.Add(FrontendPermissions.CanEdit, true);
-                }
+                lesson.Permissions.Add(FrontendPermissions.CanEdit, true);
             }
 
             return lessons;
@@ -53,25 +50,17 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             var lessonSearchEntry = Mapper.Map<LessonSearchEntryDto>(lesson);
             var userLesson = lesson.AppUserLessons?.FirstOrDefault(x => x.UserId == CurrentUserId);
 
-            if (userLesson != null)
-            {
-                lessonSearchEntry.LessonStatus = userLesson.Status;
-                lessonSearchEntry.IsFavourite = userLesson.IsFavourite;
-            }
+            if (userLesson == null) return lessonSearchEntry;
+            
+            lessonSearchEntry.LessonStatus = userLesson.Status;
+            lessonSearchEntry.IsFavourite = userLesson.IsFavourite;
 
             return lessonSearchEntry;
         }
 
         protected List<LessonSearchEntryDto> MapLessonSearchEntry(IEnumerable<DAL.Models.Core.Lesson> lessons)
         {
-            var result = new List<LessonSearchEntryDto>();
-
-            foreach(var lesson in lessons)
-            {
-                result.Add(MapLessonSearchEntry(lesson));
-            }
-
-            return result;
+            return lessons.Select(MapLessonSearchEntry).ToList();
         }
 
         protected DAL.Models.Core.Lesson SetFavourite(DAL.Models.Core.Lesson lesson, bool isFavourite)

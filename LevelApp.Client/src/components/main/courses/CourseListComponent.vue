@@ -11,7 +11,7 @@
           :card-class="getCardClass(index)"
           button-class="course-card-entry"
           @edit="$emit('edit', course.id)"
-          @delete="$emit('delete', course)"
+          @delete="$emit('delete', course.id)"
           @view="$emit('view', course.id)"
           @favourite="
             $emit('favourite', {
