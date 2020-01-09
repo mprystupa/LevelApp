@@ -13,6 +13,8 @@
           @edit="$emit('edit', course.id)"
           @delete="$emit('delete', course.id)"
           @view="$emit('view', course.id)"
+          @attend="$emit('attend', course.id)"
+          @continue="$emit('continue', course.id)"
           @favourite="
             $emit('favourite', {
               lessonId: course.id,

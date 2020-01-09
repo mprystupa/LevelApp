@@ -18,6 +18,57 @@ namespace LevelApp.DAL.Repositories.Course
         public CourseRepository(DbContext context) : base(context)
         {
         }
+
+        public async Task<Models.Core.Course> GetCourseWithRelatedDataAsync(
+            Expression<Func<Models.Core.Course, bool>> predicate, int currentUserId)
+        {
+            var result = await Entities.Where(predicate).Select(x => new
+                {
+                    Course = x,
+                    AppUserCourses = x.AppUserCourses.Where(y => y.UserId == currentUserId),
+                    Lessons = x.Lessons,
+                    AppUserLessons = x.Lessons.Select(y => y.AppUserLessons.FirstOrDefault(z => z.UserId == currentUserId))
+                })
+                .FirstOrDefaultAsync();
+            
+            if (result == null)
+            {
+                throw new NotFoundException($"Entity of type {typeof(Models.Core.Lesson)} has not been found.", HttpStatusCode.NotFound);
+            }
+
+            var courseResult = result.Course;
+            courseResult.AppUserCourses = result.AppUserCourses.ToList();
+            courseResult.Lessons = result.Lessons;
+            
+            foreach (var appUserLesson in result.AppUserLessons)
+            {
+                var lesson = courseResult.Lessons.FirstOrDefault(x => x.Id == appUserLesson.LessonId);
+
+                if (lesson != null)
+                {
+                    lesson.AppUserLessons = new List<AppUserLesson>()
+                    {
+                        appUserLesson
+                    };
+                }
+            }
+
+            return courseResult;
+        }
+        
+        public async Task<Models.Core.Course> GetCourseWithUserCoursesDataAsync(Expression<Func<Models.Core.Course, bool>> predicate)
+        {
+            var result = await Entities
+                .Include(x => x.AppUserCourses)
+                .FirstOrDefaultAsync(predicate, CancellationToken.None);
+
+            if (result == null)
+            {
+                throw new NotFoundException($"Entity of type {typeof(Models.Core.Lesson)} has not been found.", HttpStatusCode.NotFound);
+            }
+
+            return result;
+        }
         
         public async Task<Models.Core.Course> GetCourseWithLessonsAsync(Expression<Func<Models.Core.Course, bool>> predicate)
         {
@@ -62,6 +113,7 @@ namespace LevelApp.DAL.Repositories.Course
             return new PaginatedList<Models.Core.Course>(entities, count, pageIndex, pageSize);
         }
         
+
         public IList<Models.Core.Course> GetAllWithLessons()
         {
             return Entities.Include(x => x.Lessons).AsNoTracking().ToList();
@@ -72,21 +124,6 @@ namespace LevelApp.DAL.Repositories.Course
             return await Entities.Include(x => x.Lessons).AsNoTracking().ToListAsync();
         }
 
-        public int Insert(Models.Core.Course entity, IEnumerable<Models.Core.Lesson> lessonsToJoin)
-        {
-            entity.Lessons = new List<Models.Core.Lesson>();
-            var lessonIds = lessonsToJoin.Select(x => x.Id);
-            var lessonsToUpdate = Context.Set<Models.Core.Lesson>().Where(x => lessonIds.Contains(x.Id)).ToList();
-
-            foreach (var lesson in lessonsToUpdate)
-            {
-                lesson.Course = entity;
-            }
-
-            Entities.Add(entity);
-            return entity.Id;
-        }
-
         public new int Delete(int id)
         {
             var entity = Entities.Include(x => x.Lessons).First(x => x.Id == id);
@@ -94,6 +131,7 @@ namespace LevelApp.DAL.Repositories.Course
             foreach (var entityLesson in entity.Lessons)
             {
                 entityLesson.CourseId = null;
+                entityLesson.IsFirst = null;
             }
             
             return Delete(entity);

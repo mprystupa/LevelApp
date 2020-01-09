@@ -63,5 +63,11 @@ namespace LevelApp.API.Controllers.Core
         {
             return await Executor.Execute<DeleteCourseOperation, int, int>(id);
         }
+
+        [HttpPost(CourseRoutes.AddAttending)]
+        public async Task<ActionResult<bool>> AddAttendingCourse(int id)
+        {
+            return await Executor.Execute<AddAttendingCourseOperation, int, bool>(id);
+        }
     }
 }

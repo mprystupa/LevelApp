@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using LevelApp.Crosscutting.Enums.Main;
 
 namespace LevelApp.BLL.Dto.Core.Lesson
 {
@@ -7,5 +8,7 @@ namespace LevelApp.BLL.Dto.Core.Lesson
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool IsFirst { get; set; }
+        public LessonStatusEnum Status { get; set; }
     }
 }

@@ -40,6 +40,7 @@
         public const string Completed = "completed";
         public const string Awaiting = "awaiting";
         public const string Favourite = "favourite";
+        public const string Attending = "attending";
         
         public const string Search = "search";
 
@@ -53,5 +54,8 @@
 
         public const string AddFavourite = Id + "/" + Favourite + "/" + Add;
         public const string RemoveFavourite = Id + "/" + Favourite + "/" + Remove;
+
+        public const string AddAttending = Id + "/" + Attending + "/" + Add;
+        public const string RemoveAttending = Id + "/" + Attending + "/" + Remove;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Dto.Core.Course;
@@ -11,10 +12,26 @@ namespace LevelApp.BLL.Operations.Core.Course
     {
         public override async Task ExecuteValidated()
         {
-            var course = await Repository<ICourseRepository>().GetCourseWithLessonsAsync(x => x.Id == Parameter);
-            OperationResult = Mapper.Map<CourseDto>(course);
-            OperationResult.Lessons = Mapper.Map<List<LessonCourseEntryDto>>(course.Lessons);
+            var course = await Repository<ICourseRepository>().GetCourseWithRelatedDataAsync(x => x.Id == Parameter, CurrentUserId);
+            var lessons = course.Lessons;
             
+            OperationResult = Mapper.Map<CourseDto>(course);
+
+            if (lessons != null)
+            {
+                foreach (var lesson in lessons)
+                {
+                    OperationResult.Lessons.Add(new LessonCourseEntryDto()
+                    {
+                        Id = lesson.Id,
+                        Name = lesson.Name,
+                        Description = lesson.Description,
+                        IsFirst = lesson.IsFirst ?? false,
+                        Status = lesson.AppUserLessons.First(x => x.UserId == CurrentUserId).Status
+                    });
+                }
+            }
+
             await base.ExecuteValidated();
         }
     }

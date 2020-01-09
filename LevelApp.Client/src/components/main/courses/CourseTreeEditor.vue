@@ -43,10 +43,22 @@ import Cytoscape from "cytoscape";
 import GridGuide from "cytoscape-grid-guide";
 import EdgeHandles from "cytoscape-edgehandles";
 import Popper from "cytoscape-popper";
+import {
+  CytoscapeStyles,
+  LessonNodeSelector
+} from "../../../helpers/constants";
 
 Cytoscape.use(EdgeHandles);
 Cytoscape.use(GridGuide);
 Cytoscape.use(Popper);
+
+const lessonStatusEnum = Object.freeze({
+  created: 1,
+  notStarted: 2,
+  locked: 3,
+  awaiting: 4,
+  completed: 5
+});
 
 export default {
   cytoscape: {},
@@ -63,7 +75,7 @@ export default {
         remove: true,
         setAsStarting: false
       },
-      lessonNodeSelector: "node[name]"
+      lessonsData: []
     };
   },
   mounted() {
@@ -76,111 +88,7 @@ export default {
     initCytoscape() {
       let options = {
         container: this.$refs.cytoscape,
-        style: [
-          // the stylesheet for the graph
-          {
-            selector: this.lessonNodeSelector,
-            style: {
-              "background-color": "#666",
-              height: "90",
-              width: "90",
-              shape: "polygon",
-              "shape-polygon-points":
-                "0, 1, 0.866, 0.5, 0.866, -0.5, 0, -1, -0.866, -0.5, -0.866, 0.5",
-              "border-width": "4",
-              "border-color": "#fff",
-              label: "data(name)"
-            }
-          },
-          {
-            selector: "node:selected",
-            style: {
-              "border-color": "#0fb"
-            }
-          },
-          {
-            selector: "node:unselected.first-lesson",
-            style: {
-              "border-color": "#f2ff23"
-            }
-          },
-          {
-            selector: ".label-background",
-            style: {
-              "font-family": "'Istok Web', sans-serif",
-              "text-background-padding": 4,
-              "text-background-opacity": 1,
-              color: "#000",
-              "text-background-color": "#fff",
-              "text-background-shape": "roundrectangle"
-            }
-          },
-          {
-            selector: ".label-bottom",
-            style: {
-              "text-valign": "bottom",
-              "text-halign": "center"
-            }
-          },
-          {
-            selector: "edge",
-            style: {
-              width: 4,
-              "line-color": "#fff",
-              "line-style": "dashed",
-              "target-arrow-color": "#ccc",
-              "target-arrow-shape": "triangle"
-            }
-          },
-          {
-            selector: ".eh-handle",
-            style: {
-              "background-color": "red",
-              width: 12,
-              height: 12,
-              shape: "ellipse",
-              "overlay-opacity": 0,
-              "border-width": 12, // makes the handle easier to hit
-              "border-opacity": 0,
-              label: ""
-            }
-          },
-          {
-            selector: ".eh-hover",
-            style: {
-              "background-color": "red"
-            }
-          },
-          {
-            selector: ".eh-source",
-            style: {
-              "border-width": 2,
-              "border-color": "red"
-            }
-          },
-          {
-            selector: ".eh-target",
-            style: {
-              "border-width": 2,
-              "border-color": "red"
-            }
-          },
-          {
-            selector: ".eh-preview, .eh-ghost-edge",
-            style: {
-              "background-color": "red",
-              "line-color": "red",
-              "target-arrow-color": "red",
-              "source-arrow-color": "red"
-            }
-          },
-          {
-            selector: ".eh-ghost-edge.eh-preview-active",
-            style: {
-              opacity: 0
-            }
-          }
-        ],
+        style: CytoscapeStyles,
         autoungrabify: true
       };
 
@@ -196,6 +104,7 @@ export default {
         panGrid: true,
         distributionGuidelines: true,
         gridSpacing: 40,
+        gridColor: "#fff",
         guidelinesStyle: {
           strokeStyle: "black",
           horizontalDistColor: "#ff0000",
@@ -299,7 +208,8 @@ export default {
           data: {
             id: lessonData.id,
             name: lessonData.name,
-            isFirst: isFirstLesson
+            isFirst: isFirstLesson,
+            status: lessonData.status
           },
           classes: `label-background label-bottom ${
             isFirstLesson ? "first-lesson" : ""
@@ -309,6 +219,10 @@ export default {
             y: position.y
           }
         });
+
+        if (isFirstLesson) {
+          this.$emit("setStartingLesson", lessonData.id.toString());
+        }
       } else {
         throw new Error("Cannot add lessons in read-only mode!");
       }
@@ -354,10 +268,8 @@ export default {
      * Detects loop in whole tree
      */
     detectLoop() {
-      let allNodes = this.cytoscape
-        .nodes(this.lessonNodeSelector)
-        .toArray()
-        .filter(x => x.isNode());
+      let allNodes = this.cytoscape.nodes(LessonNodeSelector).toArray();
+
       let visitedNodeIds = [];
       let nodesToVisit = [];
 
@@ -374,13 +286,13 @@ export default {
 
         visitedNodeIds.push(currentNode.data("id"));
 
-        currentNode.outgoers(this.lessonNodeSelector).forEach(node => {
+        currentNode.outgoers(LessonNodeSelector).forEach(node => {
           if (!visitedNodeIds.includes(node.data("id"))) {
             nodesToVisit.push(node);
           }
         });
 
-        currentNode.incomers(this.lessonNodeSelector).forEach(node => {
+        currentNode.incomers(LessonNodeSelector).forEach(node => {
           if (!visitedNodeIds.includes(node.data("id"))) {
             nodesToVisit.push(node);
           }
@@ -408,6 +320,8 @@ export default {
         target.select();
         this.setContextMenuVisibility();
         this.isContextMenuVisible = true;
+
+        console.log(target);
       }
     },
 
@@ -469,6 +383,11 @@ export default {
         });
 
         this.setElementAsIsFirst(this.selectedElement, true);
+
+        if (currentStarting.data("id") !== this.selectedElement.data("id")) {
+          this.$emit("setStartingLesson", this.selectedElement.data("id"));
+        }
+
         this.selectedElement.unselect();
       }
 
@@ -494,15 +413,82 @@ export default {
       };
     },
 
-    setData(value) {
-      if (value && value !== "") {
-        let jsonValue = JSON.parse(value);
+    setData(treeData, lessonsData = []) {
+      if (treeData && treeData !== "") {
+        let jsonValue = JSON.parse(treeData);
         this.cytoscape.json(jsonValue);
+
+        this.cytoscape.style(CytoscapeStyles);
+
+        if (this.readOnly) {
+          this.lessonsData = lessonsData;
+          this.setLessonsStatus();
+          this.setEdgesClasses();
+        }
       }
     },
 
     getData() {
+      if (this.selectedElement) {
+        this.selectedElement.unselect();
+        this.selectedElement = null;
+      }
+
       return JSON.stringify(this.cytoscape.json());
+    },
+
+    setLessonsStatus() {
+      let allNodes = this.cytoscape.nodes(LessonNodeSelector);
+
+      allNodes.forEach(node => {
+        let lessonData = this.lessonsData.find(
+          x => x.id.toString() === node.data("id")
+        );
+
+        if (lessonData && this.readOnly) {
+          node.data("status", lessonData.status);
+          this.setLessonClassByStatus(node, lessonData.status);
+        }
+      });
+    },
+
+    setLessonClassByStatus(node, status) {
+      switch (status) {
+        case lessonStatusEnum.awaiting:
+          node.addClass("awaiting-lesson");
+          break;
+
+        case lessonStatusEnum.completed:
+          node.addClass("completed-lesson");
+          break;
+
+        case lessonStatusEnum.locked:
+          node.addClass("locked-lesson");
+          break;
+      }
+    },
+
+    setEdgesClasses() {
+      let allEdges = this.cytoscape.edges();
+
+      allEdges.forEach(edge => {
+        let sourceStatus = edge.source().data("status");
+        let targetStatus = edge.target().data("status");
+
+        if (
+          sourceStatus === lessonStatusEnum.locked ||
+          targetStatus === lessonStatusEnum.locked
+        ) {
+          edge.addClass("locked-edge");
+        } else if (
+          sourceStatus === lessonStatusEnum.completed &&
+          targetStatus === lessonStatusEnum.completed
+        ) {
+          edge.addClass("completed-edge");
+        } else {
+          edge.addClass("available-edge");
+        }
+      });
     }
   }
 };

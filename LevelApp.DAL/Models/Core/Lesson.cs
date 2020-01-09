@@ -20,6 +20,7 @@ namespace LevelApp.DAL.Models.Core
         public string Content { get; set; }
         public int AuthorId { get; set; }
         public int? CourseId { get; set; }
+        public bool? IsFirst { get; set; }
         
         public virtual AppUser Author { get; set; }
         public virtual Course Course { get; set; }

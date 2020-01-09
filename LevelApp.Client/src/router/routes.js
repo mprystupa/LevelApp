@@ -30,6 +30,10 @@ const routes = [
         path: "courses/edit/:id",
         component: () => import("pages/main/courses/edit-course/EditCourse.vue")
       },
+      {
+        path: "courses/view/:id",
+        component: () => import("pages/main/courses/view-course/ViewCourse.vue")
+      },
       // Lessons
       {
         path: "lessons",

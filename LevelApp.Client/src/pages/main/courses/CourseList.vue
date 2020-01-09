@@ -202,6 +202,8 @@
               :total-pages="totalPages"
               @edit="onEditClick($event)"
               @delete="onDeleteClick($event)"
+              @attend="onAttendClick($event)"
+              @continue="onContinueClick($event)"
             />
           </q-tab-panel>
 
@@ -214,6 +216,8 @@
               :total-pages="totalPages"
               @edit="onEditClick($event)"
               @delete="onDeleteClick($event)"
+              @attend="onAttendClick($event)"
+              @continue="onContinueClick($event)"
             />
 
             <!-- Add new course -->
@@ -347,8 +351,16 @@ export default {
     onAddNewCourseClick() {
       this.$router.push("courses/add");
     },
-    onEditClick(lessonId) {
-      this.$router.push(`courses/edit/${lessonId}`);
+    onEditClick(courseId) {
+      this.$router.push(`courses/edit/${courseId}`);
+    },
+    onAttendClick(courseId) {
+      CoursesService.addAttendingCourse(courseId).then(() => {
+        this.$router.push(`courses/view/${courseId}`);
+      });
+    },
+    onContinueClick(courseId) {
+      this.$router.push(`courses/view/${courseId}`);
     },
     onDeleteClick(courseId) {
       this.isDeleteDialogVisible = true;

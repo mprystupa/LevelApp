@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Dto.Core.Course;
 using LevelApp.BLL.Dto.Core.Lesson;
+using LevelApp.Crosscutting.Enums.Main;
 
 namespace LevelApp.BLL.Operations.Core.Course
 {
@@ -15,10 +16,8 @@ namespace LevelApp.BLL.Operations.Core.Course
             var courseSearchEntry = Mapper.Map<CourseSearchEntryDto>(course);
             var userCourse = course.AppUserCourses?.FirstOrDefault(x => x.UserId == CurrentUserId);
 
-            if (userCourse == null) return courseSearchEntry;
-            
-            courseSearchEntry.CourseStatus = userCourse.Status;
-            courseSearchEntry.IsFavourite = userCourse.IsFavourite;
+            courseSearchEntry.CourseStatus = userCourse?.Status ?? CourseStatusEnum.NotStarted;
+            courseSearchEntry.IsFavourite = userCourse?.IsFavourite ?? false;
 
             return courseSearchEntry;
         }

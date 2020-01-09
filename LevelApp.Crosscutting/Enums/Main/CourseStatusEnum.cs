@@ -4,7 +4,7 @@
     {
         Created = 1,
         NotStarted,
-        Awaiting,
+        InProgress,
         Completed
     }
 }

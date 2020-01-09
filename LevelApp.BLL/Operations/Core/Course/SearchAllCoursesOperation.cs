@@ -4,6 +4,7 @@ using LevelApp.BLL.Base.Operation;
 using LevelApp.BLL.Dto.Core.Course;
 using LevelApp.BLL.Dto.Core.Lesson;
 using LevelApp.BLL.Permissions;
+using LevelApp.Crosscutting.Enums.Main;
 using LevelApp.DAL.Repositories.Course;
 
 namespace LevelApp.BLL.Operations.Core.Course
@@ -34,9 +35,11 @@ namespace LevelApp.BLL.Operations.Core.Course
         
         public override Task AddFrontendPermissions()
         {
-            foreach (var searchResult in OperationResult.SearchResults.Where(course => course.AuthorId == CurrentUserId))
+            foreach (var searchResult in OperationResult.SearchResults)
             {
-                searchResult.Permissions.Add(FrontendPermissions.CanEdit, true);
+                searchResult.Permissions.Add(FrontendPermissions.CanEdit, searchResult.AuthorId == CurrentUserId);
+                searchResult.Permissions.Add(FrontendPermissions.CanContinue, searchResult.CourseStatus == CourseStatusEnum.InProgress);
+                searchResult.Permissions.Add(FrontendPermissions.CanAttend, searchResult.CourseStatus == CourseStatusEnum.NotStarted);
             }
 
             return base.AddFrontendPermissions();

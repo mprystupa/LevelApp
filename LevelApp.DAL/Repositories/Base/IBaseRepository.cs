@@ -32,6 +32,8 @@ namespace LevelApp.DAL.Repositories.Base
         Task<bool> CheckIfAllExistByIdsAsync(IEnumerable<TKey> idList);
         TKey Insert(TEntity entity);
         void InsertBatch(IEnumerable<TEntity> entities);
+        TKey InsertEntity<TAnyEntity>(TAnyEntity entity) where TAnyEntity : Entity<TKey>;
+        void InsertEntityBatch<TAnyEntity>(IEnumerable<TAnyEntity> entities) where TAnyEntity : Entity<TKey>;
         TKey Update(TEntity entity);
         void UpdateBatch(IEnumerable<TEntity> entities);
         TKey Delete(TKey id);

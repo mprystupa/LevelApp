@@ -237,6 +237,7 @@
           <!-- Cytoscape window for tree management -->
           <course-tree-editor
             @removeLesson="onLessonRemovedFromTree($event)"
+            @setStartingLesson="onSetStartingLesson($event)"
             ref="treeEditor"
             :read-only="false"
             key="editor"
@@ -377,6 +378,8 @@ export default {
           });
           this.course.lessons.push(droppedLesson);
           this.availableLessons.splice(this.draggedLessonIndex, 1);
+
+          console.log(this.course.lessons);
         } catch {
           console.error("Error on creating new lesson node.");
         }
@@ -391,6 +394,22 @@ export default {
         let removedLesson = this.course.lessons.splice(lessonIndex, 1)[0];
         this.availableLessons.unshift(removedLesson);
       }
+    },
+    onSetStartingLesson(event) {
+      this.$nextTick(() => {
+        let currentStartingLesson = this.course.lessons.find(x => x.isFirst === true);
+        let newStartingLesson = this.course.lessons.find(x => x.id.toString() === event);
+
+        if (currentStartingLesson) {
+          currentStartingLesson.isFirst = false;
+        }
+
+        if (newStartingLesson) {
+          newStartingLesson.isFirst = true;
+        } else {
+          throw Error("Starting lesson is not in the lesson array.");
+        }
+      });
     },
     onAddLessonClick() {
       this.$router.push("/main/lessons/add");

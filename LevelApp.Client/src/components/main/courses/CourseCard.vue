@@ -60,11 +60,23 @@
               <q-btn
                 flat
                 rounded
+                v-if="courseData.permissions.CanAttend"
                 class="full-width"
                 align="left"
                 label="Attend course"
                 icon="fas fa-chalkboard-teacher"
                 @click="$emit('attend')"
+              />
+
+              <q-btn
+                flat
+                rounded
+                v-if="courseData.permissions.CanContinue"
+                class="full-width"
+                align="left"
+                label="Continue course"
+                icon="fas fa-play"
+                @click="$emit('continue')"
               />
             </div>
           </div>

@@ -149,6 +149,17 @@ namespace LevelApp.DAL.Repositories.Base
             Entities.AddRange(entities);
         }
 
+        public TKey InsertEntity<TAnyEntity>(TAnyEntity entity) where TAnyEntity : Entity<TKey>
+        {
+            Context.Add(entity);
+            return entity.Id;
+        }
+        
+        public void InsertEntityBatch<TAnyEntity>(IEnumerable<TAnyEntity> entities) where TAnyEntity : Entity<TKey>
+        {
+            Context.AddRange(entities);
+        }
+
         public TKey Update(TEntity entity)
         {
             Entities.Attach(entity);

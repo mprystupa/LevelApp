@@ -45,5 +45,13 @@ export default {
 
   removeFavouriteCourse(payload) {
     return BaseService.post(`${resource}/${payload}/favourite/remove`);
+  },
+
+  addAttendingCourse(payload) {
+    return BaseService.post(`${resource}/${payload}/attending/add`);
+  },
+
+  removeAttendingCourse(payload) {
+    return BaseService.post(`${resource}/${payload}/attending/remove`);
   }
 };
