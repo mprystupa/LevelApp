@@ -8,8 +8,8 @@
     ></div>
 
     <!-- Context menu -->
-    <q-popup-proxy context-menu>
-      <div v-if="isContextMenuVisible && !readOnly">
+    <q-popup-proxy v-if="isContextMenuVisible && !readOnly" context-menu>
+      <div>
         <q-btn-group push>
           <q-btn
             push
@@ -35,10 +35,56 @@
         </q-btn-group>
       </div>
     </q-popup-proxy>
+
+    <transition
+      enter-active-class="animated fadeInDown"
+      leave-active-class="animated fadeOutUp"
+    >
+      <div v-if="isLessonDialogVisible && readOnly" class="lesson-popup">
+        <q-card>
+          <q-card-section class="row">
+            <div class="row full-width q-mb-sm">
+              <span class="text-lessons text-h6">{{
+                selectedLesson.name
+              }}</span>
+            </div>
+
+            <div class="row full-width">
+              <span class="text-subtitle2">{{
+                selectedLesson.description
+              }}</span>
+            </div>
+
+            <q-separator class="full-width q-my-md" />
+
+            <div class="row full-width">
+              <q-btn
+                v-if="selectedLesson.status === lessonStatusEnum.awaiting"
+                @click="onBeginLessonClick(selectedLesson.id)"
+                class="full-width"
+                color="primary"
+                icon="fas fa-book"
+                label="Begin lesson"
+              />
+              <q-btn
+                v-if="selectedLesson.status === lessonStatusEnum.locked"
+                class="full-width"
+                disable
+                color="blue-grey-9"
+                icon="fas fa-lock"
+                label="Lesson locked"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
+import LocalStorageService from "../../../services/local-storage/LocalStorageService";
+
 import Cytoscape from "cytoscape";
 import GridGuide from "cytoscape-grid-guide";
 import EdgeHandles from "cytoscape-edgehandles";
@@ -64,22 +110,45 @@ export default {
   cytoscape: {},
   edgehandles: {},
   selectedElement: null,
+  selectedElementValue: null,
   name: "CourseTreeEditor",
   props: ["cytoscapeOptions", "readOnly"],
   data() {
     return {
       isNodeSelected: !!this.selectedElement,
       isContextMenuVisible: false,
+      isLessonDialogVisible: false,
       contextMenuVisibility: {
         link: true,
         remove: true,
         setAsStarting: false
       },
-      lessonsData: []
+      lessonsData: [],
+      selectedLesson: {},
+      lessonStatusEnum: lessonStatusEnum
     };
   },
   mounted() {
     this.initCytoscape();
+
+    // Selected lesson getter/setter
+    Object.defineProperty(this, "selectedElement", {
+      set: val => {
+        if (val && Object.entries(val).length !== 0) {
+          let lessonId = val.data("id");
+          this.selectedLesson = this.lessonsData.find(
+            x => x.id.toString() === lessonId
+          );
+        } else {
+          this.selectedLesson = {};
+        }
+
+        this.selectedElementValue = val;
+      },
+      get: () => {
+        return this.selectedElementValue;
+      }
+    });
   },
   methods: {
     /**
@@ -335,6 +404,10 @@ export default {
       }
 
       this.selectedElement = event.target;
+
+      if (this.selectedElement.isNode()) {
+        this.isLessonDialogVisible = true;
+      }
     },
 
     /**
@@ -343,6 +416,7 @@ export default {
     onElementUnselect() {
       this.selectedElement = null;
       this.isContextMenuVisible = false;
+      this.isLessonDialogVisible = false;
     },
 
     /**
@@ -392,6 +466,13 @@ export default {
       }
 
       this.isContextMenuVisible = false;
+    },
+
+    onBeginLessonClick(lessonId) {
+      let lockedLessons = this.getConnectedLockedLessons(this.selectedElement);
+      LocalStorageService.setLockedLessonsIds(lockedLessons);
+
+      this.$router.push(`/main/courses/view/${this.$route.params.id}/lessons/${lessonId}`);
     },
 
     setElementAsIsFirst(element, value) {
@@ -489,6 +570,22 @@ export default {
           edge.addClass("available-edge");
         }
       });
+    },
+
+    getConnectedLockedLessons(element) {
+      let connectedOutgoers = element.outgoers("node.locked-lesson");
+      let connectedIncomers = element.incomers("node.locked-lesson");
+      let lockedLessonsIds = [];
+
+      connectedOutgoers.forEach(outgoer => {
+        lockedLessonsIds.push(parseInt(outgoer.data('id')));
+      });
+
+      connectedIncomers.forEach(incomer => {
+        lockedLessonsIds.push(parseInt(incomer.data('id')));
+      });
+
+      return lockedLessonsIds;
     }
   }
 };
@@ -498,5 +595,14 @@ export default {
 .cytoscape-window {
   background-color: rgba(black, 0.1);
   border-radius: 5px;
+}
+
+.lesson-popup {
+  --popup-width: 400px;
+  width: var(--popup-width);
+  position: absolute;
+  top: 0;
+  left: calc(50% - (var(--popup-width)/2));
+  z-index: 100;
 }
 </style>

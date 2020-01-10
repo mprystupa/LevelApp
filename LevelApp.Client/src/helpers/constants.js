@@ -23,13 +23,19 @@ export const CytoscapeStyles = [
   {
     selector: "node.awaiting-lesson",
     style: {
-      "background-color": "#4bcf2d"
+      "background-color": "#aaa"
     }
   },
   {
     selector: "node.locked-lesson",
     style: {
       "border-color": "#666"
+    }
+  },
+  {
+    selector: "node.completed-lesson",
+    style: {
+      "background-color": "#2e9e33"
     }
   },
   {

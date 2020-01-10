@@ -13,7 +13,7 @@ namespace LevelApp.BLL.Operations.Core.User
         {
             if (!CryptoHelper.ValidatePassword(password, user.PasswordHash, user.PasswordSalt))
             {
-                throw new BusinessValidationException("Password is invalid.", HttpStatusCode.Unauthorized);
+                throw new BusinessValidationException("Password is invalid.", HttpStatusCode.Forbidden);
             }
         }
     }

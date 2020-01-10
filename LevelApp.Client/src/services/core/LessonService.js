@@ -42,10 +42,20 @@ export default {
   deleteLesson(payload) {
     return BaseService.delete(`${resource}/${payload}`, payload);
   },
+
   addFavouriteLesson(payload) {
     return BaseService.post(`${resource}/${payload}/favourite/add`);
   },
+
   removeFavouriteLesson(payload) {
     return BaseService.post(`${resource}/${payload}/favourite/remove`);
+  },
+
+  finishLesson(payload) {
+    if (payload.id) {
+      return BaseService.post(`${resource}/${payload.id}/finish`, payload);
+    }
+
+    console.log("Finish lesson payload does not contain an id.");
   }
 };

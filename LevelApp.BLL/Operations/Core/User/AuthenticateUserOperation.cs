@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace LevelApp.BLL.Operations.Core.User
             }
             catch (NotFoundException ex)
             {
-                throw new NotFoundException("User with this e-mail does not exist.");
+                throw new NotFoundException("User with this e-mail does not exist.", HttpStatusCode.NotFound);
             }
             
             await base.GetData();

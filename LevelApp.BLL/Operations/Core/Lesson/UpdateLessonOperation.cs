@@ -8,22 +8,18 @@ namespace LevelApp.BLL.Operations.Core.Lesson
 {
     public class UpdateLessonOperation : BaseOperation<LessonDto, int>
     {
-        public override async Task Validate()
+        private DAL.Models.Core.Lesson _lessonToUpdate;
+        
+        public override async Task GetData()
         {
-            if (!Repository<ILessonRepository>().CheckIfExists(x => x.Id == Parameter.Id))
-            {
-                Errors.Add("Lesson does not exist.", HttpStatusCode.NotFound);
-            }
-            
-            await base.Validate();
+            _lessonToUpdate = await Repository<ILessonRepository>().GetDetailAsync(x => x.Id == Parameter.Id);
         }
 
         public override async Task ExecuteValidated()
         {
-            var lesson = Mapper.Map<DAL.Models.Core.Lesson>(Parameter);
-            lesson.AuthorId = CurrentUserId;
-            
-            var result = UnitOfWork.GetRepository<ILessonRepository>().Update(lesson);
+            Mapper.Map(Parameter, _lessonToUpdate);
+
+            var result = UnitOfWork.GetRepository<ILessonRepository>().Update(_lessonToUpdate);
             OperationResult = result;
             await UnitOfWork.SaveAsync();
             

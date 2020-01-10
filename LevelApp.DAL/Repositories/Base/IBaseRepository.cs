@@ -36,6 +36,8 @@ namespace LevelApp.DAL.Repositories.Base
         void InsertEntityBatch<TAnyEntity>(IEnumerable<TAnyEntity> entities) where TAnyEntity : Entity<TKey>;
         TKey Update(TEntity entity);
         void UpdateBatch(IEnumerable<TEntity> entities);
+        TKey UpdateEntity<TAnyEntity>(TAnyEntity entity) where TAnyEntity : Entity<TKey>;
+        void UpdateEntityBatch<TAnyEntity>(IEnumerable<TAnyEntity> entities) where TAnyEntity : Entity<TKey>;
         TKey Delete(TKey id);
         TKey Delete(TEntity entity);
         void DeleteBatch(IEnumerable<TEntity> entities);

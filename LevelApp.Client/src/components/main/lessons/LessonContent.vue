@@ -2,8 +2,12 @@
   <div class="lesson-wrapper">
     <!-- Header -->
     <div class="row lesson-header q-mb-md">
-      <div class="full-width text-h3 text-lessons q-mb-sm">{{ lessonData.name }}</div>
-      <div class="full-width text-subtitle1 text-lessons q-mb-xs">{{ lessonData.description }}</div>
+      <div class="full-width text-h3 text-lessons q-mb-sm">
+        {{ lessonData.name }}
+      </div>
+      <div class="full-width text-subtitle1 text-lessons q-mb-xs">
+        {{ lessonData.description }}
+      </div>
     </div>
 
     <!-- Content -->
@@ -26,7 +30,7 @@ export default {
       htmlContent: ""
     };
   },
-  created() {
+  mounted() {
     if (this.lessonData && this.lessonData.content) {
       this.convertDelta(this.lessonData.content);
     }
@@ -41,13 +45,11 @@ export default {
     }
   },
   watch: {
-    lessonData: {
-      lessonDataHandler(val) {
-        this.lessonData = val;
+    lessonData(val) {
+      this.lessonData = val;
 
-        if (this.lessonData && this.lessonData.content) {
-          this.convertDelta(this.lessonData.content);
-        }
+      if (this.lessonData && this.lessonData.content) {
+        this.convertDelta(this.lessonData.content);
       }
     }
   }

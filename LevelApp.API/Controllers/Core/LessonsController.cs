@@ -127,5 +127,11 @@ namespace LevelApp.API.Controllers.Core
         {
             return await Executor.Execute<RemoveFavouriteLessonOperation, int, bool>(id);
         }
+        
+        [HttpPost(LessonRoutes.Finish)]
+        public async Task<ActionResult<bool>> FinishLesson([FromBody] LessonFinishDto lessonFinishData)
+        {
+            return await Executor.Execute<FinishLessonOperation, LessonFinishDto, bool>(lessonFinishData);
+        }
     }
 }

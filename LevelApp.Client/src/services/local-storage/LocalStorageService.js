@@ -21,12 +21,30 @@ const LocalStorageService = (function() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
   }
+  function _setLockedLessonsIds(lockedLessonsIds) {
+    localStorage.setItem("lockedLessons", lockedLessonsIds);
+  }
+  function _getLockedLessonsIds() {
+    let ids = localStorage.getItem("lockedLessons").split(",");
+
+    if (ids && ids[0] !== "") {
+      return ids;
+    } else {
+      return [];
+    }
+  }
+  function _clearLockedLessonsIds() {
+    localStorage.removeItem("lockedLessons");
+  }
   return {
     getService: _getService,
     setToken: _setToken,
     getAccessToken: _getAccessToken,
     getRefreshToken: _getRefreshToken,
-    clearToken: _clearToken
+    clearToken: _clearToken,
+    setLockedLessonsIds: _setLockedLessonsIds,
+    getLockedLessonsIds: _getLockedLessonsIds,
+    clearLockedLessonsIds: _clearLockedLessonsIds
   };
 })();
 

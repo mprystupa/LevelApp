@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -60,6 +61,19 @@ namespace LevelApp.DAL.Repositories.Lesson
             }
 
             return result;
+        }
+
+        public async Task<List<AppUserLesson>> GetAppUserLessonsAsync(
+            Expression<Func<Models.Core.AppUserLesson, bool>> predicate)
+        {
+            IQueryable<AppUserLesson> query = Context.Set<AppUserLesson>();
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

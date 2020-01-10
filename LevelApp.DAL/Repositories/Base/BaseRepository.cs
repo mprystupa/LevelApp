@@ -173,6 +173,20 @@ namespace LevelApp.DAL.Repositories.Base
             Entities.AttachRange(enumerable);
             Entities.UpdateRange(enumerable);
         }
+        
+        public TKey UpdateEntity<TAnyEntity>(TAnyEntity entity) where TAnyEntity : Entity<TKey>
+        {
+            Context.Attach(entity);
+            return Context.Update(entity).Entity.Id;
+        }
+
+        public void UpdateEntityBatch<TAnyEntity>(IEnumerable<TAnyEntity> entities) where TAnyEntity : Entity<TKey>
+        {
+            var enumerable = entities.ToList();
+
+            Context.AttachRange(enumerable);
+            Context.UpdateRange(enumerable);
+        }
 
         public TKey Delete(TKey id)
         {

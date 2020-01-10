@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LevelApp.Crosscutting.Exceptions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,6 +35,12 @@ namespace LevelApp.BLL.Base.Executor
             {
                 await operation.GetData();
                 await operation.Validate();
+
+                if (operation.Errors.Any())
+                {
+                    throw new BusinessValidationException(operation.Errors.Last().Key, operation.Errors.Last().Value);
+                }
+                
                 await operation.ExecuteValidated();
                 await operation.AddFrontendPermissions();
 

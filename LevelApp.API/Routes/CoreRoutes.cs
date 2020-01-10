@@ -32,6 +32,8 @@
 
         public const string AddFavourite = Id + "/" + Favourite + "/" + Add;
         public const string RemoveFavourite = Id + "/" + Favourite + "/" + Remove;
+
+        public const string Finish = Id + "/finish";
     }
 
     public class CourseRoutes : CoreRoutes

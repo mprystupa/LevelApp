@@ -19,5 +19,8 @@ namespace LevelApp.DAL.Repositories.Lesson
             Func<IQueryable<Models.Core.Lesson>, IOrderedQueryable<Models.Core.Lesson>> orderBy = null);
 
         Task<Models.Core.Lesson> GetLessonWithUserLessonsDataAsync(Expression<Func<Models.Core.Lesson, bool>> predicate);
+
+        Task<List<AppUserLesson>> GetAppUserLessonsAsync(
+            Expression<Func<Models.Core.AppUserLesson, bool>> predicate);
     }
 }
