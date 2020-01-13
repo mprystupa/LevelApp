@@ -15,13 +15,15 @@ namespace LevelApp.BLL.Operations.Core.Course
     {
         public override async Task Validate()
         {
+            // TODO: Poprawić pobieranie z bazy jednym zapytaniem!
+            var course = await Repository<ICourseRepository>().GetCourseWithUserCoursesDataAsync(x => x.Id == Parameter);
+
             if (!await Repository<ICourseRepository>().CheckIfExistsAsync(x => x.Id == Parameter))
             {
                 throw new BusinessValidationException("Course does not exist.", HttpStatusCode.NotFound);
             }
-            
-            if (await Repository<ICourseRepository>()
-                .CheckIfExistsAsync(x => x.AppUserCourses.Select(y => y.UserId).Contains(CurrentUserId)))
+
+            if (course.AppUserCourses.Select(y => y.UserId).Contains(CurrentUserId))
             {
                 Errors.Add("User already attending this course.", HttpStatusCode.Conflict);
             }

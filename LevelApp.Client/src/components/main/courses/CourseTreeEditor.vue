@@ -8,32 +8,70 @@
     ></div>
 
     <!-- Context menu -->
-    <q-popup-proxy v-if="isContextMenuVisible && !readOnly" context-menu>
-      <div>
-        <q-btn-group push>
-          <q-btn
-            push
-            v-if="contextMenuVisibility.link"
-            label="Link"
-            icon="fas fa-link"
-            @click="onLinkClick"
-          />
-          <q-btn
-            push
-            v-if="contextMenuVisibility.remove"
-            label="Remove"
-            icon="fas fa-times"
-            @click="onRemoveClick"
-          />
-          <q-btn
-            push
-            label="Set as starting lesson"
-            v-if="contextMenuVisibility.setAsStarting"
-            icon="fas fa-home"
-            @click="onSetAsStartingClick"
-          />
-        </q-btn-group>
-      </div>
+    <q-popup-proxy v-if="!readOnly" context-menu>
+      <q-list style="min-width: 100px">
+        <q-item
+          v-if="contextMenuVisibility.addNewLesson"
+          @click="onAddLessonClick"
+          clickable
+          v-close-popup
+        >
+          <q-item-section avatar>
+            <q-icon name="fas fa-plus" />
+          </q-item-section>
+          <q-item-section>Add new lesson</q-item-section>
+        </q-item>
+
+        <q-item
+          v-if="contextMenuVisibility.editLesson"
+          @click="onEditLessonClick"
+          clickable
+          v-close-popup
+        >
+          <q-item-section avatar>
+            <q-icon name="fas fa-edit" />
+          </q-item-section>
+          <q-item-section>Edit lesson</q-item-section>
+        </q-item>
+
+        <q-item
+          v-if="contextMenuVisibility.link"
+          @click="onLinkClick"
+          clickable
+          v-close-popup
+        >
+          <q-item-section avatar>
+            <q-icon name="fas fa-link" />
+          </q-item-section>
+          <q-item-section>Link</q-item-section>
+        </q-item>
+
+        <q-item
+          v-if="contextMenuVisibility.setAsStarting"
+          @click="onSetAsStartingClick"
+          clickable
+          v-close-popup
+        >
+          <q-item-section avatar>
+            <q-icon name="fas fa-home" />
+          </q-item-section>
+          <q-item-section>Set as starting lesson</q-item-section>
+        </q-item>
+
+        <q-separator />
+
+        <q-item
+          v-if="contextMenuVisibility.remove"
+          @click="onRemoveClick"
+          clickable
+          v-close-popup
+        >
+          <q-item-section avatar>
+            <q-icon name="fas fa-times" />
+          </q-item-section>
+          <q-item-section>Remove</q-item-section>
+        </q-item>
+      </q-list>
     </q-popup-proxy>
 
     <transition
@@ -44,15 +82,15 @@
         <q-card>
           <q-card-section class="row">
             <div class="row full-width q-mb-sm">
-              <span class="text-lessons text-h6">{{
-                selectedLesson.name
-              }}</span>
+              <span class="text-lessons text-h6">
+                {{ selectedLesson.name }}
+              </span>
             </div>
 
             <div class="row full-width">
-              <span class="text-subtitle2">{{
-                selectedLesson.description
-              }}</span>
+              <span class="text-subtitle2">
+                {{ selectedLesson.description }}
+              </span>
             </div>
 
             <q-separator class="full-width q-my-md" />
@@ -116,12 +154,13 @@ export default {
   data() {
     return {
       isNodeSelected: !!this.selectedElement,
-      isContextMenuVisible: false,
       isLessonDialogVisible: false,
       contextMenuVisibility: {
-        link: true,
-        remove: true,
-        setAsStarting: false
+        link: false,
+        remove: false,
+        setAsStarting: false,
+        addNewLesson: false,
+        editLesson: false
       },
       lessonsData: [],
       selectedLesson: {},
@@ -377,7 +416,6 @@ export default {
      */
     onContextTap(event) {
       let target = event.target;
-      this.isContextMenuVisible = false;
 
       // Deselect currently selected node
       if (this.selectedElement) {
@@ -387,11 +425,9 @@ export default {
       // Select new node and recalculate options visibility
       if (target && target.data() && Object.keys(target.data()).length) {
         target.select();
-        this.setContextMenuVisibility();
-        this.isContextMenuVisible = true;
-
-        console.log(target);
       }
+
+      this.setContextMenuVisibility();
     },
 
     /**
@@ -399,10 +435,6 @@ export default {
      * @param event: event data
      */
     onElementSelect(event) {
-      if (this.selectedElement) {
-        this.isContextMenuVisible = false;
-      }
-
       this.selectedElement = event.target;
 
       if (this.selectedElement.isNode()) {
@@ -415,7 +447,6 @@ export default {
      */
     onElementUnselect() {
       this.selectedElement = null;
-      this.isContextMenuVisible = false;
       this.isLessonDialogVisible = false;
     },
 
@@ -423,7 +454,7 @@ export default {
      * Handles tree data change event
      */
     onDataChange() {
-      this.$emit("input", JSON.stringify(this.cytoscape.json()));
+      this.$emit("change");
     },
 
     onLinkClick() {
@@ -432,8 +463,6 @@ export default {
         this.edgehandles.enableDrawMode();
         this.edgehandles.start(this.selectedElement);
       }
-
-      this.isContextMenuVisible = false;
     },
 
     /**
@@ -444,8 +473,6 @@ export default {
         this.removeElement(this.selectedElement);
         this.selectedElement = null;
       }
-
-      this.isContextMenuVisible = false;
     },
 
     onSetAsStartingClick() {
@@ -464,15 +491,24 @@ export default {
 
         this.selectedElement.unselect();
       }
-
-      this.isContextMenuVisible = false;
     },
 
     onBeginLessonClick(lessonId) {
       let lockedLessons = this.getConnectedLockedLessons(this.selectedElement);
       LocalStorageService.setLockedLessonsIds(lockedLessons);
 
-      this.$router.push(`/main/courses/view/${this.$route.params.id}/lessons/${lessonId}`);
+      this.$router.push(
+        `/main/courses/view/${this.$route.params.id}/lessons/${lessonId}`
+      );
+    },
+
+    onAddLessonClick() {},
+
+    onEditLessonClick() {
+      if (this.selectedElement) {
+        let lessonId = this.selectedElement.data("id");
+        this.$emit("editLesson", lessonId);
+      }
     },
 
     setElementAsIsFirst(element, value) {
@@ -485,12 +521,15 @@ export default {
     setContextMenuVisibility() {
       this.contextMenuVisibility = {
         link: this.selectedElement && this.selectedElement.isNode(),
-        remove: true,
-        setAsStarting: !(
+        remove: !!this.selectedElement,
+        setAsStarting:
           this.selectedElement &&
-          (this.selectedElement.data("isFirst") ||
-            this.selectedElement.isEdge())
-        )
+          !(
+            this.selectedElement.data("isFirst") ||
+            this.selectedElement.isEdge()
+          ),
+        addNewLesson: !this.selectedElement,
+        editLesson: this.selectedElement && this.selectedElement.isNode()
       };
     },
 
@@ -578,11 +617,11 @@ export default {
       let lockedLessonsIds = [];
 
       connectedOutgoers.forEach(outgoer => {
-        lockedLessonsIds.push(parseInt(outgoer.data('id')));
+        lockedLessonsIds.push(parseInt(outgoer.data("id")));
       });
 
       connectedIncomers.forEach(incomer => {
-        lockedLessonsIds.push(parseInt(incomer.data('id')));
+        lockedLessonsIds.push(parseInt(incomer.data("id")));
       });
 
       return lockedLessonsIds;
@@ -602,7 +641,7 @@ export default {
   width: var(--popup-width);
   position: absolute;
   top: 0;
-  left: calc(50% - (var(--popup-width)/2));
+  left: calc(50% - (var(--popup-width) / 2));
   z-index: 100;
 }
 </style>

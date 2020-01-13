@@ -31,12 +31,29 @@ const routes = [
         component: () => import("pages/main/courses/edit-course/EditCourse.vue")
       },
       {
+        path: "courses/edit/:courseId/lessons/add/:fromEditor?",
+        component: () =>
+          import("pages/main/lessons/edit-lesson/EditLesson.vue"),
+        meta: {
+          saveFormData: true
+        }
+      },
+      {
+        path: "courses/edit/:courseId/lessons/edit/:id",
+        component: () =>
+          import("pages/main/lessons/edit-lesson/EditLesson.vue"),
+        meta: {
+          saveFormData: true
+        }
+      },
+      {
         path: "courses/view/:id",
         component: () => import("pages/main/courses/view-course/ViewCourse.vue")
       },
       {
         path: "courses/view/:courseId/lessons/:lessonId",
-        component: () => import("pages/main/lessons/attend-lesson/AttendLesson.vue")
+        component: () =>
+          import("pages/main/lessons/attend-lesson/AttendLesson.vue")
       },
       // Lessons
       {

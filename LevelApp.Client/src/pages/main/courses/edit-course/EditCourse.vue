@@ -154,10 +154,14 @@
               <div v-if="availableLessons.length <= 0">
                 <div class="q-pa-sm flex flex-center">
                   <div class="text-subtitle2 text-align-center q-mb-md">
-                    It seems like you do not have any unassigned lessons.<br/>
+                    It seems like you do not have any unassigned lessons.<br />
                     Maybe you should create some?
                   </div>
-                  <q-btn color="lessons" label="Add lesson" @click="onAddLessonClick" />
+                  <q-btn
+                    color="lessons"
+                    label="Add lesson"
+                    @click="onAddLesson(false)"
+                  />
                 </div>
               </div>
             </q-tab-panel>
@@ -236,8 +240,11 @@
 
           <!-- Cytoscape window for tree management -->
           <course-tree-editor
+            @addLesson="onAddLesson(true, $event)"
+            @editLesson="onEditLesson($event)"
             @removeLesson="onLessonRemovedFromTree($event)"
             @setStartingLesson="onSetStartingLesson($event)"
+            @change="onEditorChange"
             ref="treeEditor"
             :read-only="false"
             key="editor"
@@ -267,12 +274,27 @@ import TagListComponent from "../../../../components/main/TagListComponent";
 import CourseTreeEditor from "../../../../components/main/courses/CourseTreeEditor";
 
 import { ServiceFactory } from "../../../../services/ServiceFactory";
+import LocalStorageService from "../../../../services/local-storage/LocalStorageService";
 const CoursesService = ServiceFactory.get("courses");
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "EditCourse",
   components: { TagListComponent, Draggable, CourseTreeEditor },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.restoreFormData();
+    });
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.meta && to.meta.saveFormData) {
+      this.storeFormData();
+    } else {
+      this.clearStoredFormData();
+    }
+
+    next();
+  },
   data() {
     return {
       inputValidators: InputValidators,
@@ -280,6 +302,7 @@ export default {
       isDragging: false,
       draggedLessonIndex: null,
       isDraggedOverDropZone: false,
+      isDataFromStorage: false,
       course: {
         id: 0,
         name: "",
@@ -305,24 +328,52 @@ export default {
   methods: {
     getCourseData(id) {
       CoursesService.getCourse(id).then(response => {
-        this.course = response.data;
-        this.$refs.treeEditor.setData(this.course.treeData);
+        if (!this.isDataFromStorage) {
+          this.course = response.data;
+          this.$refs.treeEditor.setData(this.course.treeData);
+        }
       });
     },
     getUnassignedLessons() {
       LessonsService.getUnassigned().then(response => {
         this.availableLessons = response.data;
-      })
+      });
     },
     initializeForm() {
       this.formValidator = new FormValidator(this.$refs.name);
+    },
+    storeFormData() {
+      let formData = {
+        course: this.course,
+        currentTab: this.currentTab,
+        newLessonPosition: null
+      };
+
+      LocalStorageService.setEditCourseData(formData);
+    },
+    restoreFormData() {
+      let formData = LocalStorageService.getEditCourseData();
+      console.log(formData);
+
+      if (formData && formData.course) {
+        this.course = formData.course;
+        this.$refs.treeEditor.setData(this.course.treeData);
+        this.isDataFromStorage = true;
+      }
+
+      if (formData && formData.currentTab) {
+        this.currentTab = formData.currentTab;
+      }
+
+      this.clearStoredFormData();
+    },
+    clearStoredFormData() {
+      LocalStorageService.clearEditCourseData();
     },
     onSaveClick() {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
-        this.course.treeData = this.$refs.treeEditor.getData();
-
         if (this.$route.params.id) {
           CoursesService.updateCourse(this.course).then(() => {
             this.$q.notify({
@@ -397,8 +448,12 @@ export default {
     },
     onSetStartingLesson(event) {
       this.$nextTick(() => {
-        let currentStartingLesson = this.course.lessons.find(x => x.isFirst === true);
-        let newStartingLesson = this.course.lessons.find(x => x.id.toString() === event);
+        let currentStartingLesson = this.course.lessons.find(
+          x => x.isFirst === true
+        );
+        let newStartingLesson = this.course.lessons.find(
+          x => x.id.toString() === event
+        );
 
         if (currentStartingLesson) {
           currentStartingLesson.isFirst = false;
@@ -411,8 +466,23 @@ export default {
         }
       });
     },
-    onAddLessonClick() {
-      this.$router.push("/main/lessons/add");
+    onAddLesson(isFromTree, event = null) {
+      // Store new lesson position on tree
+      if (event) {
+      }
+
+      let isFromTreeParam = isFromTree ? "true" : "";
+      this.storeFormData();
+      this.$router.push(
+        `${this.$route.params.id}/lessons/add/${isFromTreeParam}`
+      );
+    },
+    onEditLesson(lessonId) {
+      this.storeFormData();
+      this.$router.push(`${this.$route.params.id}/lessons/edit/${lessonId}`);
+    },
+    onEditorChange() {
+      this.course.treeData = this.$refs.treeEditor.getData();
     }
   }
 };

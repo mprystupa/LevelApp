@@ -25,7 +25,9 @@
                 <q-icon name="fas fa-tags" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">Metadata</q-item-section>
+              <q-item-section class="text-lessons text-h6"
+                >Metadata</q-item-section
+              >
             </template>
             <q-card>
               <q-card-section>
@@ -86,7 +88,9 @@
                 <q-icon name="fas fa-book-open" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">Content</q-item-section>
+              <q-item-section class="text-lessons text-h6"
+                >Content</q-item-section
+              >
             </template>
             <q-card>
               <q-card-section>
@@ -109,7 +113,9 @@
                 <q-icon name="fas fa-book-open" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">Lesson preview</q-item-section>
+              <q-item-section class="text-lessons text-h6"
+                >Lesson preview</q-item-section
+              >
             </template>
             <q-card>
               <q-card-section>
@@ -126,10 +132,21 @@
       <!-- Buttons -->
       <div class="row full-width">
         <div class="col-6">
-          <q-btn flat color="accent" label="Go back" @click="onBackClick" icon="fas fa-arrow-left" />
+          <q-btn
+            flat
+            color="accent"
+            label="Go back"
+            @click="onBackClick"
+            icon="fas fa-arrow-left"
+          />
         </div>
         <div class="col-6 flex justify-end">
-          <q-btn color="primary" label="Save" @click="onSaveClick" icon-right="fas fa-check" />
+          <q-btn
+            color="primary"
+            label="Save"
+            @click="onSaveClick"
+            icon-right="fas fa-check"
+          />
         </div>
       </div>
     </q-card-section>
@@ -159,12 +176,17 @@ export default {
       },
       editableContent: {},
       htmlContent: "",
-      currentTab: "edit"
+      currentTab: "edit",
+      courseId: null
     };
   },
   created() {
     if (this.$route.params.id) {
       this.getLessonData(this.$route.params.id);
+    }
+
+    if (this.$route.params.courseId) {
+      this.courseId = this.$route.params.courseId;
     }
   },
   mounted() {
@@ -187,6 +209,10 @@ export default {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
+        let returnRoute = this.courseId
+          ? `/main/courses/edit/${this.courseId}`
+          : "/main/lessons";
+
         if (this.$route.params.id) {
           LessonsService.updateLesson(this.lesson).then(() => {
             this.$q.notify({
@@ -195,7 +221,7 @@ export default {
               message: "Lesson has been updated!"
             });
 
-            this.$router.push("/main/lessons");
+            this.$router.push(returnRoute);
           });
         } else {
           LessonsService.createLesson(this.lesson).then(() => {
@@ -205,7 +231,7 @@ export default {
               message: "Lesson has been added!"
             });
 
-            this.$router.push("/main/lessons");
+            this.$router.push(returnRoute);
           });
         }
       }

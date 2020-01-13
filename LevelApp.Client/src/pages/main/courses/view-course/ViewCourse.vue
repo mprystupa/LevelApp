@@ -83,7 +83,7 @@ export default {
       });
     },
     onBackClick() {
-      this.$router.go(-1);
+      this.$router.push(`/main/courses`);
     }
   }
 };
