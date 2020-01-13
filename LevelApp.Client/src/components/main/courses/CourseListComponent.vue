@@ -41,7 +41,7 @@
         v-model="currentPage"
         :max="totalPages"
         color="courses"
-        @input="$emit('pageChange')"
+        @input="$emit('pageChange', currentPage)"
       />
     </div>
   </div>
@@ -51,10 +51,15 @@
 import CourseCard from "./CourseCard";
 
 export default {
-  props: ["courses", "cardsPerPage", "currentPage", "totalPages"],
+  props: ["courses", "cardsPerPage", "totalPages"],
   name: "CourseListComponent",
   components: {
     CourseCard
+  },
+  data() {
+    return {
+      currentPage: 1
+    }
   },
   mounted() {
     console.log(this.courses)

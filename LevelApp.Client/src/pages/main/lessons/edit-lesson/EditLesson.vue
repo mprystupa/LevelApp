@@ -25,7 +25,9 @@
                 <q-icon name="fas fa-tags" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">Metadata</q-item-section>
+              <q-item-section class="text-lessons text-h6"
+                >Metadata</q-item-section
+              >
             </template>
             <q-card>
               <q-card-section>
@@ -63,16 +65,11 @@
 
                   <!-- Icon uploader -->
                   <div class="col-4">
-                    <div class="row q-ma-sm">
-                      <div class="row flex-center full-width q-mb-md">
+                    <div class="row flex-center q-ma-sm">
+                      <div class="row flex-center full-width q-mb-xl">
                         <span class="text-h6 text-lessons">Lesson icon</span>
                       </div>
-                      <div class="row flex-center full-width q-mb-lg">
-                        <div class="lesson-icon bg-secondary clip-hex"></div>
-                      </div>
-                      <div class="row flex-center full-width">
-                        <q-uploader url="http://localhost:4444/upload" />
-                      </div>
+                      <icon-loader icon-color="bg-lessons" :icon-url="currentIconUrl" @change="onIconChange($event)" />
                     </div>
                   </div>
                 </div>
@@ -86,7 +83,9 @@
                 <q-icon name="fas fa-book-open" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">Content</q-item-section>
+              <q-item-section class="text-lessons text-h6"
+                >Content</q-item-section
+              >
             </template>
             <q-card>
               <q-card-section>
@@ -109,12 +108,14 @@
                 <q-icon name="fas fa-book-open" color="lessons" />
               </q-item-section>
 
-              <q-item-section class="text-lessons text-h6">Lesson preview</q-item-section>
+              <q-item-section class="text-lessons text-h6"
+                >Lesson preview</q-item-section
+              >
             </template>
             <q-card>
               <q-card-section>
                 <!-- Lesson preview -->
-                <lesson-content :lessonData="lesson"></lesson-content>
+                <lesson-content :lessonData="lesson"  />
               </q-card-section>
             </q-card>
           </q-expansion-item>
@@ -126,10 +127,21 @@
       <!-- Buttons -->
       <div class="row full-width">
         <div class="col-6">
-          <q-btn flat color="accent" label="Go back" @click="onBackClick" icon="fas fa-arrow-left" />
+          <q-btn
+            flat
+            color="accent"
+            label="Go back"
+            @click="onBackClick"
+            icon="fas fa-arrow-left"
+          />
         </div>
         <div class="col-6 flex justify-end">
-          <q-btn color="primary" label="Save" @click="onSaveClick" icon-right="fas fa-check" />
+          <q-btn
+            color="primary"
+            label="Save"
+            @click="onSaveClick"
+            icon-right="fas fa-check"
+          />
         </div>
       </div>
     </q-card-section>
@@ -142,11 +154,12 @@ import FormValidator from "../../../../validators/FormValidator";
 import EditableContent from "../../../../components/main/EditableContent";
 import LessonContent from "../../../../components/main/lessons/LessonContent";
 import { ServiceFactory } from "../../../../services/ServiceFactory";
+import IconLoader from "../../../../components/main/IconLoader";
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "EditLesson",
-  components: { EditableContent, LessonContent },
+  components: { IconLoader, EditableContent, LessonContent },
   data() {
     return {
       inputValidators: InputValidators,
@@ -155,11 +168,14 @@ export default {
         id: 0,
         name: "",
         description: "",
-        content: ""
+        content: "",
+        iconFile: null
       },
+      currentIconUrl: "",
       editableContent: {},
       htmlContent: "",
-      currentTab: "edit"
+      currentTab: "edit",
+      isIconOverlayVisible: false
     };
   },
   created() {
@@ -223,14 +239,54 @@ export default {
     onEditableContentInput($event) {
       this.lesson.content = $event.stringContent;
       this.htmlContent = $event.htmlContent;
+    },
+    onIconChange(event) {
+      this.lesson.iconFile = event;
+      console.log(this.lesson.iconFile);
     }
   }
 };
 </script>
 
 <style scoped lang="stylus">
+@import "../../../../css/levelapp.variables.styl"
+
 .lesson-icon {
   width: 200px;
   height: 200px;
+  cursor: pointer;
+}
+
+.icon-input {
+  visibility: hidden;
+}
+
+.icon-wrapper {
+  position: relative;
+  transition: filter ease-in-out 0.2s;
+}
+
+.icon-wrapper:hover {
+  filter: drop-shadow(2px 2px 6px black);
+}
+
+.icon-overlay {
+  position: absolute;
+  background-color: rgba(white, 0);
+  transition: background-color ease-in-out 0.2s;
+  pointer-events: none;
+
+  span {
+    transition: color ease-in-out 0.2s;
+    color: rgba(white, 0);
+  }
+}
+
+.icon-wrapper:hover .icon-overlay {
+  background-color: rgba(white, 0.1);
+
+  span {
+    color: rgba(white, 1);
+  }
 }
 </style>

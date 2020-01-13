@@ -197,7 +197,7 @@
               @favourite="
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
-              @pageChange="onPageChange"
+              @pageChange="onPageChange($event)"
             />
           </q-tab-panel>
 
@@ -214,7 +214,7 @@
               @favourite="
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
-              @pageChange="onPageChange"
+              @pageChange="onPageChange($event)"
             />
 
             <!-- Add new lesson -->
@@ -240,7 +240,7 @@
               @favourite="
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
-              @pageChange="onPageChange"
+              @pageChange="onPageChange($event)"
             />
           </q-tab-panel>
 
@@ -257,7 +257,7 @@
               @favourite="
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
-              @pageChange="onPageChange"
+              @pageChange="onPageChange($event)"
             />
           </q-tab-panel>
 
@@ -274,7 +274,7 @@
               @favourite="
                 onFavouriteClick($event.lessonId, $event.favouriteLoaderHandler)
               "
-              @pageChange="onPageChange"
+              @pageChange="onPageChange($event)"
             />
           </q-tab-panel>
         </q-tab-panels>
@@ -420,8 +420,9 @@ export default {
         this.totalPages = response.data.totalPages;
       });
     },
-    onPageChange() {
-      this.getAllCreatedLessons();
+    onPageChange(currentPage) {
+      this.searchData.currentPage = currentPage;
+      this.getLessons();
     },
     onAddLessonClick() {
       this.$router.push("lessons/add");

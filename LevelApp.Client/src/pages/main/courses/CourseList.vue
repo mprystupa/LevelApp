@@ -197,13 +197,13 @@
 
             <course-list-component
               :courses="courses"
-              :current-page="searchData.currentPage"
               :cards-per-page="searchData.cardsPerPage"
               :total-pages="totalPages"
               @edit="onEditClick($event)"
               @delete="onDeleteClick($event)"
               @attend="onAttendClick($event)"
               @continue="onContinueClick($event)"
+              @pageChange="onPageChange($event)"
             />
           </q-tab-panel>
 
@@ -211,13 +211,13 @@
           <q-tab-panel :name="coursesTabs.created()">
             <course-list-component
               :courses="courses"
-              :current-page="searchData.currentPage"
               :cards-per-page="searchData.cardsPerPage"
               :total-pages="totalPages"
               @edit="onEditClick($event)"
               @delete="onDeleteClick($event)"
               @attend="onAttendClick($event)"
               @continue="onContinueClick($event)"
+              @pageChange="onPageChange($event)"
             />
 
             <!-- Add new course -->
@@ -375,6 +375,10 @@ export default {
           this.getCourses();
         });
       };
+    },
+    onPageChange(currentPage) {
+      this.searchData.currentPage = currentPage;
+      this.getCourses();
     },
     deleteModalHandler(shouldDelete) {
       if (shouldDelete) {
