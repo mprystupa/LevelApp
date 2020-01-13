@@ -313,12 +313,7 @@ export default {
         let isFirstLesson = this.cytoscape.nodes().empty();
 
         this.cytoscape.add({
-          data: {
-            id: lessonData.id,
-            name: lessonData.name,
-            isFirst: isFirstLesson,
-            status: lessonData.status
-          },
+          data: this.generateLessonDataObject(lessonData, isFirstLesson),
           classes: `label-background label-bottom ${
             isFirstLesson ? "first-lesson" : ""
           }`,
@@ -334,6 +329,10 @@ export default {
       } else {
         throw new Error("Cannot add lessons in read-only mode!");
       }
+    },
+
+    updateLesson(lessonData, lessonElement) {
+      lessonElement.data(this.generateLessonDataObject(lessonData, lessonElement.data("isFirst")));
     },
 
     /**
@@ -502,7 +501,9 @@ export default {
       );
     },
 
-    onAddLessonClick() {},
+    onAddLessonClick() {
+      this.$emit("addLesson");
+    },
 
     onEditLessonClick() {
       if (this.selectedElement) {
@@ -533,18 +534,14 @@ export default {
       };
     },
 
-    setData(treeData, lessonsData = []) {
+    setData(treeData, lessonsData) {
       if (treeData && treeData !== "") {
         let jsonValue = JSON.parse(treeData);
         this.cytoscape.json(jsonValue);
-
         this.cytoscape.style(CytoscapeStyles);
 
-        if (this.readOnly) {
-          this.lessonsData = lessonsData;
-          this.setLessonsStatus();
-          this.setEdgesClasses();
-        }
+        this.lessonsData = lessonsData;
+        this.updateTreeData();
       }
     },
 
@@ -557,19 +554,28 @@ export default {
       return JSON.stringify(this.cytoscape.json());
     },
 
-    setLessonsStatus() {
+    updateTreeData() {
       let allNodes = this.cytoscape.nodes(LessonNodeSelector);
 
       allNodes.forEach(node => {
+        console.log(this.lessonsData);
         let lessonData = this.lessonsData.find(
           x => x.id.toString() === node.data("id")
         );
 
-        if (lessonData && this.readOnly) {
-          node.data("status", lessonData.status);
-          this.setLessonClassByStatus(node, lessonData.status);
+        if (lessonData) {
+          this.updateLesson(lessonData, node);
+
+          if (this.readOnly) {
+            node.data("status", lessonData.status);
+            this.setLessonClassByStatus(node, lessonData.status);
+          }
         }
       });
+
+      if (this.readOnly) {
+        this.setEdgesClasses();
+      }
     },
 
     setLessonClassByStatus(node, status) {
@@ -625,6 +631,15 @@ export default {
       });
 
       return lockedLessonsIds;
+    },
+
+    generateLessonDataObject (lessonData, isFirstLesson) {
+      return {
+        id: lessonData.id,
+        name: lessonData.name,
+        isFirst: isFirstLesson,
+        status: lessonData.status
+      }
     }
   }
 };

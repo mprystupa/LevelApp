@@ -209,9 +209,7 @@ export default {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
-        let returnRoute = this.courseId
-          ? `/main/courses/edit/${this.courseId}`
-          : "/main/lessons";
+        let returnRoute = this.getReturnRoute();
 
         if (this.$route.params.id) {
           LessonsService.updateLesson(this.lesson).then(() => {
@@ -249,6 +247,17 @@ export default {
     onEditableContentInput($event) {
       this.lesson.content = $event.stringContent;
       this.htmlContent = $event.htmlContent;
+    },
+    getReturnRoute() {
+      if (this.$route.meta && this.$route.meta.fromCourse) {
+        if (this.$route.meta.newCourse) {
+          return "/main/courses/add";
+        }
+
+        return `/main/courses/edit/${this.$route.params.courseId}`;
+      }
+
+      return "/main/lessons";
     }
   }
 };

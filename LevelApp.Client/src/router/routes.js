@@ -27,15 +27,33 @@ const routes = [
         component: () => import("pages/main/courses/edit-course/EditCourse.vue")
       },
       {
+        path: "courses/add/lessons/add",
+        component: () =>
+          import("pages/main/lessons/edit-lesson/EditLesson.vue"),
+        meta: {
+          fromCourse: true,
+          newCourse: true
+        }
+      },
+      {
+        path: "courses/add/lessons/edit/:id",
+        component: () =>
+          import("pages/main/lessons/edit-lesson/EditLesson.vue"),
+        meta: {
+          fromCourse: true,
+          newCourse: true
+        }
+      },
+      {
         path: "courses/edit/:id",
         component: () => import("pages/main/courses/edit-course/EditCourse.vue")
       },
       {
-        path: "courses/edit/:courseId/lessons/add/:fromEditor?",
+        path: "courses/edit/:courseId/lessons/add",
         component: () =>
           import("pages/main/lessons/edit-lesson/EditLesson.vue"),
         meta: {
-          saveFormData: true
+          fromCourse: true
         }
       },
       {
@@ -43,7 +61,7 @@ const routes = [
         component: () =>
           import("pages/main/lessons/edit-lesson/EditLesson.vue"),
         meta: {
-          saveFormData: true
+          fromCourse: true
         }
       },
       {
