@@ -139,9 +139,9 @@
                       >
                         <q-card
                           class="edit-course-lesson-card q-mb-sm"
-                          v-for="(val, index) in availableLessons"
+                          v-for="val in availableLessons"
                           :key="val.id"
-                          :data-lesson-index="index"
+                          :data-lesson-id="val.id"
                         >
                           <q-card-section> {{ val.name }} </q-card-section>
                         </q-card>
@@ -301,7 +301,7 @@ export default {
       inputValidators: InputValidators,
       formValidator: null,
       isDragging: false,
-      draggedLessonIndex: null,
+      draggedLessonId: null,
       isDraggedOverDropZone: false,
       loadDataFromStorage: false,
       isAddLessonFromTree: false,
@@ -344,7 +344,7 @@ export default {
       this.$refs.treeEditor.setData(this.course.treeData, this.course.lessons);
 
       if (newLessonData) {
-        this.addLessonToTree(newLessonData.newLessonIndex, newLessonData.newLessonPosition);
+        this.addLessonToTree(newLessonData.newLessonId, newLessonData.newLessonPosition);
       }
     },
     restoreFormData() {
@@ -386,12 +386,9 @@ export default {
         this.newLessonPosition = null;
 
         let newLessonId = this.$route.query.lessonId;
-        let newLessonIndex = this.availableLessons.findIndex(
-          x => x.id.toString() === newLessonId
-        );
 
         return {
-          newLessonIndex: newLessonIndex,
+          newLessonId: newLessonId,
           newLessonPosition: formData.newLessonPosition
         }
       }
@@ -426,20 +423,17 @@ export default {
         isAddLessonFromTree: this.isAddLessonFromTree
       };
 
-      console.log(formData);
-
       LocalStorageService.setEditCourseData(formData);
     },
     clearStoredFormData() {
       LocalStorageService.clearEditCourseData();
     },
-    addLessonToTree(availableLessonIndex, position) {
-      console.log(
-        availableLessonIndex,
-        this.availableLessons[availableLessonIndex],
-        position
+    addLessonToTree(availableLessonId, position) {
+      let availableLessonIndex = this.availableLessons.findIndex(
+        x => x.id.toString() === availableLessonId
       );
-      if (availableLessonIndex && this.availableLessons[availableLessonIndex]) {
+
+      if (availableLessonIndex > -1 && this.availableLessons[availableLessonIndex]) {
         let newLesson = this.availableLessons[availableLessonIndex];
 
         try {
@@ -497,11 +491,11 @@ export default {
       this.$router.push("/main/courses");
     },
     onDragStart(event) {
-      this.draggedLessonIndex = event.item.getAttribute("data-lesson-index");
+      this.draggedLessonId = event.item.getAttribute("data-lesson-id");
       this.isDragging = true;
     },
     onDragEnd() {
-      this.draggedLessonIndex = null;
+      this.draggedLessonId = null;
       this.isDragging = false;
     },
     onDragOver(event) {
@@ -512,7 +506,7 @@ export default {
       this.isDraggedOverDropZone = false;
     },
     onLessonDrop(event) {
-      this.addLessonToTree(this.draggedLessonIndex, { x: event.x, y: event.y });
+      this.addLessonToTree(this.draggedLessonId, { x: event.x, y: event.y });
     },
     onLessonRemovedFromTree(event) {
       let lessonIndex = this.course.lessons.findIndex(
