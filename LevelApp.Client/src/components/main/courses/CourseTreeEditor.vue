@@ -164,7 +164,8 @@ export default {
       },
       lessonsData: [],
       selectedLesson: {},
-      lessonStatusEnum: lessonStatusEnum
+      lessonStatusEnum: lessonStatusEnum,
+      contextMenuPosition: null
     };
   },
   mounted() {
@@ -426,6 +427,7 @@ export default {
         target.select();
       }
 
+      this.contextMenuPosition = event.renderedPosition;
       this.setContextMenuVisibility();
     },
 
@@ -502,7 +504,7 @@ export default {
     },
 
     onAddLessonClick() {
-      this.$emit("addLesson");
+      this.$emit("addLesson", this.contextMenuPosition);
     },
 
     onEditLessonClick() {

@@ -283,7 +283,10 @@ export default {
   components: { TagListComponent, Draggable, CourseTreeEditor },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.restoreFormData();
+      vm.afterDataLoadCallback = function() {
+        vm.restoreFormData();
+        vm.clearStoredFormData();
+      };
     });
   },
   beforeRouteLeave(to, from, next) {
@@ -314,7 +317,10 @@ export default {
         lessons: []
       },
       availableLessons: [],
-      currentTab: "metadata"
+      currentTab: "metadata",
+      loadingCourseData: false,
+      loadingLessonsData: false,
+      afterDataLoadCallback: () => {}
     };
   },
   created() {
@@ -328,6 +334,7 @@ export default {
   },
   methods: {
     getCourseData(id) {
+      this.loadingCourseData = true;
       CoursesService.getCourse(id).then(response => {
         if (!this.isDataFromStorage) {
           this.course = response.data;
@@ -340,12 +347,14 @@ export default {
           this.course.treeData,
           this.course.lessons
         );
+
+        this.loadingCourseData = false;
       });
     },
     getUnassignedLessons() {
+      this.loadingLessonsData = true;
       LessonsService.getUnassigned().then(response => {
         this.availableLessons = this.availableLessons.concat(response.data);
-        console.log(this.availableLessons);
 
         // When creating new course and data is loaded from storage
         // update data of the lessons already placed on the tree
@@ -356,7 +365,14 @@ export default {
             this.course.lessons
           );
         }
+
+        this.loadingLessonsData = false;
       });
+    },
+    afterDataLoad() {
+      if (this.loadingCourseData || this.loadingLessonsData) {
+        this.afterDataLoadCallback();
+      }
     },
     initializeForm() {
       this.formValidator = new FormValidator(this.$refs.name);
@@ -365,7 +381,7 @@ export default {
       let formData = {
         course: this.course,
         currentTab: this.currentTab,
-        newLessonPosition: null,
+        newLessonPosition: this.newLessonPosition,
         availableLessons: this.availableLessons,
         isAddLessonFromTree: this.isAddLessonFromTree
       };
@@ -401,11 +417,15 @@ export default {
         formData.newLessonPosition
       ) {
         this.isAddLessonFromTree = false;
-        let newLessonId = this.$route.query.lessonId;
-        console.log(newLessonId);
-      }
+        this.newLessonPosition = null;
 
-      this.clearStoredFormData();
+        let newLessonId = this.$route.query.lessonId;
+        let newLessonIndex = this.availableLessons.findIndex(
+          x => x.id === newLessonId
+        );
+
+        this.addLessonToTree(newLessonIndex, formData.newLessonPosition);
+      }
     },
     addLessonToTree(availableLessonIndex, position) {
       if (availableLessonIndex && this.availableLessons[availableLessonIndex]) {
@@ -534,6 +554,7 @@ export default {
       // Store new lesson position on tree
       if (event) {
         this.isAddLessonFromTree = true;
+        this.newLessonPosition = event;
       }
 
       this.storeFormData();

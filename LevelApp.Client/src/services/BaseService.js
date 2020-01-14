@@ -4,7 +4,7 @@ import {
   Notify
 } from "quasar";
 
-const baseDomain = "https://localhost:5001";
+const baseDomain = "https://localhost:44394";
 const baseUrl = `${baseDomain}/api`;
 
 let axiosInstance = axios.create({
