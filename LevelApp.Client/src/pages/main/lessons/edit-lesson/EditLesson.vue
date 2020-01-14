@@ -222,14 +222,14 @@ export default {
             this.$router.push(returnRoute);
           });
         } else {
-          LessonsService.createLesson(this.lesson).then(() => {
+          LessonsService.createLesson(this.lesson).then(response => {
             this.$q.notify({
               color: "positive",
               icon: "fa fas-check",
               message: "Lesson has been added!"
             });
 
-            this.$router.push(returnRoute);
+            this.$router.push(`${returnRoute}?lessonId=${response.data}`);
           });
         }
       }

@@ -303,6 +303,8 @@ export default {
       draggedLessonIndex: null,
       isDraggedOverDropZone: false,
       isDataFromStorage: false,
+      isAddLessonFromTree: false,
+      newLessonPosition: null,
       course: {
         id: 0,
         name: "",
@@ -334,18 +336,25 @@ export default {
           this.updateTreeAssignedLessonsData(response.data.lessons);
         }
 
-        this.$refs.treeEditor.setData(this.course.treeData, this.course.lessons);
+        this.$refs.treeEditor.setData(
+          this.course.treeData,
+          this.course.lessons
+        );
       });
     },
     getUnassignedLessons() {
       LessonsService.getUnassigned().then(response => {
-        this.availableLessons = response.data;
+        this.availableLessons = this.availableLessons.concat(response.data);
+        console.log(this.availableLessons);
 
         // When creating new course and data is loaded from storage
         // update data of the lessons already placed on the tree
         if (this.isDataFromStorage) {
           this.updateTreeUnassignedLessonsData();
-          this.$refs.treeEditor.setData(this.course.treeData, this.course.lessons);
+          this.$refs.treeEditor.setData(
+            this.course.treeData,
+            this.course.lessons
+          );
         }
       });
     },
@@ -356,7 +365,9 @@ export default {
       let formData = {
         course: this.course,
         currentTab: this.currentTab,
-        newLessonPosition: null
+        newLessonPosition: null,
+        availableLessons: this.availableLessons,
+        isAddLessonFromTree: this.isAddLessonFromTree
       };
 
       LocalStorageService.setEditCourseData(formData);
@@ -366,7 +377,10 @@ export default {
 
       if (formData && formData.course) {
         this.course = formData.course;
-        this.$refs.treeEditor.setData(this.course.treeData, this.course.lessons);
+        this.$refs.treeEditor.setData(
+          this.course.treeData,
+          this.course.lessons
+        );
         this.isDataFromStorage = true;
       }
 
@@ -374,11 +388,46 @@ export default {
         this.currentTab = formData.currentTab;
       }
 
+      if (formData && formData.availableLessons) {
+        this.availableLessons = this.availableLessons.concat(
+          formData.availableLessons
+        );
+        console.log(this.availableLessons);
+      }
+
+      if (
+        formData &&
+        formData.isAddLessonFromTree &&
+        formData.newLessonPosition
+      ) {
+        this.isAddLessonFromTree = false;
+        let newLessonId = this.$route.query.lessonId;
+        console.log(newLessonId);
+      }
+
       this.clearStoredFormData();
+    },
+    addLessonToTree(availableLessonIndex, position) {
+      if (availableLessonIndex && this.availableLessons[availableLessonIndex]) {
+        let newLesson = this.availableLessons[availableLessonIndex];
+
+        try {
+          this.$refs.treeEditor.addLesson(newLesson, {
+            x: position.x,
+            y: position.y
+          });
+          this.course.lessons.push(newLesson);
+          this.availableLessons.splice(availableLessonIndex, 1);
+        } catch {
+          console.error("Error on creating new lesson node.");
+        }
+      }
     },
     updateTreeUnassignedLessonsData() {
       this.course.lessons.forEach((lesson, index) => {
-        let lessonDataIndex = this.availableLessons.findIndex(x => x.id === lesson.id);
+        let lessonDataIndex = this.availableLessons.findIndex(
+          x => x.id === lesson.id
+        );
         let lessonData = this.availableLessons.splice(lessonDataIndex, 1)[0];
 
         if (lessonData) {
@@ -390,7 +439,9 @@ export default {
     },
     updateTreeAssignedLessonsData(assignedLessonsData) {
       assignedLessonsData.forEach((lessonData, index) => {
-        let currentLessonDataIndex = this.course.lessons.findIndex(x => x.id === lessonData.id);
+        let currentLessonDataIndex = this.course.lessons.findIndex(
+          x => x.id === lessonData.id
+        );
 
         if (currentLessonDataIndex) {
           this.course.lessons[currentLessonDataIndex] = lessonData;
@@ -428,6 +479,7 @@ export default {
       }
     },
     onBackClick() {
+      this.clearStoredFormData();
       this.$router.push("/main/courses");
     },
     onDragStart(event) {
@@ -446,23 +498,7 @@ export default {
       this.isDraggedOverDropZone = false;
     },
     onLessonDrop(event) {
-      if (
-        this.draggedLessonIndex &&
-        this.availableLessons[this.draggedLessonIndex]
-      ) {
-        let droppedLesson = this.availableLessons[this.draggedLessonIndex];
-
-        try {
-          this.$refs.treeEditor.addLesson(droppedLesson, {
-            x: event.x,
-            y: event.y
-          });
-          this.course.lessons.push(droppedLesson);
-          this.availableLessons.splice(this.draggedLessonIndex, 1);
-        } catch {
-          console.error("Error on creating new lesson node.");
-        }
-      }
+      this.addLessonToTree(this.draggedLessonIndex, { x: event.x, y: event.y });
     },
     onLessonRemovedFromTree(event) {
       let lessonIndex = this.course.lessons.findIndex(
@@ -497,6 +533,7 @@ export default {
     onAddLesson(isFromTree, event = null) {
       // Store new lesson position on tree
       if (event) {
+        this.isAddLessonFromTree = true;
       }
 
       this.storeFormData();
