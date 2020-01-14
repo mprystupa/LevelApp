@@ -175,12 +175,17 @@ export default {
       editableContent: {},
       htmlContent: "",
       currentTab: "edit",
+      courseId: null,
       isIconOverlayVisible: false
     };
   },
   created() {
     if (this.$route.params.id) {
       this.getLessonData(this.$route.params.id);
+    }
+
+    if (this.$route.params.courseId) {
+      this.courseId = this.$route.params.courseId;
     }
   },
   mounted() {
@@ -203,6 +208,8 @@ export default {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
+        let returnRoute = this.getReturnRoute();
+
         if (this.$route.params.id) {
           LessonsService.updateLesson(this.lesson).then(() => {
             this.$q.notify({
@@ -211,17 +218,17 @@ export default {
               message: "Lesson has been updated!"
             });
 
-            this.$router.push("/main/lessons");
+            this.$router.push(returnRoute);
           });
         } else {
-          LessonsService.createLesson(this.lesson).then(() => {
+          LessonsService.createLesson(this.lesson).then(response => {
             this.$q.notify({
               color: "positive",
               icon: "fa fas-check",
               message: "Lesson has been added!"
             });
 
-            this.$router.push("/main/lessons");
+            this.$router.push(`${returnRoute}?lessonId=${response.data}`);
           });
         }
       }
@@ -243,6 +250,17 @@ export default {
     onIconChange(event) {
       this.lesson.iconFile = event;
       console.log(this.lesson.iconFile);
+    },
+    getReturnRoute() {
+      if (this.$route.meta && this.$route.meta.fromCourse) {
+        if (this.$route.meta.newCourse) {
+          return "/main/courses/add";
+        }
+
+        return `/main/courses/edit/${this.$route.params.courseId}`;
+      }
+
+      return "/main/lessons";
     }
   }
 };

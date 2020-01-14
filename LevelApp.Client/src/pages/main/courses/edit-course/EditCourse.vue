@@ -139,9 +139,9 @@
                       >
                         <q-card
                           class="edit-course-lesson-card q-mb-sm"
-                          v-for="(val, index) in availableLessons"
+                          v-for="val in availableLessons"
                           :key="val.id"
-                          :data-lesson-index="index"
+                          :data-lesson-id="val.id"
                         >
                           <q-card-section> {{ val.name }} </q-card-section>
                         </q-card>
@@ -154,10 +154,14 @@
               <div v-if="availableLessons.length <= 0">
                 <div class="q-pa-sm flex flex-center">
                   <div class="text-subtitle2 text-align-center q-mb-md">
-                    It seems like you do not have any unassigned lessons.<br/>
+                    It seems like you do not have any unassigned lessons.<br />
                     Maybe you should create some?
                   </div>
-                  <q-btn color="lessons" label="Add lesson" @click="onAddLessonClick" />
+                  <q-btn
+                    color="lessons"
+                    label="Add lesson"
+                    @click="onAddLesson(false)"
+                  />
                 </div>
               </div>
             </q-tab-panel>
@@ -236,8 +240,11 @@
 
           <!-- Cytoscape window for tree management -->
           <course-tree-editor
+            @addLesson="onAddLesson(true, $event)"
+            @editLesson="onEditLesson($event)"
             @removeLesson="onLessonRemovedFromTree($event)"
             @setStartingLesson="onSetStartingLesson($event)"
+            @change="onEditorChange"
             ref="treeEditor"
             :read-only="false"
             key="editor"
@@ -267,19 +274,38 @@ import TagListComponent from "../../../../components/main/TagListComponent";
 import CourseTreeEditor from "../../../../components/main/courses/CourseTreeEditor";
 
 import { ServiceFactory } from "../../../../services/ServiceFactory";
+import LocalStorageService from "../../../../services/local-storage/LocalStorageService";
 const CoursesService = ServiceFactory.get("courses");
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "EditCourse",
   components: { TagListComponent, Draggable, CourseTreeEditor },
+  beforeRouteEnter(to, from, next) {
+    let loadDataFromStorage = from.meta && from.meta.fromCourse;
+    next(vm => {
+      vm.loadDataFromStorage = loadDataFromStorage;
+    });
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to.meta && to.meta.fromCourse) {
+      this.storeFormData();
+    } else {
+      this.clearStoredFormData();
+    }
+
+    next();
+  },
   data() {
     return {
       inputValidators: InputValidators,
       formValidator: null,
       isDragging: false,
-      draggedLessonIndex: null,
+      draggedLessonId: null,
       isDraggedOverDropZone: false,
+      loadDataFromStorage: false,
+      isAddLessonFromTree: false,
+      newLessonPosition: null,
       course: {
         id: 0,
         name: "",
@@ -289,40 +315,154 @@ export default {
         lessons: []
       },
       availableLessons: [],
-      currentTab: "metadata"
+      currentTab: "metadata",
+      loadingCourseData: false,
+      loadingLessonsData: false
     };
   },
   created() {
     if (this.$route.params.id) {
       this.getCourseData(this.$route.params.id);
     }
-
     this.getUnassignedLessons();
   },
   mounted() {
     this.initializeForm();
   },
   methods: {
+    afterDataLoad() {
+      if (this.loadingCourseData || this.loadingLessonsData) return;
+
+      let newLessonData;
+
+      if (this.loadDataFromStorage) {
+        newLessonData = this.restoreFormData();
+        this.updateUnassignedLessonsData();
+        this.clearStoredFormData();
+      }
+
+      this.$refs.treeEditor.setData(this.course.treeData, this.course.lessons);
+
+      if (newLessonData) {
+        this.addLessonToTree(newLessonData.newLessonId, newLessonData.newLessonPosition);
+      }
+    },
+    restoreFormData() {
+      let formData = LocalStorageService.getEditCourseData();
+
+      if (formData && formData.course) {
+        let updatedLessonsData = this.course.lessons.slice();
+        this.course = formData.course;
+
+        updatedLessonsData.forEach(updatedLesson => {
+          let currentLessonDataIndex = this.course.lessons.findIndex(
+            x => x.id === updatedLesson.id
+          );
+
+          if (currentLessonDataIndex > -1) {
+            this.course.lessons[currentLessonDataIndex] = updatedLesson;
+          }
+        });
+      }
+
+      if (formData && formData.currentTab) {
+        this.currentTab = formData.currentTab;
+      }
+
+      if (formData && formData.availableLessons) {
+        formData.availableLessons.forEach(storedLesson => {
+          if (!this.availableLessons.filter(x => x.id === storedLesson.id)) {
+            this.availableLessons.push(storedLesson);
+          }
+        });
+      }
+
+      if (
+        formData &&
+        formData.isAddLessonFromTree &&
+        formData.newLessonPosition
+      ) {
+        this.isAddLessonFromTree = false;
+        this.newLessonPosition = null;
+
+        let newLessonId = this.$route.query.lessonId;
+
+        return {
+          newLessonId: newLessonId,
+          newLessonPosition: formData.newLessonPosition
+        }
+      }
+
+      return null;
+    },
     getCourseData(id) {
+      this.loadingCourseData = true;
       CoursesService.getCourse(id).then(response => {
         this.course = response.data;
-        this.$refs.treeEditor.setData(this.course.treeData);
+        this.loadingCourseData = false;
+        this.afterDataLoad();
       });
     },
     getUnassignedLessons() {
+      this.loadingLessonsData = true;
       LessonsService.getUnassigned().then(response => {
-        this.availableLessons = response.data;
-      })
+        this.availableLessons = this.availableLessons.concat(response.data);
+        this.loadingLessonsData = false;
+        this.afterDataLoad();
+      });
     },
     initializeForm() {
       this.formValidator = new FormValidator(this.$refs.name);
+    },
+    storeFormData() {
+      let formData = {
+        course: this.course,
+        currentTab: this.currentTab,
+        newLessonPosition: this.newLessonPosition,
+        availableLessons: this.availableLessons,
+        isAddLessonFromTree: this.isAddLessonFromTree
+      };
+
+      LocalStorageService.setEditCourseData(formData);
+    },
+    clearStoredFormData() {
+      LocalStorageService.clearEditCourseData();
+    },
+    addLessonToTree(availableLessonId, position) {
+      let availableLessonIndex = this.availableLessons.findIndex(
+        x => x.id.toString() === availableLessonId
+      );
+
+      if (availableLessonIndex > -1 && this.availableLessons[availableLessonIndex]) {
+        let newLesson = this.availableLessons[availableLessonIndex];
+
+        try {
+          this.$refs.treeEditor.addLesson(newLesson, {
+            x: position.x,
+            y: position.y
+          });
+          this.course.lessons.push(newLesson);
+          this.availableLessons.splice(availableLessonIndex, 1);
+        } catch {
+          console.error("Error on creating new lesson node.");
+        }
+      }
+    },
+    updateUnassignedLessonsData() {
+      this.course.lessons.forEach((lesson, index) => {
+        let lessonData = this.availableLessons.find(x => x.id === lesson.id);
+        let lessonDataIndex = this.availableLessons.indexOf(lessonData);
+
+        if (lessonData) {
+          this.course.lessons[index] = lessonData;
+          this.availableLessons.splice(lessonDataIndex, 1);
+        }
+      });
     },
     onSaveClick() {
       this.formValidator.validateForm();
 
       if (this.formValidator.isFormValid()) {
-        this.course.treeData = this.$refs.treeEditor.getData();
-
         if (this.$route.params.id) {
           CoursesService.updateCourse(this.course).then(() => {
             this.$q.notify({
@@ -347,14 +487,15 @@ export default {
       }
     },
     onBackClick() {
-      this.$router.go(-1);
+      this.clearStoredFormData();
+      this.$router.push("/main/courses");
     },
     onDragStart(event) {
-      this.draggedLessonIndex = event.item.getAttribute("data-lesson-index");
+      this.draggedLessonId = event.item.getAttribute("data-lesson-id");
       this.isDragging = true;
     },
     onDragEnd() {
-      this.draggedLessonIndex = null;
+      this.draggedLessonId = null;
       this.isDragging = false;
     },
     onDragOver(event) {
@@ -365,25 +506,7 @@ export default {
       this.isDraggedOverDropZone = false;
     },
     onLessonDrop(event) {
-      if (
-        this.draggedLessonIndex &&
-        this.availableLessons[this.draggedLessonIndex]
-      ) {
-        let droppedLesson = this.availableLessons[this.draggedLessonIndex];
-
-        try {
-          this.$refs.treeEditor.addLesson(droppedLesson, {
-            x: event.x,
-            y: event.y
-          });
-          this.course.lessons.push(droppedLesson);
-          this.availableLessons.splice(this.draggedLessonIndex, 1);
-
-          console.log(this.course.lessons);
-        } catch {
-          console.error("Error on creating new lesson node.");
-        }
-      }
+      this.addLessonToTree(this.draggedLessonId, { x: event.x, y: event.y });
     },
     onLessonRemovedFromTree(event) {
       let lessonIndex = this.course.lessons.findIndex(
@@ -397,8 +520,12 @@ export default {
     },
     onSetStartingLesson(event) {
       this.$nextTick(() => {
-        let currentStartingLesson = this.course.lessons.find(x => x.isFirst === true);
-        let newStartingLesson = this.course.lessons.find(x => x.id.toString() === event);
+        let currentStartingLesson = this.course.lessons.find(
+          x => x.isFirst === true
+        );
+        let newStartingLesson = this.course.lessons.find(
+          x => x.id.toString() === event
+        );
 
         if (currentStartingLesson) {
           currentStartingLesson.isFirst = false;
@@ -411,8 +538,28 @@ export default {
         }
       });
     },
-    onAddLessonClick() {
-      this.$router.push("/main/lessons/add");
+    onAddLesson(isFromTree, event = null) {
+      // Store new lesson position on tree
+      if (event) {
+        this.isAddLessonFromTree = true;
+        this.newLessonPosition = event;
+      }
+
+      let addLessonRoute = this.$route.params.id
+        ? `${this.$route.params.id}/lessons/add`
+        : "add/lessons/add";
+
+      this.$router.push(addLessonRoute);
+    },
+    onEditLesson(lessonId) {
+      let editLessonRoute = this.$route.params.id
+        ? `${this.$route.params.id}/lessons/edit/${lessonId}`
+        : `add/lessons/edit/${lessonId}`;
+
+      this.$router.push(editLessonRoute);
+    },
+    onEditorChange() {
+      this.course.treeData = this.$refs.treeEditor.getData();
     }
   }
 };

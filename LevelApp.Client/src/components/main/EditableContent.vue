@@ -89,7 +89,7 @@ export default {
   watch: {
     value: {
       handler(newVal) {
-        if (this.editor) {
+        if (this.editor && newVal !== "") {
           this.value = newVal;
           this.editor.setContents(JSON.parse(newVal));
         }
