@@ -4,7 +4,7 @@ module.exports = function(ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
-    boot: ["i18n", "axios", "vue-fullpage"],
+    boot: ["i18n", "axios", "vue-fullpage", "components", "vue-clipboard"],
 
     css: ["app.styl", "levelapp.colors.styl"],
 
@@ -90,7 +90,7 @@ module.exports = function(ctx) {
     build: {
       scopeHoisting: true,
       // vueRouterMode: 'history',
-      // vueCompiler: true,
+      vueCompiler: true,
       // gzip: true,
       // analyze: true,
       // extractCSS: false,

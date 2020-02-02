@@ -1,5 +1,11 @@
 <template>
   <div class="lesson-wrapper">
+    <q-popup-proxy context-menu>
+      <q-card>
+        Test
+      </q-card>
+    </q-popup-proxy>
+
     <!-- Header -->
     <div class="row lesson-header q-mb-md">
       <div class="full-width text-h3 text-lessons q-mb-sm">
@@ -13,7 +19,10 @@
     <!-- Content -->
     <div class="row">
       <div class="ql-snow">
-        <div class="ql-editor" v-html="htmlContent" />
+        <div
+          class="ql-editor"
+          v-bind:is="htmlContent"
+        />
       </div>
     </div>
   </div>
@@ -22,12 +31,16 @@
 <script>
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
+const formulaClass = "ql-formula";
+
 export default {
   props: ["lessonData"],
   name: "LessonContent",
   data() {
     return {
-      htmlContent: ""
+      htmlContent: "",
+      isFormulaPopupVisible: false,
+      selectedFormula: undefined
     };
   },
   mounted() {
@@ -37,11 +50,27 @@ export default {
   },
   methods: {
     convertDelta(delta) {
-      var converter = new QuillDeltaToHtmlConverter(
-        JSON.parse(this.lessonData.content).ops
-      );
+      var converter = new QuillDeltaToHtmlConverter(JSON.parse(delta).ops);
 
-      this.htmlContent = converter.convert();
+      let tempElement = document.createElement("div");
+      tempElement.innerHTML = converter.convert();
+      tempElement = this.generateFormulas(tempElement);
+
+      this.htmlContent = {
+        template: tempElement.outerHTML
+      };
+    },
+    generateFormulas(container) {
+      const formulas = container.getElementsByClassName(formulaClass);
+
+      for (let formula of formulas) {
+        let formulaCode = formula.innerText;
+        let formulaComponent = document.createElement("formula-component");
+        formulaComponent.setAttribute('formula-code', `${formulaCode}`);
+        formula.replaceWith(formulaComponent);
+      }
+
+      return container;
     }
   },
   watch: {
