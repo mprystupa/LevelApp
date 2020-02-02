@@ -23,6 +23,7 @@ namespace LevelApp.DAL.Models.Core
         public string TreeData { get; set; }
         
         public int AuthorId { get; set; }
+        public string IconUrl { get; set; }
 
         public virtual AppUser Author { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; }

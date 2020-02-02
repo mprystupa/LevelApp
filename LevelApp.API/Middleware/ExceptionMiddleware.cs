@@ -49,6 +49,7 @@ namespace LevelApp.API.Middleware
                 context.Response.StatusCode,
                 // TODO: Refer to message resources
                 Message = message,
+                exception.InnerException,
                 Details = exception.StackTrace
             }));
         }

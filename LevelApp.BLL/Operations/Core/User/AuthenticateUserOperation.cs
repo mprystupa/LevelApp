@@ -17,32 +17,24 @@ namespace LevelApp.BLL.Operations.Core.User
 {
     public class AuthenticateUserOperation : BaseUserOperation<UserLoginDto, string>
     {
-        private AppUser Entity { get; set; }
+        private AppUser User { get; set; }
         
         public override async Task GetData()
         {
-            try
-            {
-                Entity = await Repository<IUserRepository>().GetDetailAsync(x => x.Email == Parameter.Email);
-            }
-            catch (NotFoundException ex)
-            {
-                throw new NotFoundException("User with this e-mail does not exist.", HttpStatusCode.NotFound);
-            }
-            
+            User = await Repository<IUserRepository>().GetDetailAsync(x => x.Email == Parameter.Email);
             await base.GetData();
         }
 
         public override async Task Validate()
         {
-            ValidateUserPassword(Entity, Parameter.Password);
+            ValidateUserPassword(User, Parameter.Password);
 
             await base.Validate();
         }
 
         public override async Task ExecuteValidated()
         {
-            var claims = GenerateUserClaims(Entity);
+            var claims = GenerateUserClaims(User);
             OperationResult = BuildToken(claims);
             await base.ExecuteValidated();
         }

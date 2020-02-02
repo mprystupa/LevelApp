@@ -80,10 +80,11 @@ namespace LevelApp.DAL.Repositories.Base
                 query = query.Where(filter);
             }
 
+            var count = await query.CountAsync();
+            query = orderBy != null ? orderBy(query) : query;
             query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
-            var entities = await (orderBy != null ? orderBy(query).ToListAsync() : query.ToListAsync());
-            var count = await Entities.CountAsync();
+            var entities = await query.ToListAsync();
 
             return new PaginatedList<TEntity>(entities, count, pageIndex, pageSize);
         }

@@ -21,7 +21,7 @@ namespace LevelApp.BLL.Operations.Core.Lesson
                 case "name":
                     return lesson => lesson.Name;
                 case "author":
-                    return lesson => lesson.Author.FirstName;
+                    return lesson => lesson.Author.DisplayName;
                 default:
                     return lesson => lesson.Name;
             }
@@ -37,7 +37,7 @@ namespace LevelApp.BLL.Operations.Core.Lesson
 
         protected List<LessonSearchEntryDto> AddLessonsFrontendPermissions(List<LessonSearchEntryDto> lessons)
         {
-            foreach (var lesson in lessons.Where(lesson => lesson.AuthorId == CurrentUserId))
+            foreach (var lesson in lessons.Where(lesson => lesson.Author != null && lesson.Author.Id == CurrentUserId))
             {
                 lesson.Permissions.Add(FrontendPermissions.CanEdit, true);
             }
@@ -50,6 +50,16 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             var lessonSearchEntry = Mapper.Map<LessonSearchEntryDto>(lesson);
             var userLesson = lesson.AppUserLessons?.FirstOrDefault(x => x.UserId == CurrentUserId);
 
+            if (lesson.Author != null)
+            {
+                lessonSearchEntry.Author = Mapper.Map<LessonSearchEntryAuthorDto>(lesson.Author);
+            }
+
+            if (lesson.Course != null)
+            {
+                lessonSearchEntry.Course = Mapper.Map<LessonSearchEntryCourseDto>(lesson.Course);
+            }
+            
             if (userLesson == null) return lessonSearchEntry;
             
             lessonSearchEntry.LessonStatus = userLesson.Status;

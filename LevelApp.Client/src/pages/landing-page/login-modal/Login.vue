@@ -73,7 +73,7 @@
                     <q-icon size="16px" name="fas fa-key" />
                   </template>
                 </q-input>
-                <div class="mb-2 float-right mr-2">
+                <div v-if="showNotImplementedFeatures" class="mb-2 float-right mr-2">
                   <a class="text-primary text-no-underline" href="/"
                     >Forgot password?</a
                   >
@@ -100,9 +100,9 @@
               </div>
             </form>
 
-            <q-separator class="mt-2 mb-2" />
+            <q-separator v-if="showNotImplementedFeatures" class="mt-2 mb-2" />
 
-            <div class="p-1 pt-0">
+            <div v-if="showNotImplementedFeatures" class="p-1 pt-0">
               <q-btn
                 class="full-width mb-1"
                 unelevated
@@ -130,6 +130,8 @@ import { InputValidators } from "../../../validators/InputValidators";
 import FormValidator from "../../../validators/FormValidator";
 import { ServiceFactory } from "../../../services/ServiceFactory";
 import LocalStorageService from "../../../services/local-storage/LocalStorageService";
+import { showNotImplementedFeatures } from '../../../helpers/globalSettings';
+
 const UsersService = ServiceFactory.get("users");
 
 export default {
@@ -137,6 +139,7 @@ export default {
   props: ["isVisible"],
   data() {
     return {
+      showNotImplementedFeatures: showNotImplementedFeatures,
       isVisibleModel: this.isVisible,
       email: "",
       password: "",

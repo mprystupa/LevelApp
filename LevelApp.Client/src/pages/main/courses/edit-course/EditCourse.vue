@@ -42,7 +42,7 @@
             transition-next="fade"
           >
             <!-- Metadata tab -->
-            <q-tab-panel name="metadata">
+            <q-tab-panel d name="metadata">
               <q-expansion-item default-opened class="q-mb-lg">
                 <template v-slot:header>
                   <q-item-section avatar>
@@ -99,21 +99,13 @@
 
                       <!-- Icon uploader -->
                       <div class="col-4">
-                        <div class="row q-ma-sm">
-                          <div class="row flex-center full-width q-mb-md">
+                        <div class="row flex-center q-ma-sm">
+                          <div class="row flex-center full-width q-mb-xl">
                             <span class="text-h6 text-courses"
                               >Course icon</span
                             >
                           </div>
-                          <div class="row flex-center full-width q-mb-lg">
-                            <div class="course-icon bg-courses clip-hex"></div>
-                          </div>
-                          <div class="row flex-center full-width">
-                            <q-uploader
-                              color="courses"
-                              url="http://localhost:4444/upload"
-                            />
-                          </div>
+                          <icon-loader icon-color="bg-courses" />
                         </div>
                       </div>
                     </div>
@@ -137,14 +129,12 @@
                         enter-active-class="animated heightAnimation fadeIn"
                         leave-active-class="animated heightAnimation fadeOut"
                       >
-                        <q-card
-                          class="edit-course-lesson-card q-mb-sm"
+                        <small-lesson-card
                           v-for="val in availableLessons"
                           :key="val.id"
-                          :data-lesson-id="val.id"
+                          :lesson-data="val"
                         >
-                          <q-card-section> {{ val.name }} </q-card-section>
-                        </q-card>
+                        </small-lesson-card>
                       </transition-group>
                     </draggable>
                   </div>
@@ -275,12 +265,20 @@ import CourseTreeEditor from "../../../../components/main/courses/CourseTreeEdit
 
 import { ServiceFactory } from "../../../../services/ServiceFactory";
 import LocalStorageService from "../../../../services/local-storage/LocalStorageService";
+import IconLoader from "../../../../components/main/IconLoader";
+import SmallLessonCard from "../../../../components/main/lessons/SmallLessonCard";
 const CoursesService = ServiceFactory.get("courses");
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "EditCourse",
-  components: { TagListComponent, Draggable, CourseTreeEditor },
+  components: {
+    SmallLessonCard,
+    IconLoader,
+    TagListComponent,
+    Draggable,
+    CourseTreeEditor
+  },
   beforeRouteEnter(to, from, next) {
     let loadDataFromStorage = from.meta && from.meta.fromCourse;
     next(vm => {
@@ -344,7 +342,10 @@ export default {
       this.$refs.treeEditor.setData(this.course.treeData, this.course.lessons);
 
       if (newLessonData) {
-        this.addLessonToTree(newLessonData.newLessonId, newLessonData.newLessonPosition);
+        this.addLessonToTree(
+          newLessonData.newLessonId,
+          newLessonData.newLessonPosition
+        );
       }
     },
     restoreFormData() {
@@ -390,7 +391,7 @@ export default {
         return {
           newLessonId: newLessonId,
           newLessonPosition: formData.newLessonPosition
-        }
+        };
       }
 
       return null;
@@ -433,7 +434,10 @@ export default {
         x => x.id.toString() === availableLessonId
       );
 
-      if (availableLessonIndex > -1 && this.availableLessons[availableLessonIndex]) {
+      if (
+        availableLessonIndex > -1 &&
+        this.availableLessons[availableLessonIndex]
+      ) {
         let newLesson = this.availableLessons[availableLessonIndex];
 
         try {

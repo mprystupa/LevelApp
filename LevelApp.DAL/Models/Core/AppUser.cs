@@ -15,11 +15,8 @@ namespace LevelApp.DAL.Models.Core
         public string Email { get; set; }
         
         [MaxLength(30)]
-        public string FirstName { get; set; }
-        
-        [MaxLength(30)]
-        public string LastName { get; set; }
-        
+        public string DisplayName { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string PasswordHash { get; set; }

@@ -40,12 +40,17 @@ namespace LevelApp.DAL.Repositories.Lesson
                 var userLessonsQueryFilteredLessons = userLessonsQuery.Where(userLessonFilter).Select(x => x.Lesson);
                 lessonsQuery = lessonsQuery.Intersect(userLessonsQueryFilteredLessons);
             }
+            
+            var count = await lessonsQuery.CountAsync();
+            lessonsQuery = orderBy != null ? orderBy(lessonsQuery) : lessonsQuery;
+            lessonsQuery = lessonsQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            
+            var entities = await lessonsQuery
+                .Include(x => x.AppUserLessons)
+                .Include(x => x.Course)
+                .Include(x => x.Author)
+                .ToListAsync();
 
-            lessonsQuery = lessonsQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize).Include(x => x.AppUserLessons);
-            
-            var entities = await (orderBy != null ? orderBy(lessonsQuery).ToListAsync() : lessonsQuery.ToListAsync());
-            var count = await Entities.CountAsync();
-            
             return new PaginatedList<Models.Core.Lesson>(entities, count, pageIndex, pageSize);
         }
 

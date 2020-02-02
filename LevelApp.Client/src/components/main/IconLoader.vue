@@ -1,7 +1,7 @@
 <template>
   <div class="icon-wrapper">
     <div class="row flex-center full-width q-mb-lg">
-      <div class="flex lesson-icon bg-lessons clip-hex" @click="onIconClick">
+      <div class="flex lesson-icon clip-hex" :class="iconColor" @click="onIconClick">
         <img class="icon-img" ref="iconImg" />
       </div>
 

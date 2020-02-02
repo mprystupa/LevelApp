@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace LevelApp.BLL.Dto.Core.Lesson
 {
@@ -8,5 +9,11 @@ namespace LevelApp.BLL.Dto.Core.Lesson
         public string Name { get; set; }
         public string Description { get; set; }
         public string Content { get; set; }
+        public List<string> TagList { get; set; }
+
+        public LessonDto()
+        {
+            TagList = new List<string>();
+        }
     }
 }

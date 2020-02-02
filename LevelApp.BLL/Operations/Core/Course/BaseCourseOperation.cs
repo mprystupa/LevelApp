@@ -36,9 +36,9 @@ namespace LevelApp.BLL.Operations.Core.Course
                 case "name":
                     return course => course.Name;
                 case "author":
-                    return course => course.Author.FirstName;
+                    return course => course.Author.DisplayName;
                 default:
-                    return course => course.Author.FirstName;
+                    return course => course.Author.DisplayName;
             }
         }
             

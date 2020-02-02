@@ -115,8 +115,6 @@ namespace LevelApp.API.Controllers.Core
         {
             return await Executor.Execute<DeleteLessonOperation, int, int>(id);
         }
-        
-        [HttpPost()]
 
         [HttpPost(LessonRoutes.AddFavourite)]
         public async Task<ActionResult<bool>> AddFavouriteLesson(int id)

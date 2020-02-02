@@ -3,7 +3,7 @@
     <search-component color="lessons">
       <template v-slot:title>
         <div class="text-lessons q-pa-md">
-          <i class="fas fa-book fa-2x q-mr-md"/>
+          <i class="fas fa-book fa-2x q-mr-md" />
           <span class="text-h4">Lessons</span>
         </div>
       </template>
@@ -135,6 +135,7 @@
         </div>
         <div class="row q-mb-sm">
           <q-input
+            v-if="showNotImplementedFeatures"
             rounded
             outlined
             clearable
@@ -319,6 +320,7 @@ import AddLessonCard from "../../../components/main/lessons/AddLessonCard";
 import SearchComponent from "../../../components/main/SearchComponent";
 import LessonsListComponent from "../../../components/main/lessons/LessonsListComponent";
 import { ServiceFactory } from "../../../services/ServiceFactory";
+import { showNotImplementedFeatures } from "../../../helpers/globalSettings";
 const LessonsService = ServiceFactory.get("lessons");
 
 const lessonTabs = {
@@ -364,6 +366,7 @@ export default {
   },
   data() {
     return {
+      showNotImplementedFeatures: showNotImplementedFeatures,
       lessonCards: lessonTabs,
       lessonOrderBy: lessonOrderBy,
       lessonOrderBySelected: lessonOrderBy[0],

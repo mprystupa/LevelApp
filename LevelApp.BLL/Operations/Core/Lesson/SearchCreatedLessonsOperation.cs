@@ -12,13 +12,14 @@ namespace LevelApp.BLL.Operations.Core.Lesson
         public override async Task ExecuteValidated()
         {
             var results = await Repository<ILessonRepository>()
-                .GetPaginatedAsync(
+                .GetPaginatedLessonsAsync(
                     Parameter.CurrentPage, 
-                    Parameter.CardsPerPage, 
-                    lesson => lesson.CreatedBy == CurrentUserId 
+                    Parameter.CardsPerPage,
+                    null,
+                    lesson => lesson.CreatedBy == CurrentUserId
                               && (string.IsNullOrEmpty(Parameter.SearchName) || lesson.Name.Contains(Parameter.SearchName))
-                              && (string.IsNullOrEmpty(Parameter.SearchDescription)  || lesson.Description.Contains(Parameter.SearchDescription))
-                              );
+                              && (string.IsNullOrEmpty(Parameter.SearchDescription)  || lesson.Description.Contains(Parameter.SearchDescription)),
+                    LessonOrderQuery(Parameter));
             
             OperationResult = new LessonSearchResultsDto()
             {

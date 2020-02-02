@@ -35,8 +35,9 @@ namespace LevelApp.BLL.Operations.Core.User
                 PasswordSalt = passwordSalt
             };
             
-            OperationResult = Repository<IUserRepository>().Insert(newUser);
+            Repository<IUserRepository>().Insert(newUser);
             await UnitOfWork.SaveAsync();
+            OperationResult = newUser.Id;
             
             await base.ExecuteValidated();
         }

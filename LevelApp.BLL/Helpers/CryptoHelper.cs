@@ -26,7 +26,6 @@ namespace LevelApp.BLL.Helpers
         /// <param name="passwordHashToCompare"></param>
         /// <param name="passwordSalt"></param>
         /// <returns>Returns true when password is valid.</returns>
-        /// <returns>Returns true when password is valid.</returns>
         public static bool ValidatePassword(string passwordToValidate, string passwordHashToCompare, string passwordSalt)
         {
             var saltByteArray = Convert.FromBase64String(passwordSalt);

@@ -31,6 +31,10 @@ namespace LevelApp.BLL.Mappings
                 .ForMember(d => d.Password, o => o.Ignore())
                 .ForMember(x => x.Permissions, o => o.Ignore())
                 .ReverseMap();
+            
+            // AppUser <-> LessonSearchEntryAuthorDto
+            CreateMap<AppUser, LessonSearchEntryAuthorDto>()
+                .ForMember(x => x.Permissions, o => o.Ignore());
         }
         
         // Lesson
@@ -38,18 +42,21 @@ namespace LevelApp.BLL.Mappings
         {
             // Lesson <-> LessonDto
             CreateMap<Lesson, LessonDto>()
+                .ForMember(x => x.TagList, o => o.MapFrom(s => s.TagList.Split(TagListDelimiter[0]).ToList()))
                 .ForMember(x => x.Permissions, o => o.Ignore())
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(x => x.TagList, o => o.MapFrom(s => string.Join(TagListDelimiter, s.TagList.ToArray())));
             
             // Lesson <-> LessonSearchEntryDto
             CreateMap<Lesson, LessonSearchEntryDto>()
                 .ForMember(x => x.LessonStatus, o => o.Ignore())
                 .ForMember(x => x.IsFavourite, o => o.Ignore())
-                .ForMember(x => x.Permissions, o => o.Ignore())
-                .ReverseMap();
+                .ForMember(x => x.Course, o => o.Ignore())
+                .ForMember(x => x.Permissions, o => o.Ignore());
             
             // Lesson <-> LessonCourseEntryDto
             CreateMap<Lesson, LessonCourseEntryDto>()
+                .ForMember(x => x.Status, o => o.Ignore())
                 .ForMember(x => x.Permissions, o => o.Ignore())
                 .ReverseMap();
         }
@@ -72,6 +79,10 @@ namespace LevelApp.BLL.Mappings
                 .ForMember(x => x.CourseStatus, o => o.Ignore())
                 .ForMember(x => x.IsFavourite, o => o.Ignore())
                 .ReverseMap();
+            
+            // Course <-> LessonSearchEntryCourseDto
+            CreateMap<Course, LessonSearchEntryCourseDto>()
+                .ForMember(x => x.Permissions, o => o.Ignore());
         }
     }
 }

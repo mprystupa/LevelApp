@@ -170,25 +170,7 @@ export default {
   },
   mounted() {
     this.initCytoscape();
-
-    // Selected lesson getter/setter
-    Object.defineProperty(this, "selectedElement", {
-      set: val => {
-        if (val && Object.entries(val).length !== 0) {
-          let lessonId = val.data("id");
-          this.selectedLesson = this.lessonsData.find(
-            x => x.id.toString() === lessonId
-          );
-        } else {
-          this.selectedLesson = {};
-        }
-
-        this.selectedElementValue = val;
-      },
-      get: () => {
-        return this.selectedElementValue;
-      }
-    });
+    this.initSelectedLessonEncapsulation();
   },
   methods: {
     /**
@@ -198,6 +180,8 @@ export default {
       let options = {
         container: this.$refs.cytoscape,
         style: CytoscapeStyles,
+        minZoom: 0.5,
+        maxZoom: 2,
         autoungrabify: true
       };
 
@@ -226,12 +210,32 @@ export default {
         this.initEditMode(cy);
       }
 
-      cy.minZoom(0.5);
-      cy.maxZoom(2);
-
       this.registerEventHandlers(cy);
-
       this.cytoscape = cy;
+    },
+
+    /**
+     * Initializes selectedElement variable getter/setter methods
+     */
+    initSelectedLessonEncapsulation() {
+      // Selected lesson getter/setter
+      Object.defineProperty(this, "selectedElement", {
+        set: val => {
+          if (val && Object.entries(val).length !== 0) {
+            let lessonId = val.data("id");
+            this.selectedLesson = this.lessonsData.find(
+              x => x.id.toString() === lessonId
+            );
+          } else {
+            this.selectedLesson = {};
+          }
+
+          this.selectedElementValue = val;
+        },
+        get: () => {
+          return this.selectedElementValue;
+        }
+      });
     },
 
     /**
@@ -352,7 +356,7 @@ export default {
     /**
      * Validates if edge is not breaking any tree rules
      */
-    validateEdge(sourceNode, targetNode, addedEdge) {
+    validateEdge(sourceNode, targetNode) {
       // No parallel edges
       if (this.detectParallelEdge(targetNode)) {
         throw new Error("Parallel edges are not allowed");
@@ -560,7 +564,6 @@ export default {
       let allNodes = this.cytoscape.nodes(LessonNodeSelector);
 
       allNodes.forEach(node => {
-        console.log(this.lessonsData);
         let lessonData = this.lessonsData.find(
           x => x.id.toString() === node.data("id")
         );

@@ -21,6 +21,9 @@ namespace LevelApp.DAL.Models.Core
         public int AuthorId { get; set; }
         public int? CourseId { get; set; }
         public bool? IsFirst { get; set; }
+        [MaxLength(1000)]
+        public string TagList { get; set; }
+        public string IconUrl { get; set; }
         
         public virtual AppUser Author { get; set; }
         public virtual Course Course { get; set; }

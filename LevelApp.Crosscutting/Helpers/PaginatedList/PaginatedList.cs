@@ -12,6 +12,7 @@ namespace LevelApp.Crosscutting.Helpers.PaginatedList
         {
             PageIndex = pageIndex;
             TotalPages = (int) Math.Ceiling(count / (double) pageSize);
+            TotalPages = TotalPages > 0 ? TotalPages : 1; 
             
             this.AddRange(items);
         }

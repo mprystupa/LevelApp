@@ -53,13 +53,22 @@
 
                       <!-- Description -->
                       <q-input
-                        class="full-width"
+                        class="full-width q-mb-lg"
                         filled
                         v-model="lesson.description"
                         type="textarea"
                         rows="15"
                         label="Description"
                       />
+
+                      <!-- Tags -->
+                      <div class="row full-width q-mb-md">
+                        <span class="text-h6 text-courses">Tags</span>
+                      </div>
+
+                      <div class="row full-width">
+                        <tag-list-component v-model="lesson.tagList" />
+                      </div>
                     </div>
                   </div>
 
@@ -69,7 +78,11 @@
                       <div class="row flex-center full-width q-mb-xl">
                         <span class="text-h6 text-lessons">Lesson icon</span>
                       </div>
-                      <icon-loader icon-color="bg-lessons" :icon-url="currentIconUrl" @change="onIconChange($event)" />
+                      <icon-loader
+                        icon-color="bg-lessons"
+                        :icon-url="currentIconUrl"
+                        @change="onIconChange($event)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -115,7 +128,7 @@
             <q-card>
               <q-card-section>
                 <!-- Lesson preview -->
-                <lesson-content :lessonData="lesson"  />
+                <lesson-content :lessonData="lesson" />
               </q-card-section>
             </q-card>
           </q-expansion-item>
@@ -155,11 +168,12 @@ import EditableContent from "../../../../components/main/EditableContent";
 import LessonContent from "../../../../components/main/lessons/LessonContent";
 import { ServiceFactory } from "../../../../services/ServiceFactory";
 import IconLoader from "../../../../components/main/IconLoader";
+import TagListComponent from "../../../../components/main/TagListComponent";
 const LessonsService = ServiceFactory.get("lessons");
 
 export default {
   name: "EditLesson",
-  components: { IconLoader, EditableContent, LessonContent },
+  components: { TagListComponent, IconLoader, EditableContent, LessonContent },
   data() {
     return {
       inputValidators: InputValidators,
@@ -169,14 +183,14 @@ export default {
         name: "",
         description: "",
         content: "",
+        tagList: [],
         iconFile: null
       },
       currentIconUrl: "",
       editableContent: {},
       htmlContent: "",
       currentTab: "edit",
-      courseId: null,
-      isIconOverlayVisible: false
+      courseId: null
     };
   },
   created() {

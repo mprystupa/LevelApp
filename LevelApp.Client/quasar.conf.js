@@ -62,7 +62,9 @@ module.exports = function(ctx) {
         "QChip",
         "QTooltip",
         "QBanner",
-        "QPopupProxy"
+        "QPopupProxy",
+        'QTimeline',
+        'QTimelineEntry'
       ],
 
       directives: ["Ripple", "ClosePopup"],

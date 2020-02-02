@@ -61,9 +61,14 @@
             </div>
           </div>
 
-          <!-- Lesson buttons (view) -->
+          <!-- Author data and lesson buttons (view) -->
           <div v-else class="button-col flex flex-center">
             <div class="row full-width">
+              <div class="q-mb-sm" v-if="lessonData.author">
+                <div class="text-subtitle2">
+                  <strong>Created by:</strong> <br/> {{ lessonData.author.displayName }}
+                </div>
+              </div>
               <q-btn
                 flat
                 rounded
@@ -82,7 +87,12 @@
         <q-card class="lesson-statistics-card">
           <q-card-section>
             <div class="flex flex-center justify-around">
-              <span>Not appointed to any course.</span>
+              <div v-if="lessonData.course">
+                <span>Assigned to </span><span @click="onAssignedCourseClick(lessonData.course.id)" class="text-courses text-bold cursor-pointer">{{ lessonData.course.name }}</span>
+              </div>
+              <div v-else>
+                <span>Not assigned to any course.</span>
+              </div>
               <div v-if="!lessonData.permissions.CanEdit">
                 <!-- Not favourite -->
                 <q-btn
@@ -128,6 +138,9 @@ export default {
     onFavouriteClick() {
       this.isFavouriteButtonLoading = true;
       this.$emit("favourite", this.finishLoading);
+    },
+    onAssignedCourseClick(courseId) {
+      console.log(courseId);
     },
     finishLoading() {
       setTimeout(() => {
