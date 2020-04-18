@@ -15,6 +15,7 @@ namespace LevelApp.BLL.Base
         IUnitOfWork UnitOfWork { get; set; }
         IConfiguration Configuration { get; set; }
         IMapper Mapper { get; set; }
+        IFileService FileService { get; set; }
         TParameter Parameter { get; set; }
         TResult OperationResult { get; set; }
         Dictionary<string, HttpStatusCode> Errors { get; set; }
@@ -22,7 +23,7 @@ namespace LevelApp.BLL.Base
         int CurrentUserId { get; }
         string CurrentUserEmail { get;  }
 
-        void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter, IUserResolverService userResolver);
+        void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, IFileService fileService, TParameter parameter, IUserResolverService userResolver);
         Task GetData();
         Task Validate();
         Task ExecuteValidated();

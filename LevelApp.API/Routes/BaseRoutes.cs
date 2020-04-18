@@ -8,5 +8,7 @@
 
         public const string Add = "add";
         public const string Remove = "remove";
+
+        public const string Icon = "icon";
     }
 }

@@ -20,6 +20,8 @@
         public const string Favourite = "favourite";
         public const string Unassigned = "unassigned";
         
+        public const string SetIcon = Id + "/" + Icon;
+        
         public const string Search = "search";
 
         public const string PageSize = "{pageSize}";

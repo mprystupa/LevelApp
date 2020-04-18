@@ -6,18 +6,22 @@
         <div class="row full-width">
           <div class="col dashboard-box q-pa-lg q-ma-md bg-accent">
             <div class="text-h4 full-width q-mb-md text-white">
-              Continue where you left off...
+              No started courses yet
             </div>
 
             <div class="row full-width">
               <div class="hex-icon"></div>
               <div class="col">
-                <div class="text-h6 full-width text-blue-2">
-                  Test course
+                <div class="text-h6 full-width q-mb-md text-blue-2">
+                  Take a look at our courses
                 </div>
-                <div class="text-subtitle2 full-width text-blue-2">
-                  Finished 4/20
-                </div>
+
+                <q-btn
+                  outline
+                  rounded
+                  color="white"
+                  label="Go to courses"
+                />
               </div>
             </div>
           </div>
@@ -26,12 +30,25 @@
         <!-- Courses and history row -->
         <div class="row full-width" style="height: 500px;">
           <div class="col-4 text-align-center">
-            <div class="dashboard-box full-height bg-white q-pa-lg q-ma-md">
+            <div class="dashboard-box full-height relative-position bg-white q-pa-lg q-ma-md">
               <div class="text-h4">
                 Your courses
               </div>
 
               <q-separator class="q-my-md" />
+
+              <div class="text-h6 full-width">
+                No created courses yet
+              </div>
+
+              <div class="absolute-bottom q-pb-lg">
+                <q-btn
+                  outline
+                  rounded
+                  color="black"
+                  label="Add new course"
+                />
+              </div>
             </div>
           </div>
 
@@ -39,35 +56,11 @@
             <div class="dashboard-box full-height bg-green-1 q-pa-lg q-ma-md">
               <q-timeline color="secondary">
                 <q-timeline-entry
-                  title="Event Title"
-                  subtitle="February 22, 1986"
+                  title="Signed up"
+                  subtitle="January 22, 2020"
                 >
                   <div>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum.
-                  </div>
-                </q-timeline-entry>
-
-                <q-timeline-entry
-                  title="Event Title"
-                  subtitle="February 21, 1986"
-                  icon="delete"
-                >
-                  <div>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum.
+                    Created an account on LevelApp.
                   </div>
                 </q-timeline-entry>
               </q-timeline>
@@ -78,7 +71,27 @@
 
       <q-separator vertical class="q-my-md q-mx-lg bg-grey-7" />
 
-      <div class="col-3 q-pa-lg"></div>
+      <div class="col-2 flex flex-center q-pa-lg">
+        <div class="row flex-center">
+          <div class="relative-position" style="width: 200px; height: 200px;">
+            <div class="full-width full-height clip-hex bg-secondary" />
+            <i class="absolute-center fas fa-user fa-8x text-white"></i>
+          </div>
+
+          <div class="row q-pt-lg">
+            <span class="text-h4">Użytkownik</span>
+          </div>
+
+          <div class="row q-pt-lg">
+            <q-btn
+              rounded
+              color="black"
+              size="lg"
+              label="Log out"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

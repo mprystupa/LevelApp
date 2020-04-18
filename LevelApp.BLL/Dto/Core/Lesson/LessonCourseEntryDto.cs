@@ -10,5 +10,6 @@ namespace LevelApp.BLL.Dto.Core.Lesson
         public string Description { get; set; }
         public bool IsFirst { get; set; }
         public LessonStatusEnum Status { get; set; }
+        public string IconUrl { get; set; }
     }
 }

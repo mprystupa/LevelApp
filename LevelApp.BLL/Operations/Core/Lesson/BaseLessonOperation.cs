@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using LevelApp.BLL.Base.Operation;
@@ -7,6 +8,7 @@ using LevelApp.BLL.Dto.Core.Lesson;
 using LevelApp.BLL.Permissions;
 using LevelApp.Crosscutting.Enums.Main;
 using LevelApp.DAL.Models.Core;
+using Microsoft.AspNetCore.Hosting.Internal;
 
 namespace LevelApp.BLL.Operations.Core.Lesson
 {
@@ -65,6 +67,10 @@ namespace LevelApp.BLL.Operations.Core.Lesson
             lessonSearchEntry.LessonStatus = userLesson.Status;
             lessonSearchEntry.IsFavourite = userLesson.IsFavourite;
 
+            if (!string.IsNullOrEmpty(lesson.IconUrl))
+            {
+                lessonSearchEntry.IconUrl = FileService.GetImageAsDataUri(lesson.IconUrl);
+            }
             return lessonSearchEntry;
         }
 

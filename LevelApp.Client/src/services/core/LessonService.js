@@ -27,8 +27,12 @@ export default {
     return BaseService.get(`${resource}/${lessonId}`);
   },
 
-  createLesson(payload) {
-    return BaseService.post(`${resource}`, payload);
+  async createLesson(payload) {
+    await BaseService.post(`${resource}`, payload).then(
+      result => {
+        return this.setLessonIcon({ id: result.data, icon: payload.iconFile });
+      }
+    );
   },
 
   updateLesson(payload) {
@@ -36,7 +40,23 @@ export default {
       return BaseService.put(`${resource}/${payload.id}`, payload);
     }
 
-    console.log("Update payload does not contain an id.");
+    console.error("Update payload does not contain an id.");
+  },
+
+  setLessonIcon(payload) {
+    if (payload.id) {
+      const formData = new FormData();
+      formData.append("icon", payload.icon);
+      formData.append("id", payload.id);
+
+      return BaseService.post(`${resource}/${payload.id}/icon`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
+
+    console.error("Icon payload does not contain an id.");
   },
 
   deleteLesson(payload) {
@@ -56,6 +76,6 @@ export default {
       return BaseService.post(`${resource}/${payload.id}/finish`, payload);
     }
 
-    console.log("Finish lesson payload does not contain an id.");
+    console.error("Finish lesson payload does not contain an id.");
   }
 };

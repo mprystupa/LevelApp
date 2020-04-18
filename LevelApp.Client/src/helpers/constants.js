@@ -10,6 +10,9 @@ export const CytoscapeStyles = [
     selector: LessonNodeSelector,
     style: {
       "background-color": "#666",
+      "background-image": function(ele) { return ele.data('iconUrl'); },
+      "background-width": "65%",
+      "background-height": "65%",
       height: "90",
       width: "90",
       shape: "polygon",

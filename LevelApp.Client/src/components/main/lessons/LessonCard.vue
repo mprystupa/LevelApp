@@ -12,7 +12,9 @@
         <div class="row full-width full-height">
           <!-- Course icon -->
           <div class="icon-col q-pa-xs">
-            <div class="full-width full-height clip-hex bg-courses" />
+            <div class="full-width full-height relative-position clip-hex bg-courses">
+              <img v-if="lessonData.iconUrl" class="icon-img" :src="lessonData.iconUrl" />
+            </div>
           </div>
 
           <!-- Course text -->

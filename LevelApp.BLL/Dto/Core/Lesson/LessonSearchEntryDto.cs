@@ -12,5 +12,6 @@ namespace LevelApp.BLL.Dto.Core.Lesson
         public bool IsFavourite { get; set; }
         public LessonSearchEntryCourseDto Course { get; set; }
         public LessonSearchEntryAuthorDto Author { get; set; }
+        public string IconUrl { get; set; }
     }
 }

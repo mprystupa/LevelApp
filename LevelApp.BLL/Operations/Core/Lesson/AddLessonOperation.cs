@@ -25,7 +25,7 @@ namespace LevelApp.BLL.Operations.Core.Lesson
                 }
             };
             
-            var result = Repository<ILessonRepository>().Insert(lesson);
+            Repository<ILessonRepository>().Insert(lesson);
             await UnitOfWork.SaveAsync();
 
             OperationResult = lesson.Id;

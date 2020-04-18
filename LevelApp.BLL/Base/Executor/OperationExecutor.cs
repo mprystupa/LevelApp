@@ -14,13 +14,15 @@ namespace LevelApp.BLL.Base.Executor
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IFileService _fileService;
         private readonly IUserResolverService _userResolver;
 
-        public OperationExecutor(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, IUserResolverService userResolver)
+        public OperationExecutor(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, IFileService fileService, IUserResolverService userResolver)
         {
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _mapper = mapper;
+            _fileService = fileService;
             _userResolver = userResolver;
         }
         
@@ -28,7 +30,7 @@ namespace LevelApp.BLL.Base.Executor
         {
             // Setup operation instance
             var operation = GetOperationInstance<TOperation>();
-            operation.SetupOperation(_unitOfWork, _configuration, _mapper, parameter, _userResolver);
+            operation.SetupOperation(_unitOfWork, _configuration, _mapper, _fileService, parameter, _userResolver);
 
             // Operation pipeline
             try

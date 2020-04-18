@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using AutoMapper;
 using LevelApp.API.Extensions;
@@ -86,6 +87,8 @@ namespace LevelApp.API
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserRepository, UserRepository>();
 
+            services.AddTransient<IFileService, FileService>();
+
             // Authentication
             this.ConfigureAuthentication(services);
 
@@ -111,12 +114,21 @@ namespace LevelApp.API
                 app.UseHsts();
             }
             
+            // Static files
+            app.UseStaticFiles();
+            
             // Exception handler
             app.ConfigureCustomExceptionMiddleware();
             
             //Swagger setup
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "LevelApp API V1"); });
+            
+            //Setup root
+            if (string.IsNullOrWhiteSpace(env.WebRootPath))
+            {
+                env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            }
 
             app.UseCors("corsPolicy");
 

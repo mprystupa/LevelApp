@@ -18,6 +18,7 @@ namespace LevelApp.BLL.Base.Operation
         public IUnitOfWork UnitOfWork { get; set; }
         public IConfiguration Configuration { get; set; }
         public IMapper Mapper { get; set; }
+        public IFileService FileService { get; set; }
         public TParameter Parameter { get; set; }
         public TResult OperationResult { get; set; }
         public Dictionary<string, HttpStatusCode> Errors { get; set; }
@@ -31,11 +32,12 @@ namespace LevelApp.BLL.Base.Operation
             Errors = new Dictionary<string, HttpStatusCode>();
         }
 
-        public void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, TParameter parameter, IUserResolverService userResolver)
+        public void SetupOperation(IUnitOfWork unitOfWork, IConfiguration configuration, IMapper mapper, IFileService fileService, TParameter parameter, IUserResolverService userResolver)
         {
             UnitOfWork = unitOfWork;
             Configuration = configuration;
             Mapper = mapper;
+            FileService = fileService;
             Parameter = parameter;
 
             UserResolver = userResolver;

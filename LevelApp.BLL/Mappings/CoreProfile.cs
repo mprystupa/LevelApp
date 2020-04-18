@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
 using LevelApp.BLL.Dto;
 using LevelApp.BLL.Dto.Core.Course;
@@ -49,6 +50,7 @@ namespace LevelApp.BLL.Mappings
             
             // Lesson <-> LessonSearchEntryDto
             CreateMap<Lesson, LessonSearchEntryDto>()
+                .ForMember(x => x.IconUrl, o => o.Ignore())
                 .ForMember(x => x.LessonStatus, o => o.Ignore())
                 .ForMember(x => x.IsFavourite, o => o.Ignore())
                 .ForMember(x => x.Course, o => o.Ignore())

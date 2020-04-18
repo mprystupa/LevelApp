@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LevelApp.API.Controllers.Base;
 using LevelApp.API.Routes;
 using LevelApp.BLL.Base;
+using LevelApp.BLL.Dto;
 using LevelApp.BLL.Dto.Core.Lesson;
 using LevelApp.BLL.Dto.Core.User;
 using LevelApp.BLL.Operations.Core.Lesson;
@@ -10,6 +11,7 @@ using LevelApp.BLL.Operations.Core.User;
 using LevelApp.Crosscutting.Enums.Main;
 using LevelApp.DAL.Models.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LevelApp.API.Controllers.Core
@@ -102,6 +104,18 @@ namespace LevelApp.API.Controllers.Core
         public async Task<ActionResult<int>> AddLesson([FromBody] LessonDto lesson)
         {
             return await Executor.Execute<AddLessonOperation, LessonDto, int>(lesson);
+        }
+
+        [HttpPost(LessonRoutes.SetIcon)]
+        public async Task<ActionResult<int>> SetLessonIcon(int id, IFormFile icon)
+        {
+            var iconDto = new FileDto()
+            {
+                Id = id,
+                File = icon
+            };
+            
+            return await Executor.Execute<SetLessonIconOperation, FileDto, int>(iconDto);
         }
 
         [HttpPut(BaseRoutes.Id)]

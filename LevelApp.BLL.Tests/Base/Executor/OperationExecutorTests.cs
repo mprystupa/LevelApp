@@ -23,9 +23,10 @@ namespace LevelApp.BLL.Tests.Base.Executor
             unitOfWork.Setup(u => u.Save()).Throws(new GeneralServerException("Test message"));
             var configuration = new Mock<IConfiguration>();
             var mapper = new Mock<IMapper>();
+            var fileService = new Mock<IFileService>();
             var userResolver = new Mock<IUserResolverService>();
 
-            _executor = new OperationExecutor(unitOfWork.Object, configuration.Object, mapper.Object, userResolver.Object);
+            _executor = new OperationExecutor(unitOfWork.Object, configuration.Object, mapper.Object, fileService.Object, userResolver.Object);
         }
         
         [Fact]

@@ -18,6 +18,7 @@ namespace LevelApp.BLL.Tests.Operations
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
+        private readonly Mock<IFileService> _fileServiceMock = new Mock<IFileService>();
         private Mock<IUserResolverService> _userResolver = new Mock<IUserResolverService>();
         private IMapper _mapper;
         protected TParameter Parameter { get; set; }
@@ -38,7 +39,7 @@ namespace LevelApp.BLL.Tests.Operations
         protected TOperation GetOperation()
         {
             var operation = GetOperationInstance<TOperation>();
-            operation.SetupOperation(_unitOfWorkMock.Object, _configurationMock.Object, _mapper, Parameter, _userResolver.Object);
+            operation.SetupOperation(_unitOfWorkMock.Object, _configurationMock.Object, _mapper, _fileServiceMock.Object, Parameter, _userResolver.Object);
 
             return operation;
         }

@@ -643,7 +643,8 @@ export default {
         id: lessonData.id,
         name: lessonData.name,
         isFirst: isFirstLesson,
-        status: lessonData.status
+        status: lessonData.status,
+        iconUrl: lessonData.iconUrl
       }
     }
   }
